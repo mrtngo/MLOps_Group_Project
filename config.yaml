@@ -1,0 +1,43 @@
+schema:
+  timestamp:
+    dtype: datetime64[ns]
+    required: true
+  BTCUSDT_price:
+    dtype: float64
+    required: true
+  ETHUSDT_price:
+    dtype: float64
+    required: true
+  BNBUSDT_price:
+    dtype: float64
+    required: true
+  XRPUSDT_price:
+    dtype: float64
+    required: true
+  ADAUSDT_price:
+    dtype: float64
+    required: true
+  SOLUSDT_price:
+    dtype: float64
+    required: true
+  BTCUSDT_funding_rate:
+    dtype: float64
+    required: true
+  ETHUSDT_funding_rate:
+    dtype: float64
+    required: true
+  BNBUSDT_funding_rate:
+    dtype: float64
+    required: true
+  XRPUSDT_funding_rate:
+    dtype: float64
+    required: true
+  ADAUSDT_funding_rate:
+    dtype: float64
+    required: true
+  SOLUSDT_funding_rate:
+    dtype: float64
+    required: true
+
+missing_values_strategy: drop   # options: drop / impute / keep
+on_error: raise                # options: raise / warn

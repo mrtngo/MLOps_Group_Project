@@ -1,0 +1,11 @@
+{
+  "missing_columns": [],
+  "unexpected_columns": [],
+  "type_mismatches": {
+    "price": {
+      "expected": "float64",
+      "actual": "object"
+    }
+  },
+  "missing_values": {}
+}
