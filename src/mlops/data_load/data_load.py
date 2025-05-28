@@ -9,12 +9,11 @@ FUTURES_URL = "https://fapi.binance.com"  # Futures API for funding rates
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "ADAUSDT", "SOLUSDT"]
 
 
-
 def fetch_binance_klines(symbol, interval="8h", days=365):
     url = f"{BASE_URL}/api/v3/klines"
     end_time = int(time.time() * 1000)  # Current time in ms
     start_time = end_time - (days * 24 * 60 * 60 * 1000)  # 1 year ago in ms
-    
+
     params = {
         "symbol": symbol,
         "interval": interval,
@@ -106,3 +105,5 @@ data = combined_price.merge(combined_funding, on="timestamp", how="inner")
 data = data.dropna()  # Drop rows with missing values
 
 print(data)
+
+data.to_csv("./data/processed/futures_data_processed.csv")
