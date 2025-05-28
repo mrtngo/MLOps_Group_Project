@@ -1,6 +1,7 @@
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import SMOTE
+import pandas as pd
 
 def select_features(df, feature_cols, label_col="BTCUSDT_price", top_n=8):
     X = df[feature_cols]
