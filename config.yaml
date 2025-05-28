@@ -1,79 +1,190 @@
-missing_values_strategy: drop
-on_error: raise
-schema:
-  ADAUSDT_funding_rate:
-    dtype: float64
-    max: 1000000
-    min: 0
-    on_error: warn
-    required: true
-  ADAUSDT_price:
-    dtype: float64
-    max: 1000000
-    min: 0
-    on_error: warn
-    required: true
-  BNBUSDT_funding_rate:
-    dtype: float64
-    max: 1000000
-    min: 0
-    on_error: warn
-    required: true
-  BNBUSDT_price:
-    dtype: float64
-    max: 1000000
-    min: 0
-    on_error: warn
-    required: true
-  BTCUSDT_funding_rate:
-    dtype: float64
-    max: 1000000
-    min: 0
-    on_error: warn
-    required: true
-  BTCUSDT_price:
-    dtype: float64
-    max: 1000000
-    min: 0
-    on_error: warn
-    required: true
-  ETHUSDT_funding_rate:
-    dtype: float64
-    max: 1000000
-    min: 0
-    on_error: warn
-    required: true
-  ETHUSDT_price:
-    dtype: float64
-    max: 1000000
-    min: 0
-    on_error: warn
-    required: true
-  SOLUSDT_funding_rate:
-    dtype: float64
-    max: 1000000
-    min: 0
-    on_error: warn
-    required: true
-  SOLUSDT_price:
-    dtype: float64
-    max: 1000000
-    min: 0
-    on_error: warn
-    required: true
-  XRPUSDT_funding_rate:
-    dtype: float64
-    max: 1000000
-    min: 0
-    on_error: warn
-    required: true
-  XRPUSDT_price:
-    dtype: float64
-    max: 1000000
-    min: 0
-    on_error: warn
-    required: true
-  timestamp:
-    dtype: datetime64[ns]
-    on_error: raise
-    required: true
+# This file is used to set up the parameters for data loading, logging, preprocessing, etc.
+
+data_source:
+  raw_path_binance: "https://fapi.binance.com" # Relative or absolute path to data file
+  processed_path: "data/processed/futures_data_processed_.csv" # Path to save processed data 
+  type: "csv"                      # Data file type: 'csv'
+  delimiter: ","                   # Only used if type == 'csv'
+  header: 0                        # Row number to use as column names (0-indexed), update if needed
+  encoding: "utf-8"                # File encoding (utf-8 covers most cases)
+
+logging:
+  level: "INFO"                         # Logging level: DEBUG (verbose), INFO (default), WARNING, ERROR, CRITICAL
+  log_file: "./logs/main.log"    # File path for log output
+  format: "%(asctime)s - %(levelname)s - %(name)s - %(message)s"  # Log message format
+  datefmt: "%Y-%m-%d %H:%M:%S"          # Date format for logs
+
+
+symbols:
+  - ETHUSDT_price
+  - BNBUSDT_price
+  - XRPUSDT_price
+  - ADAUSDT_price
+  - SOLUSDT_price
+  - BTCUSDT_funding_rate
+  - ETHUSDT_funding_rate
+  - BNBUSDT_funding_rate
+  - XRPUSDT_funding_rate
+  - ADAUSDT_funding_rate
+  - SOLUSDT_funding_rate
+
+target: BTCUSDT_price   
+
+
+data_split:
+  test_size: 0.2
+  valid_size: 0.2
+  random_state: 42
+
+
+data_validation:
+  enabled: true
+  missing_values_strategy: impute
+  report_path: logs/validation_report.json
+  schema:
+    columns:
+      - name: "ETHUSDT_price"
+        dtype: "float64"
+        required: true
+        min: 1
+        max: 5000
+        on_error: warn
+      
+      - name: "BNBUSDT_price"
+        dtype: "float64"
+        required: true
+        min: 1
+        max: 5000
+        on_error: warn
+
+
+      - name: "XRPUSDT_price"
+        dtype: "float64"
+        required: true
+        min: 0
+        max: 10
+        on_error: warn
+
+      - name: "ADAUSDT_price"
+        dtype: "float64"
+        required: true
+        min: 0
+        max: 10
+        on_error: warn
+
+      - name: "SOLUSDT_price"
+        dtype: "float64"
+        required: true
+        min: 1
+        max: 5000
+        on_error: warn
+
+      - name: "BTCUSDT_funding_rate"
+        dtype: "float64"
+        required: true
+        min: -1
+        max: 1
+        on_error: warn
+
+      - name: "ETHUSDT_funding_rate"
+        dtype: "float64"
+        required: true
+        min: -1
+        max: 1
+        on_error: warn
+
+      - name: "BNBUSDT_funding_rate"
+        dtype: "float64"
+        required: true
+        min: -1
+        max: 1
+        on_error: warn
+
+      - name: "XRPUSDT_funding_rate"
+        dtype: "float64"
+        required: true
+        min: -1
+        max: 1
+        on_error: warn
+
+      - name: "ADAUSDT_funding_rate"
+        dtype: "float64"
+        required: true
+        min: -1
+        max: 1
+        on_error: warn
+
+      - name: "SOLUSDT_funding_rate"
+        dtype: "float64"
+        required: true
+        min: -1
+        max: 1
+        on_error: warn
+
+
+preprocessing:
+  scaling:
+    method: standard
+    columns: []   # or list of columns
+
+  sampling:
+    method: smote
+    params:
+      sampling_strategy: auto
+      random_state: 42
+    threshold_ratio: 1.5
+
+
+feature_engineering:
+  feature_selection:
+    method: random_forest
+    params:
+      n_estimators: 20
+      random_state: 42
+    top_n: 8
+
+
+model:
+  active: linear_regression  # Options: logistic_regression, linear_regression
+
+  linear_regression:
+    save_path: models/linear_regression.pkl
+    params:
+      fit_intercept: true
+      copy_X: true
+      positive: false
+
+  logistic_regression:
+    save_path: models/logistic_regression.pkl
+    params:
+      penalty: "12"
+      solver: "lbfgs"
+      random_state: 42
+      max_iter: 200
+
+  
+metrics:
+  linear_regression:
+    display:
+      - RMSE
+    report:
+      - RMSE
+
+  logistic_regression:
+    display:
+      - ROC AUC
+      - Confusion Matrix
+
+    report:
+      - Accuracy
+      - F1 Score
+      - ROC AUC
+      - Confusion Matrix
+
+
+artifacts:
+  metrics_path: models/metrics.json
+  preprocessing_pipeline: models/preprocessing_pipeline.pkl
+  splits_dir: data/splits
+  processed_dir: data/processed
+
