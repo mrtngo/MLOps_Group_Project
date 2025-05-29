@@ -256,9 +256,7 @@ def train_logistic_regression(X_train, y_train, X_test, y_test):
     return model, preds
 
 
-def train_model():
-    # Load data once
-    df = load_data("./data/processed/futures_data_processed.csv")
+def train_model(df: pd.DataFrame):
 
     # Define symbols (including both price and funding rate columns)
     symbols = [

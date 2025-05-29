@@ -9,7 +9,7 @@ import argparse
 import sys
 from src.mlops.data_load.data_load import fetch_data
 from src.mlops.data_validation.data_validation import validate_data
-from src.mlops.models.models import run_model_pipeline
+from src.mlops.models.models import train_model
 import pandas as pd
 from mlops import scripts
 # from evaluation.evaluation import evaluate_classification, generate_report
@@ -83,16 +83,9 @@ def main() -> None:
         if args.stage in ("all", "data"):
             df_raw = fetch_data()
             logger.info("Raw data loaded | shape=%s", df_raw.shape)
-            validate_data(df_raw, cfg)
-
-        # 3 – training -----------------------------------------------------
-        if args.stage in ("all", "train"):
-            # reuse dataframe if already loaded in "all"
-            if args.stage == "train":
-                df_raw = get_data(config_path=args.config,
-                                  env_path=args.env, data_stage="raw")
-                validate_data(df_raw, cfg)
-            run_model_pipeline(df_raw, cfg)
+            df = validate_data(df_raw, cfg["data_validation"]["schema"], logger,
+                               cfg["data_validation"]["missing_values_strategy"])
+            train_model(df)
             generate_report(cfg)
 
         # 4 – batch inference --------------------------------------------
