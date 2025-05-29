@@ -4,14 +4,14 @@ from imblearn.over_sampling import SMOTE
 import pandas as pd
 from typing import Dict
 
-def select_features(config: Dict, df, feature_cols, top_n=8):
+def select_features(config: Dict, df, feature_cols):
     X = df[feature_cols]
     y = df[config.get("target")]
     rf = RandomForestRegressor(n_estimators=20, random_state=42)
     rf.fit(X, y)
     importance = rf.feature_importances_
     ranked = sorted(zip(feature_cols, importance), key=lambda x: x[1], reverse=True)
-    selected_cols = [x[0] for x in ranked[:top_n]]
+    selected_cols = [x[0] for x in ranked[:config.get("top_n")]]
     print(f"Selected Features: {selected_cols}")
     return selected_cols
 

@@ -28,8 +28,7 @@ symbols:
   - ADAUSDT_funding_rate
   - SOLUSDT_funding_rate
 
-target: BTCUSDT_price   
-top_n: 8
+target: BTCUSDT_price
 
 data_split:
   test_size: 0.2
