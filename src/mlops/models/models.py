@@ -124,7 +124,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import mean_squared_error, roc_auc_score
 import pandas as pd
+from src.mlops.data_validation.data_validation import load_config
 
+
+config= load_config("config.yaml")
+params=config.get("model",{}).get("logistic_regression",{}).get("params",{})
 
 def load_data(file_path):
     """
@@ -140,7 +144,7 @@ def load_data(file_path):
     return df
 
 
-def define_features_and_label(df, symbols):
+def define_features_and_label():
     """
     Defines the feature columns and target label for regression and classification tasks.
 
@@ -151,8 +155,8 @@ def define_features_and_label(df, symbols):
     Returns:
         tuple: (feature_cols, label_col)
     """
-    feature_cols = symbols  # Use the symbols list directly as feature columns
-    label_col = "BTCUSDT_price"
+    feature_cols = config.get("symbols", [])  # Use the symbols list directly as feature columns
+    label_col = config.get("target")
     print(f"Feature columns: {feature_cols}")
     print(f"Label column: {label_col}")
     return feature_cols, label_col
@@ -197,7 +201,7 @@ def prepare_features(df, feature_cols, label_col):
     return X, y_reg, y_class
 
 
-def split_data(X, y, test_size=0.2):
+def split_data(X, y):
     """
     Splits data into training and testing sets.
 
@@ -209,7 +213,7 @@ def split_data(X, y, test_size=0.2):
     Returns:
         tuple: (X_train, X_test, y_train, y_test)
     """
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=config.get("data_split",{}).get("test_size"), random_state=params["random_state"])
     print(f"X_train shape: {X_train.shape}, X_test shape: {X_test.shape}, y_train shape: {y_train.shape}, y_test shape: {y_test.shape}")
     return X_train, X_test, y_train, y_test
 
@@ -248,7 +252,7 @@ def train_logistic_regression(X_train, y_train, X_test, y_test):
     Returns:
         tuple: (model, predictions)
     """
-    model = LogisticRegression(max_iter=1000)
+    model = LogisticRegression(max_iter=params["max_iter"])
     model.fit(X_train, y_train)
     preds = model.predict(X_test)
     roc = roc_auc_score(y_test, preds)
@@ -259,14 +263,10 @@ def train_logistic_regression(X_train, y_train, X_test, y_test):
 def train_model(df: pd.DataFrame):
 
     # Define symbols (including both price and funding rate columns)
-    symbols = [
-        "ETHUSDT_price", "XRPUSDT_price", "ADAUSDT_price", "SOLUSDT_price", "BNBUSDT_price",
-        "BTCUSDT_funding_rate", "ETHUSDT_funding_rate", "XRPUSDT_funding_rate",
-        "ADAUSDT_funding_rate", "SOLUSDT_funding_rate", "BNBUSDT_funding_rate"
-    ]
+    symbols = config.get("symbols", [])
 
     # Get feature columns and label
-    feature_cols, label_col = define_features_and_label(df, symbols)
+    feature_cols, label_col = define_features_and_label()
 
     # Create price direction column
     df = create_price_direction_label(df, label_col)
