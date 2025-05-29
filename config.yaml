@@ -16,6 +16,14 @@ logging:
 
 
 symbols:
+- ETHUSDT
+- BNBUSDT
+- XRPUSDT
+- ADAUSDT
+- SOLUSDT
+- BTCUSDT
+
+features:
   - ETHUSDT_price
   - BNBUSDT_price
   - XRPUSDT_price
