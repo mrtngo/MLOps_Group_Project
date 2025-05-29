@@ -13,7 +13,7 @@ def load_config(config_path: str) -> Dict:
         config_path (str): Path to the YAML configuration file.
 
     Returns:
-        dict: Parsed configuration as a dictionary.
+        dict: Parsed configuration dictionary containing schema and settings.
     """
     with open(config_path, 'r') as f:
         return yaml.safe_load(f)
@@ -21,7 +21,14 @@ def load_config(config_path: str) -> Dict:
 
 def check_unexpected_columns(df: pd.DataFrame, schema: Dict, logger, on_error: str, report: Dict):
     """
-    Identify and log unexpected columns not defined in the schema.
+    Check for unexpected columns that are not defined in the schema.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame to validate.
+        schema (Dict): Schema definition mapping columns to properties.
+        logger: Logger object for logging warnings/errors.
+        on_error (str): Global behavior on error ('raise' or 'warn').
+        report (Dict): Dictionary to store validation results.
     """
     expected_columns = set(schema.keys())
     actual_columns = set(df.columns)
@@ -38,8 +45,15 @@ def check_unexpected_columns(df: pd.DataFrame, schema: Dict, logger, on_error: s
 
 def check_value_ranges(df: pd.DataFrame, col: str, props: Dict, logger, on_error: str, report: Dict):
     """
-    Check whether values in a column are within defined min and max bounds.
-    If 'on_error' is defined at the column level, it overrides the global behavior.
+    Validate whether the values in a given column fall within allowed min/max bounds.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame.
+        col (str): The name of the column to check.
+        props (Dict): Properties of the column, including min/max.
+        logger: Logger object.
+        on_error (str): Global behavior on error ('raise' or 'warn').
+        report (Dict): Dictionary to store validation results.
     """
     if 'min' in props or 'max' in props:
         out_of_range = df[col][
@@ -63,8 +77,17 @@ def check_value_ranges(df: pd.DataFrame, col: str, props: Dict, logger, on_error
 
 def check_schema_and_types(df: pd.DataFrame, schema: Dict, logger, on_error: str, report: Dict):
     """
-    Validate presence, data type, and allowed range for each column in the schema.
-    Allows per-column 'on_error' override.
+    Validate each column in the schema:
+    - Required columns exist
+    - Data type matches expected
+    - Values are within allowed ranges
+
+    Args:
+        df (pd.DataFrame): The input DataFrame.
+        schema (Dict): Dictionary defining expected schema.
+        logger: Logger object.
+        on_error (str): Global error handling ('raise' or 'warn').
+        report (Dict): Dictionary to update with validation results.
     """
     for col, props in schema.items():
         col_error = props.get('on_error', on_error)
@@ -107,7 +130,13 @@ def check_schema_and_types(df: pd.DataFrame, schema: Dict, logger, on_error: str
 
 def check_missing_values(df: pd.DataFrame, schema: Dict, logger, report: Dict):
     """
-    Identify missing values in each schema-defined column and update the report.
+    Check and report the number of missing values for each column.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame.
+        schema (Dict): Dictionary defining schema columns.
+        logger: Logger object.
+        report (Dict): Dictionary to update with missing value info.
     """
     for col in schema.keys():
         if col in df.columns:
@@ -119,7 +148,15 @@ def check_missing_values(df: pd.DataFrame, schema: Dict, logger, report: Dict):
 
 def handle_missing_values(df: pd.DataFrame, strategy: str, logger) -> pd.DataFrame:
     """
-    Clean DataFrame from missing values using specified strategy.
+    Handle missing values using a specific strategy.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame.
+        strategy (str): Strategy to use ('drop', 'impute', 'keep').
+        logger: Logger object.
+
+    Returns:
+        pd.DataFrame: Cleaned or unchanged DataFrame depending on strategy.
     """
     if strategy == 'drop':
         return df.dropna()
@@ -134,7 +171,11 @@ def handle_missing_values(df: pd.DataFrame, strategy: str, logger) -> pd.DataFra
 
 def save_validation_report(report: Dict, logger):
     """
-    Persist the validation report to a file in JSON format.
+    Save the validation report as a JSON file.
+
+    Args:
+        report (Dict): The report dictionary to save.
+        logger: Logger object.
     """
     os.makedirs('reports', exist_ok=True)
     with open('reports/validation_report.json', 'w') as f:
@@ -142,9 +183,27 @@ def save_validation_report(report: Dict, logger):
     logger.info("Validation report saved to 'reports/validation_report.json'")
 
 
-def validate_data(df: pd.DataFrame, schema: Dict, logger, missing_strategy='drop', on_error='raise') -> pd.DataFrame:
+def validate_data(df: pd.DataFrame, schema: Dict, logger, missing_strategy: str = 'drop', on_error: str = 'raise') -> pd.DataFrame:
     """
-    Orchestrates the full validation pipeline for the input data.
+    Main entry point for data validation.
+
+    This function performs:
+    - Unexpected column detection
+    - Schema and type validation
+    - Range checks
+    - Missing value checks
+    - Missing value handling
+    - Report generation
+
+    Args:
+        df (pd.DataFrame): DataFrame to validate.
+        schema (Dict): Schema definition for the data.
+        logger: Logger instance to use.
+        missing_strategy (str): Strategy for handling missing values ('drop', 'impute', 'keep').
+        on_error (str): Error behavior on validation failure ('raise' or 'warn').
+
+    Returns:
+        pd.DataFrame: Cleaned DataFrame after applying missing value strategy.
     """
     logger.info("Starting data validation process.")
     report = {
@@ -160,15 +219,3 @@ def validate_data(df: pd.DataFrame, schema: Dict, logger, missing_strategy='drop
     df = handle_missing_values(df, missing_strategy, logger)
     save_validation_report(report, logger)
     return df
-
-
-if __name__ == '__main__':
-    # For testing/debugging only
-    import logging
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger()
-    df = pd.read_csv('data/raw/example.csv')
-    config = load_config('config.yaml')
-    validate_data(df, config['schema'], logger,
-                  missing_strategy=config.get('missing_values_strategy', 'drop'),
-                  on_error=config.get('on_error', 'raise'))
