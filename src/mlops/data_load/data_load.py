@@ -1,16 +1,38 @@
 import requests
 import pandas as pd
 import time
+import yaml
+import os
+from typing import Dict
 from datetime import datetime, timedelta
+
+
+def load_config(config_path: str) -> Dict:
+    """
+    Load configuration schema from a YAML file.
+
+    Args:
+        config_path (str): Path to the YAML configuration file.
+
+    Returns:
+        dict: Parsed configuration dictionary containing schema and settings.
+    """
+    with open(config_path, 'r') as f:
+        return yaml.safe_load(f)
+
+
+config = load_config("config.yaml")
 
 BASE_URL = "https://api.binance.com"  # Spot API for prices
 FUTURES_URL = "https://fapi.binance.com"  # Futures API for funding rates
 
-SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "ADAUSDT", "SOLUSDT"]
+# SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "ADAUSDT", "SOLUSDT"]
+SYMBOLS = config.get("symbols", [])
 
 
 def fetch_binance_klines(symbol, interval="8h", days=365):
-    url = f"{BASE_URL}/api/v3/klines"
+    # url = f"{BASE_URL}/api/v3/klines"
+    url = config.get('data_source', {}).get("raw_path_spot")
     end_time = int(time.time() * 1000)  # Current time in ms
     start_time = end_time - (days * 24 * 60 * 60 * 1000)  # 1 year ago in ms
 
@@ -47,7 +69,8 @@ def fetch_binance_klines(symbol, interval="8h", days=365):
 
 def fetch_binance_funding_rate(symbol, days=365):
     """Fetch historical funding rates from Binance Futures."""
-    url = f"{FUTURES_URL}/fapi/v1/fundingRate"
+    # url = f"{FUTURES_URL}/fapi/v1/fundingRate"
+    url = config.get('data_source', {}).get("raw_path_futures")
     end_time = int(time.time() * 1000)
     start_time = end_time - (days * 24 * 60 * 60 * 1000)
     
@@ -102,4 +125,9 @@ def fetch_data():
     # Merge prices and funding rates (align timestamps)
     data = combined_price.merge(combined_funding, on="timestamp", how="inner")
     data = data.dropna()  # Drop rows with missing values
+    print(data)
+    data.to_csv(config.get('data_source', {}).get("processed_path"), index=False)
     return data
+
+
+fetch_data()

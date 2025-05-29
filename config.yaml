@@ -1,8 +1,9 @@
 # This file is used to set up the parameters for data loading, logging, preprocessing, etc.
 
 data_source:
-  raw_path_binance: "https://fapi.binance.com" # Relative or absolute path to data file
-  processed_path: "data/processed/futures_data_processed_.csv" # Path to save processed data 
+  raw_path_futures: "https://fapi.binance.com/fapi/v1/fundingRate"
+  raw_path_spot: "https://api.binance.com/api/v3/klines"
+  processed_path: "./data/processed/futures_data_processed_.csv" # Path to save processed data 
   type: "csv"                      # Data file type: 'csv'
   delimiter: ","                   # Only used if type == 'csv'
   header: 0                        # Row number to use as column names (0-indexed), update if needed
