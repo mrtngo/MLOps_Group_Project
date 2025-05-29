@@ -7,17 +7,14 @@ import logging
 import os
 import argparse
 import sys
+from src.mlops.data_load.data_load import fetch_data
+from src.mlops.data_validation.data_validation import validate_data
+from src.mlops.models.models import run_model_pipeline
 import pandas as pd
 from mlops import scripts
 # from evaluation.evaluation import evaluate_classification, generate_report
 
 import yaml
-
-from data_load.data_load import
-
-from data_validation.data_validation import validate_data
-
-from models.models import run_model_pipeline
 
 # from inference.inferencer import run_inference
 
@@ -56,6 +53,73 @@ def _load_config(path: str) -> Dict:
         return yaml.safe_load(fh)
 
 
-# %% MAIN
+def main() -> None:
+    parser = argparse.ArgumentParser(description="MLOps pipeline orchestrator")
+    parser.add_argument(
+        "--config",
+        default="config.yaml",
+        help="Path to YAML configuration file (default: config.yaml)",
+    )
+    parser.add_argument(
+        "--env",
+        default=".env",
+        help="Optional .env with credentials / environment vars",
+    )
+
+    args = parser.parse_args()
+
+    # 1 – config & logging -------------------------------------------------
+    try:
+        cfg = _load_config(args.config)
+    except Exception as exc:
+        print(f"[main] Unable to read config: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+    _setup_logging(cfg.get("logging", {}))
+    logger.info("Pipeline started | stage=%s", args.stage)
+
+    try:
+        # 2 – data loading + validation -----------------------------------
+        if args.stage in ("all", "data"):
+            df_raw = fetch_data()
+            logger.info("Raw data loaded | shape=%s", df_raw.shape)
+            validate_data(df_raw, cfg)
+
+        # 3 – training -----------------------------------------------------
+        if args.stage in ("all", "train"):
+            # reuse dataframe if already loaded in "all"
+            if args.stage == "train":
+                df_raw = get_data(config_path=args.config,
+                                  env_path=args.env, data_stage="raw")
+                validate_data(df_raw, cfg)
+            run_model_pipeline(df_raw, cfg)
+            generate_report(cfg)
+
+        # 4 – batch inference --------------------------------------------
+        if args.stage == "infer":
+            if not args.input_csv or not args.output_csv:
+                logger.error(
+                    "Inference stage requires --input_csv and --output_csv")
+                sys.exit(1)
+            # Load config and input for validation
+            input_df = None
+            try:
+                input_df = pd.read_csv(args.input_csv)
+            except Exception as exc:
+                logger.error(f"Could not load input CSV: {exc}")
+                sys.exit(1)
+            # Validate inference input
+            validate_data(input_df, cfg)
+            # Now run inference
+            run_inference(args.input_csv, args.config, args.output_csv)
+
+    except Exception as exc:
+        logger.exception("Pipeline failed: %s", exc)
+        sys.exit(1)
+
+    logger.info("Pipeline completed successfully")
+
+
+# CLI wrapper
 if __name__ == "__main__":
-    scripts.main()
+    main()

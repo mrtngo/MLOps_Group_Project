@@ -125,6 +125,7 @@ from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import mean_squared_error, roc_auc_score
 import pandas as pd
 
+
 def load_data(file_path):
     """
     Loads data from a CSV file and returns a pandas DataFrame.
@@ -138,14 +139,15 @@ def load_data(file_path):
     df = pd.read_csv(file_path)
     return df
 
+
 def define_features_and_label(df, symbols):
     """
     Defines the feature columns and target label for regression and classification tasks.
-    
+
     Args:
         df: pandas DataFrame
         symbols: list of symbols
-        
+
     Returns:
         tuple: (feature_cols, label_col)
     """
@@ -155,14 +157,15 @@ def define_features_and_label(df, symbols):
     print(f"Label column: {label_col}")
     return feature_cols, label_col
 
+
 def create_price_direction_label(df, label_col):
     """
     Creates a binary price direction column based on price changes.
-    
+
     Args:
         df: pandas DataFrame
         label_col: name of the price column
-        
+
     Returns:
         pandas DataFrame with price direction column added
     """
@@ -173,33 +176,36 @@ def create_price_direction_label(df, label_col):
     print(df)
     return df
 
+
 def prepare_features(df, feature_cols, label_col):
     """
     Prepares feature matrix and target variables for machine learning.
-    
+
     Args:
         df: pandas DataFrame
         feature_cols: list of feature column names
         label_col: name of the label column
-        
+
     Returns:
-        tuple: (X, y_reg, y_class) where X is features, y_reg is regression target, y_class is classification target
+        tuple: (X, y_reg, y_class) where X is features,
+        y_reg is regression target, y_class is classification target
     """
     X = df[feature_cols]
     y_reg = df[label_col]
     y_class = df['price_direction']
-    print(f"Features shape: {X.shape}, Regression target shape: {y_reg.shape}, Classification target shape: {y_class.shape}")
+    print(f"Features shape: {X.shape}, Regression target shape: {y_reg.shape},Classification target shape: {y_class.shape}")
     return X, y_reg, y_class
+
 
 def split_data(X, y, test_size=0.2):
     """
     Splits data into training and testing sets.
-    
+
     Args:
         X: feature matrix
         y: target variable
         test_size: float, proportion of dataset to include in the test split
-        
+
     Returns:
         tuple: (X_train, X_test, y_train, y_test)
     """
@@ -207,16 +213,17 @@ def split_data(X, y, test_size=0.2):
     print(f"X_train shape: {X_train.shape}, X_test shape: {X_test.shape}, y_train shape: {y_train.shape}, y_test shape: {y_test.shape}")
     return X_train, X_test, y_train, y_test
 
+
 def train_linear_regression(X_train, y_train, X_test, y_test):
     """
     Trains a linear regression model and evaluates it.
-    
+
     Args:
         X_train: training features
         y_train: training target
         X_test: testing features
         y_test: testing target
-        
+
     Returns:
         tuple: (model, predictions)
     """
@@ -227,16 +234,17 @@ def train_linear_regression(X_train, y_train, X_test, y_test):
     print(f"Linear Regression RMSE: {rmse}")
     return model, preds
 
+
 def train_logistic_regression(X_train, y_train, X_test, y_test):
     """
     Trains a logistic regression model and evaluates it.
-    
+
     Args:
         X_train: training features
         y_train: training target
         X_test: testing features
         y_test: testing target
-        
+
     Returns:
         tuple: (model, predictions)
     """
@@ -247,28 +255,30 @@ def train_logistic_regression(X_train, y_train, X_test, y_test):
     print(f"Logistic Regression ROC AUC: {roc}")
     return model, preds
 
-# Load data once
-df = load_data("./data/processed/futures_data_processed.csv")
 
-# Define symbols (including both price and funding rate columns)
-symbols = [
-    "ETHUSDT_price", "XRPUSDT_price", "ADAUSDT_price", "SOLUSDT_price", "BNBUSDT_price",
-    "BTCUSDT_funding_rate", "ETHUSDT_funding_rate", "XRPUSDT_funding_rate",
-    "ADAUSDT_funding_rate", "SOLUSDT_funding_rate", "BNBUSDT_funding_rate"
-]
+def train_model():
+    # Load data once
+    df = load_data("./data/processed/futures_data_processed.csv")
 
-# Get feature columns and label
-feature_cols, label_col = define_features_and_label(df, symbols)
+    # Define symbols (including both price and funding rate columns)
+    symbols = [
+        "ETHUSDT_price", "XRPUSDT_price", "ADAUSDT_price", "SOLUSDT_price", "BNBUSDT_price",
+        "BTCUSDT_funding_rate", "ETHUSDT_funding_rate", "XRPUSDT_funding_rate",
+        "ADAUSDT_funding_rate", "SOLUSDT_funding_rate", "BNBUSDT_funding_rate"
+    ]
 
-# Create price direction column
-df = create_price_direction_label(df, label_col)
+    # Get feature columns and label
+    feature_cols, label_col = define_features_and_label(df, symbols)
 
-# Prepare features
-X, y_reg, y_class = prepare_features(df, feature_cols, label_col)
+    # Create price direction column
+    df = create_price_direction_label(df, label_col)
 
-# Split data for linear regression
-print("Training Linear Regression Model...")
-X_train, X_test, y_train, y_test = split_data(X, y_reg)
+    # Prepare features
+    X, y_reg, y_class = prepare_features(df, feature_cols, label_col)
 
-# Train linear regression model
-model_lr, preds_lr = train_linear_regression(X_train, y_train, X_test, y_test)
+    # Split data for linear regression
+    print("Training Linear Regression Model...")
+    X_train, X_test, y_train, y_test = split_data(X, y_reg)
+
+    # Train linear regression model
+    model_lr, preds_lr = train_linear_regression(X_train, y_train, X_test, y_test)
