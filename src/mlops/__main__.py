@@ -13,11 +13,11 @@ from mlops import scripts
 
 import yaml
 
-# from data_load.data_load import
+from data_load.data_load import
 
 from data_validation.data_validation import validate_data
 
-# from models.models import
+from models.models import run_model_pipeline
 
 # from inference.inferencer import run_inference
 
