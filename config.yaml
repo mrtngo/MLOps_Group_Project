@@ -29,7 +29,7 @@ symbols:
   - SOLUSDT_funding_rate
 
 target: BTCUSDT_price   
-
+top_n: 8
 
 data_split:
   test_size: 0.2
@@ -187,4 +187,3 @@ artifacts:
   preprocessing_pipeline: models/preprocessing_pipeline.pkl
   splits_dir: data/splits
   processed_dir: data/processed
-

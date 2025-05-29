@@ -2,10 +2,11 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import SMOTE
 import pandas as pd
+from typing import Dict
 
-def select_features(df, feature_cols, label_col="BTCUSDT_price", top_n=8):
+def select_features(config: Dict, df, feature_cols, top_n=8):
     X = df[feature_cols]
-    y = df[label_col]
+    y = df[config.get("target")]
     rf = RandomForestRegressor(n_estimators=20, random_state=42)
     rf.fit(X, y)
     importance = rf.feature_importances_
