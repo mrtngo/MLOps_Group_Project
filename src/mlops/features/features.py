@@ -85,20 +85,6 @@ from src.mlops.data_validation.data_validation import load_config
 config = load_config("config.yaml")
 
 
-def load_data(file_path):
-    """
-    Loads data from a CSV file and returns a pandas DataFrame.
-
-    Args:
-        file_path: str, path to the CSV file
-
-    Returns:
-        pandas DataFrame
-    """
-    df = pd.read_csv(file_path)
-    return df
-
-
 def define_features_and_label():
     """
     Defines the feature columns and target label
@@ -154,19 +140,3 @@ def prepare_features(df, feature_cols, label_col):
     y_class = df['price_direction']
     print(f"Features shape: {X.shape}, Regression target shape: {y_reg.shape}, Classification target shape: {y_class.shape}")
     return X, y_reg, y_class
-
-
-# Load data once
-df = load_data("./data/processed/futures_data_processed.csv")
-
-# Define symbols (including both price and funding rate columns)
-symbols = config.get("symbols", [])
-
-# Get feature columns and label
-feature_cols, label_col = define_features_and_label()
-
-# Create price direction column
-df = create_price_direction_label(df, label_col)
-
-# Prepare features
-X, y_reg, y_class = prepare_features(df, feature_cols, label_col)
