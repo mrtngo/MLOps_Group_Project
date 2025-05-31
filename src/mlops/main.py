@@ -1,6 +1,8 @@
-# src/main.py
+# src/mlops/main.py
 
 import logging
+import pandas as pd
+
 from data_load.data_load import fetch_data
 from data_validation.data_validation import load_config, validate_data
 from features.features import (
@@ -10,6 +12,7 @@ from features.features import (
     select_features
 )
 from preproccess.preproccessing import scale_features, smote_oversample
+from models.models import ModelTrainer
 
 def setup_logger():
     """
@@ -42,53 +45,52 @@ def preprocess_data(df, feature_cols, y_class):
     Performs scaling and optional oversampling on selected features.
     """
     config = load_config("config.yaml")
-    sampling_cfg = config.get("preprocessing", {}).get("sampling", {})
-    threshold = sampling_cfg.get("threshold_ratio", 1.5)
-
     # Scale selected features
-    X_scaled, scaler = scale_features(df, feature_cols)
-
-    # Optionally apply SMOTE
+    X_scaled, _ = scale_features(df, feature_cols)
+    # Apply SMOTE
     X_balanced, y_balanced = smote_oversample(X_scaled, y_class)
-
     return X_balanced, y_balanced
 
 def run_until_feature_engineering():
     setup_logger()
     logger = logging.getLogger("Pipeline")
-
     logger.info("🚀 Starting pipeline up to feature engineering")
 
     # 1. Load raw data
     logger.info("📥 Loading data...")
     df = fetch_data()
 
-    # 2. Load schema from config and convert list → dict
+    # 2. Load schema from config and validate
     config = load_config("config.yaml")
     schema_list = config.get("data_validation", {}).get("schema", {}).get("columns", [])
     schema = {col["name"]: col for col in schema_list}
 
-    # 3. Validate data
     logger.info("✅ Validating data...")
     df = validate_data(df, schema, logger, missing_strategy="drop", on_error="warn")
 
-    # 4. Feature engineering
+    # 3. Feature engineering
     logger.info("🧠 Creating features and labels...")
     feature_cols, label_col = define_features_and_label()
     df = create_price_direction_label(df, label_col)
     X, y_reg, y_class = prepare_features(df, feature_cols, label_col)
 
+    # 4. Preprocessing
+    logger.info("🧪 Preprocessing features...")
+    X_preprocessed, y_class_balanced = preprocess_data(df, feature_cols, y_class)
+
     # 5. Feature selection
     logger.info("🎯 Selecting top features...")
-    selected_cols = select_features(df, feature_cols)
+    X_df = pd.DataFrame(X_preprocessed, columns=feature_cols)
+    X_df_with_target = X_df.copy()
+    X_df_with_target[config.get("target")] = y_reg.values
+    selected_cols = select_features(X_df_with_target, feature_cols)
 
-    # 6. Preprocessing: scaling + SMOTE
-    logger.info("🧪 Preprocessing selected features...")
-    X_processed, y_processed = preprocess_data(df, selected_cols, y_class)
+    X_selected = X_df[selected_cols]
 
     logger.info("✅ Feature engineering and preprocessing complete.")
-    return X_processed, y_reg, y_processed
+    return X_selected, y_reg, y_class_balanced
 
 if __name__ == "__main__":
     X_processed, y_reg, y_class = run_until_feature_engineering()
-
+    trainer = ModelTrainer()
+    price_model, direction_model = trainer.train_from_arrays(X_processed, y_reg, y_class)
