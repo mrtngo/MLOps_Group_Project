@@ -39,11 +39,6 @@ features:
 
 target: BTCUSDT_price
 
-data_split:
-  test_size: 0.2
-  valid_size: 0.2
-  random_state: 42
-
 
 data_validation:
   enabled: true
@@ -131,6 +126,12 @@ data_validation:
 
 
 preprocessing:
+
+  data_split:
+    test_size: 0.2
+    valid_size: 0.2
+    random_state: 42
+
   scaling:
     method: standard
     columns: []   # or list of columns
