@@ -7,6 +7,7 @@ import logging
 from typing import Tuple, Dict, Any
 
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import (
@@ -18,7 +19,8 @@ from sklearn.metrics import (
     f1_score
 )
 
-from src.mlops.features.features import get_training_and_testing_data
+from src.mlops.features.features import define_features_and_label, create_price_direction_label, prepare_features
+from src.mlops.preproccess.preproccessing import split_data
 from src.mlops.data_validation.data_validation import load_config
 
 logger = logging.getLogger(__name__)
@@ -31,12 +33,26 @@ class ModelEvaluator:
     def __init__(self):
         """Initialize ModelEvaluator with config parameters."""
         self.config = config
+        self.preprocessing_pipeline = None
         self.ensure_output_directories()
+        self._load_preprocessing_pipeline()
     
     def ensure_output_directories(self) -> None:
         """Create necessary output directories."""
         os.makedirs("reports", exist_ok=True)
         os.makedirs("plots", exist_ok=True)
+    
+    def _load_preprocessing_pipeline(self) -> None:
+        """Load preprocessing artifacts (scaler, feature selections)."""
+        artifacts_config = self.config.get("artifacts", {})
+        pipeline_path = artifacts_config.get("preprocessing_pipeline", "models/preprocessing_pipeline.pkl")
+        
+        if os.path.exists(pipeline_path):
+            with open(pipeline_path, 'rb') as f:
+                self.preprocessing_pipeline = pickle.load(f)
+            logger.info(f"Preprocessing pipeline loaded from {pipeline_path}")
+        else:
+            logger.warning(f"Preprocessing pipeline not found at {pipeline_path}")
     
     def load_model(self, model_path: str) -> Any:
         """
@@ -67,10 +83,10 @@ class ModelEvaluator:
         model_config = self.config.get("model", {})
         
         price_model_path = model_config.get("linear_regression", {}).get(
-            "save_path", "models/price_model.pkl"
+            "save_path", "models/linear_regression.pkl"
         )
         direction_model_path = model_config.get("logistic_regression", {}).get(
-            "save_path", "models/direction_model.pkl"
+            "save_path", "models/logistic_regression.pkl"
         )
         
         price_model = self.load_model(price_model_path)
@@ -78,27 +94,52 @@ class ModelEvaluator:
         
         return price_model, direction_model
     
-    def prepare_test_data(self, df_testing: pd.DataFrame) -> Tuple[pd.DataFrame, pd.Series, pd.Series]:
+    def prepare_test_data(self, df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
         """
-        Prepare test features and targets.
+        Prepare test data with same preprocessing as training.
         
         Args:
-            df_testing: Testing DataFrame
+            df: Full DataFrame
             
         Returns:
-            tuple: (X_test, y_test_regression, y_test_classification)
+            tuple: (X_test_reg, X_test_class, y_test_regression, y_test_classification)
         """
-        feature_cols = self.config.get("features", [])
-        target_col = self.config.get("target")
+        # Recreate the same preprocessing steps as training
+        feature_cols, label_col = define_features_and_label()
+        df_with_direction = create_price_direction_label(df, label_col)
+        X, y_regression, y_classification = prepare_features(df_with_direction, feature_cols, label_col)
         
-        X_test = df_testing[feature_cols]
-        y_test_regression = df_testing[target_col]
-        y_test_classification = df_testing['price_direction']
+        # Split data (using same random state as training)
+        _, X_test, _, y_test_reg = split_data(X, y_regression)
+        _, X_test_class, _, y_test_class = split_data(X, y_classification)
         
-        return X_test, y_test_regression, y_test_classification
+        if self.preprocessing_pipeline is None:
+            logger.warning("No preprocessing pipeline found. Using raw features.")
+            return X_test, X_test_class, y_test_reg, y_test_class
+        
+        # Apply scaling
+        scaler = self.preprocessing_pipeline['scaler']
+        X_test_scaled = scaler.transform(X_test)
+        X_test_class_scaled = scaler.transform(X_test_class)
+        
+        # Apply feature selection
+        selected_features_reg = self.preprocessing_pipeline['selected_features_reg']
+        selected_features_class = self.preprocessing_pipeline['selected_features_class']
+        all_feature_cols = self.preprocessing_pipeline['all_feature_cols']
+        
+        # Get feature indices
+        feature_indices_reg = [all_feature_cols.index(col) for col in selected_features_reg]
+        feature_indices_class = [all_feature_cols.index(col) for col in selected_features_class]
+        
+        X_test_reg_final = X_test_scaled[:, feature_indices_reg]
+        X_test_class_final = X_test_class_scaled[:, feature_indices_class]
+        
+        logger.info(f"Test data prepared - Reg: {X_test_reg_final.shape}, Class: {X_test_class_final.shape}")
+        
+        return X_test_reg_final, X_test_class_final, y_test_reg, y_test_class
     
-    def evaluate_regression_model(self, model: Any, X_test: pd.DataFrame, 
-                                y_test: pd.Series, df_testing: pd.DataFrame) -> Dict[str, float]:
+    def evaluate_regression_model(self, model: Any, X_test: np.ndarray, 
+                                y_test: pd.Series, df: pd.DataFrame) -> Dict[str, float]:
         """
         Evaluate regression model and generate visualizations.
         
@@ -106,7 +147,7 @@ class ModelEvaluator:
             model: Trained regression model
             X_test: Test features
             y_test: Test regression targets
-            df_testing: Full test DataFrame for plotting
+            df: Full DataFrame for plotting
             
         Returns:
             Dictionary of regression metrics
@@ -117,12 +158,12 @@ class ModelEvaluator:
         logger.info(f"Linear Regression Test RMSE: {rmse:.4f}")
         
         # Create actual vs predicted plot
-        self.plot_regression_predictions(df_testing, y_test, predictions)
+        self.plot_regression_predictions(df, y_test, predictions)
         
         metrics = {"RMSE": rmse}
         return metrics
     
-    def evaluate_classification_model(self, model: Any, X_test: pd.DataFrame, 
+    def evaluate_classification_model(self, model: Any, X_test: np.ndarray, 
                                     y_test: pd.Series) -> Dict[str, Any]:
         """
         Evaluate classification model and generate visualizations.
@@ -141,7 +182,13 @@ class ModelEvaluator:
         # Calculate metrics
         accuracy = accuracy_score(y_test, predictions)
         f1 = f1_score(y_test, predictions)
-        roc_auc = roc_auc_score(y_test, probabilities) if probabilities is not None else roc_auc_score(y_test, predictions)
+        
+        try:
+            roc_auc = roc_auc_score(y_test, probabilities) if probabilities is not None else roc_auc_score(y_test, predictions)
+        except ValueError:
+            # Handle case where only one class is present
+            roc_auc = 0.5
+            logger.warning("ROC AUC could not be calculated - only one class present in test set")
         
         logger.info(f"Logistic Regression Test Accuracy: {accuracy:.4f}")
         logger.info(f"Logistic Regression Test F1 Score: {f1:.4f}")
@@ -163,7 +210,7 @@ class ModelEvaluator:
         
         return metrics
     
-    def plot_confusion_matrix(self, y_test: pd.Series, predictions: pd.Series) -> None:
+    def plot_confusion_matrix(self, y_test: pd.Series, predictions: np.ndarray) -> None:
         """
         Plot and save confusion matrix.
         
@@ -185,21 +232,31 @@ class ModelEvaluator:
         
         logger.info("Confusion matrix saved to plots/confusion_matrix.png")
     
-    def plot_regression_predictions(self, df_testing: pd.DataFrame, y_true: pd.Series, 
-                                  y_pred: pd.Series, timestamp_col: str = "timestamp") -> None:
+    def plot_regression_predictions(self, df: pd.DataFrame, y_true: pd.Series, 
+                                  y_pred: np.ndarray, timestamp_col: str = "timestamp") -> None:
         """
         Plot actual vs predicted prices over time.
         
         Args:
-            df_testing: Test DataFrame with timestamp
+            df: Full DataFrame with timestamp
             y_true: True prices
             y_pred: Predicted prices
             timestamp_col: Name of timestamp column
         """
-        df_plot = df_testing[[timestamp_col]].copy()
-        df_plot["actual"] = y_true.values
-        df_plot["predicted"] = y_pred
-        df_plot = df_plot.sort_values(by=timestamp_col)
+        # Create a DataFrame for plotting
+        # Note: This assumes the test set corresponds to the last portion of the data
+        if timestamp_col in df.columns:
+            # Get timestamps for the test set (last y_true.shape[0] entries)
+            timestamps = df[timestamp_col].iloc[-len(y_true):].values
+        else:
+            # Create dummy timestamps if timestamp column not available
+            timestamps = range(len(y_true))
+        
+        df_plot = pd.DataFrame({
+            timestamp_col: timestamps,
+            "actual": y_true.values,
+            "predicted": y_pred
+        })
         
         plt.figure(figsize=(15, 8))
         plt.plot(df_plot[timestamp_col], df_plot["actual"], 
@@ -240,12 +297,12 @@ class ModelEvaluator:
         
         logger.info(f"Metrics report saved to {metrics_path}")
     
-    def evaluate_all_models(self, df_testing: pd.DataFrame) -> Tuple[Dict[str, float], Dict[str, Any]]:
+    def evaluate_all_models(self, df: pd.DataFrame) -> Tuple[Dict[str, float], Dict[str, Any]]:
         """
         Evaluate both models and generate all reports.
         
         Args:
-            df_testing: Testing DataFrame
+            df: Full DataFrame for evaluation
             
         Returns:
             tuple: (regression_metrics, classification_metrics)
@@ -253,19 +310,19 @@ class ModelEvaluator:
         # Load models
         price_model, direction_model = self.load_both_models()
         
-        # Prepare test data
-        X_test, y_test_regression, y_test_classification = self.prepare_test_data(df_testing)
+        # Prepare test data with preprocessing
+        X_test_reg, X_test_class, y_test_reg, y_test_class = self.prepare_test_data(df)
         
         # Evaluate regression model
         logger.info("Evaluating regression model...")
         regression_metrics = self.evaluate_regression_model(
-            price_model, X_test, y_test_regression, df_testing
+            price_model, X_test_reg, y_test_reg, df
         )
         
         # Evaluate classification model
         logger.info("Evaluating classification model...")
         classification_metrics = self.evaluate_classification_model(
-            direction_model, X_test, y_test_classification
+            direction_model, X_test_class, y_test_class
         )
         
         # Save metrics report
@@ -274,22 +331,27 @@ class ModelEvaluator:
         return regression_metrics, classification_metrics
 
 
-def evaluate_models(df_testing: pd.DataFrame = None) -> Tuple[Dict[str, float], Dict[str, Any]]:
+def evaluate_models(df: pd.DataFrame = None) -> Tuple[Dict[str, float], Dict[str, Any]]:
     """
     Main function to evaluate both models.
     
     Args:
-        df_testing: Optional test DataFrame. If None, loads from features.py
+        df: DataFrame for evaluation. If None, loads processed data from config path
         
     Returns:
         tuple: (regression_metrics, classification_metrics)
     """
-    if df_testing is None:
-        logger.info("Loading test data from features module...")
-        _, df_testing = get_training_and_testing_data()
+    if df is None:
+        # Load processed data
+        processed_path = config.get("data_source", {}).get("processed_path", "./data/processed/processed_data.csv")
+        if os.path.exists(processed_path):
+            df = pd.read_csv(processed_path)
+            logger.info(f"Loaded processed data from {processed_path}")
+        else:
+            raise FileNotFoundError(f"Processed data not found at {processed_path}")
     
     evaluator = ModelEvaluator()
-    return evaluator.evaluate_all_models(df_testing)
+    return evaluator.evaluate_all_models(df)
 
 
 def generate_report(config: Dict[str, Any]) -> None:

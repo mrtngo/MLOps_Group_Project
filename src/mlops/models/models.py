@@ -8,32 +8,13 @@ from typing import Tuple, Any
 import pandas as pd
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import mean_squared_error, roc_auc_score
-from sklearn.model_selection import train_test_split
 
 from src.mlops.features.features import define_features_and_label, create_price_direction_label, prepare_features, select_features
+from src.mlops.preproccess.preproccessing import split_data, scale_features, smote_oversample
 from src.mlops.data_validation.data_validation import load_config
 
 logger = logging.getLogger(__name__)
 config = load_config("config.yaml")
-
-
-
-def split_data(X, y, test_size=0.2):
-    """
-    Splits data into training and testing sets.
-
-    Args:
-        X: feature matrix
-        y: target variable
-        test_size: float, proportion of dataset to include in the test split
-
-    Returns:
-        tuple: (X_train, X_test, y_train, y_test)
-    """
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
-    print(f"X_train shape: {X_train.shape}, X_test shape: {X_test.shape}, y_train shape: {y_train.shape}, y_test shape: {y_test.shape}")
-    return X_train, X_test, y_train, y_test
-
 
 
 class ModelTrainer:
@@ -43,23 +24,27 @@ class ModelTrainer:
         """Initialize ModelTrainer with config parameters."""
         self.config = config
         self.model_config = self.config.get("model", {})
-        self.ensure_model_directory()
+        self.scaler = None
+        self.selected_features_reg = None
+        self.selected_features_class = None
+        self.ensure_output_directories()
     
-
-    
-    def ensure_model_directory(self) -> None:
-        """Create models directory if it doesn't exist."""
+    def ensure_output_directories(self) -> None:
+        """Create necessary output directories."""
         os.makedirs("models", exist_ok=True)
+        artifacts_config = self.config.get("artifacts", {})
+        preprocessing_dir = artifacts_config.get("preprocessing_pipeline", "models/preprocessing_pipeline.pkl")
+        os.makedirs(os.path.dirname(preprocessing_dir), exist_ok=True)
     
-    def prepare_data(self, df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.Series, pd.Series]:
+    def prepare_data(self, df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, pd.Series, pd.Series]:
         """
-        Prepare features and targets from training data using features.py functions.
+        Prepare features and targets with train/test splits, scaling, and feature selection.
         
         Args:
             df: Training DataFrame with raw data
             
         Returns:
-            tuple: (X, y_regression, y_classification)
+            tuple: (X_train_reg, X_train_class, y_train_reg, y_train_class, y_test_reg, y_test_class)
         """
         # Get feature columns and label column from config
         feature_cols, label_col = define_features_and_label()
@@ -67,21 +52,86 @@ class ModelTrainer:
         # Create price direction labels
         df_with_direction = create_price_direction_label(df, label_col)
         
-        # Check if feature selection is enabled
-        feature_selection_config = self.config.get("feature_engineering", {}).get("feature_selection", {})
-        if feature_selection_config.get("enabled", False):
-            logger.info("Performing feature selection...")
-            selected_features = select_features(df_with_direction, feature_cols)
-            feature_cols = selected_features
-        
-        # Prepare final features and targets
+        # Prepare features and targets
         X, y_regression, y_classification = prepare_features(df_with_direction, feature_cols, label_col)
         
-        logger.info(f"Features shape: {X.shape}")
-        logger.info(f"Regression target shape: {y_regression.shape}")
-        logger.info(f"Classification target shape: {y_classification.shape}")
+        # Split data for regression and classification
+        X_train_reg, X_test_reg, y_train_reg, y_test_reg = split_data(X, y_regression)
+        X_train_class, X_test_class, y_train_class, y_test_class = split_data(X, y_classification)
         
-        return X, y_regression, y_classification
+        # Scale features - use regression training set to fit scaler
+        X_train_reg_scaled, X_test_reg_scaled, self.scaler = scale_features(
+            pd.DataFrame(X_train_reg, columns=feature_cols), feature_cols
+        )
+        
+        # Apply same scaling to classification data
+        X_train_class_scaled = self.scaler.transform(X_train_class)
+        X_test_class_scaled = self.scaler.transform(X_test_class)
+        
+        # Feature selection - create DataFrames for feature selection
+        df_reg_train = pd.DataFrame(X_train_reg_scaled, columns=feature_cols)
+        df_reg_train[self.config.get("target")] = y_train_reg.values
+        df_reg_train['price_direction'] = y_train_class.values
+        
+        df_class_train = pd.DataFrame(X_train_class_scaled, columns=feature_cols)
+        df_class_train[self.config.get("target")] = y_train_reg.values
+        df_class_train['price_direction'] = y_train_class.values
+        
+        # Select features for each model
+        self.selected_features_reg = select_features(df_reg_train, feature_cols)
+        self.selected_features_class = select_features(df_class_train, feature_cols)
+        
+        # Apply feature selection
+        feature_indices_reg = [feature_cols.index(col) for col in self.selected_features_reg]
+        feature_indices_class = [feature_cols.index(col) for col in self.selected_features_class]
+        
+        X_train_reg_selected = X_train_reg_scaled[:, feature_indices_reg]
+        X_train_class_selected = X_train_class_scaled[:, feature_indices_class]
+        
+        # Apply SMOTE to classification data if needed
+        X_train_class_balanced, y_train_class_balanced = smote_oversample(
+            X_train_class_selected, y_train_class
+        )
+        
+        # Store test data for evaluation (will be scaled and selected during evaluation)
+        self.X_test_reg = X_test_reg
+        self.X_test_class = X_test_class
+        self.y_test_reg = y_test_reg
+        self.y_test_class = y_test_class
+        self.feature_cols = feature_cols
+        
+        # Save preprocessing pipeline
+        self._save_preprocessing_pipeline()
+        
+        logger.info(f"Regression features: {self.selected_features_reg}")
+        logger.info(f"Classification features: {self.selected_features_class}")
+        logger.info(f"Final training shapes - Reg: {X_train_reg_selected.shape}, Class: {X_train_class_balanced.shape}")
+        
+        return (
+            X_train_reg_selected, 
+            X_train_class_balanced, 
+            y_train_reg, 
+            y_train_class_balanced,
+            y_test_reg,
+            y_test_class
+        )
+    
+    def _save_preprocessing_pipeline(self) -> None:
+        """Save preprocessing artifacts (scaler, feature selections)."""
+        artifacts_config = self.config.get("artifacts", {})
+        pipeline_path = artifacts_config.get("preprocessing_pipeline", "models/preprocessing_pipeline.pkl")
+        
+        preprocessing_pipeline = {
+            'scaler': self.scaler,
+            'selected_features_reg': self.selected_features_reg,
+            'selected_features_class': self.selected_features_class,
+            'all_feature_cols': self.feature_cols
+        }
+        
+        with open(pipeline_path, 'wb') as f:
+            pickle.dump(preprocessing_pipeline, f)
+        
+        logger.info(f"Preprocessing pipeline saved to {pipeline_path}")
     
     def train_linear_regression(self, X: pd.DataFrame, y: pd.Series) -> LinearRegression:
         """
@@ -106,7 +156,7 @@ class ModelTrainer:
         logger.info(f"Linear Regression Training RMSE: {rmse:.4f}")
         
         # Save model
-        save_path = lr_config.get("save_path", "models/price_model.pkl")
+        save_path = lr_config.get("save_path", "models/linear_regression.pkl")
         self._save_model(model, save_path)
         
         return model
@@ -125,16 +175,24 @@ class ModelTrainer:
         log_config = self.model_config.get("logistic_regression", {})
         params = log_config.get("params", {})
         
+        # Fix penalty parameter if it's incorrectly specified in config
+        if 'penalty' in params and params['penalty'] == '12':
+            params['penalty'] = 'l2'
+            logger.warning("Fixed penalty parameter from '12' to 'l2'")
+        
         model = LogisticRegression(**params)
         model.fit(X, y)
         
         # Calculate training metrics for logging
         predictions = model.predict(X)
-        roc_auc = roc_auc_score(y, predictions)
-        logger.info(f"Logistic Regression Training ROC AUC: {roc_auc:.4f}")
+        try:
+            roc_auc = roc_auc_score(y, predictions)
+            logger.info(f"Logistic Regression Training ROC AUC: {roc_auc:.4f}")
+        except ValueError:
+            logger.warning("Could not calculate ROC AUC - possibly only one class in training data")
         
         # Save model
-        save_path = log_config.get("save_path", "models/direction_model.pkl")
+        save_path = log_config.get("save_path", "models/logistic_regression.pkl")
         self._save_model(model, save_path)
         
         return model
@@ -161,52 +219,49 @@ class ModelTrainer:
         Returns:
             tuple: (price_model, direction_model)
         """
-        X, y_regression, y_classification = self.prepare_data(df)
+        # Prepare data with preprocessing
+        (X_train_reg, X_train_class, y_train_reg, 
+         y_train_class, y_test_reg, y_test_class) = self.prepare_data(df)
         
         logger.info("Training Linear Regression model...")
-        price_model = self.train_linear_regression(X, y_regression)
+        price_model = self.train_linear_regression(X_train_reg, y_train_reg)
         
         logger.info("Training Logistic Regression model...")
-        direction_model = self.train_logistic_regression(X, y_classification)
+        direction_model = self.train_logistic_regression(X_train_class, y_train_class)
         
         return price_model, direction_model
 
 
 def get_training_and_testing_data():
     """
-    Placeholder function to load training and testing data.
-    This should be implemented based on your data loading requirements.
+    Load training and testing data splits.
     
     Returns:
-        tuple: (df_training, df_testing)
+        tuple: (df_training, df_testing) - For now returns None, should be implemented
     """
-    # This is a placeholder - implement based on your data loading logic
-    logger.warning("get_training_and_testing_data() is not implemented. Please implement data loading logic.")
+    # This should load your actual train/test splits
+    # For now, returning None to maintain compatibility
+    logger.warning("get_training_and_testing_data() is not fully implemented.")
     return None, None
 
 
-def train_model(df: pd.DataFrame = None) -> Tuple[LinearRegression, LogisticRegression]:
+def train_model(df: pd.DataFrame) -> Tuple[LinearRegression, LogisticRegression]:
     """
     Main function to train both models.
     
     Args:
-        df: Optional preprocessed DataFrame. If None, loads from get_training_and_testing_data
+        df: Preprocessed DataFrame with all data
         
     Returns:
         tuple: (price_model, direction_model)
     """
     if df is None:
-        logger.info("Loading training data...")
-        df_training, _ = get_training_and_testing_data()
-        if df_training is None:
-            raise ValueError("No training data available. Please provide a DataFrame or implement get_training_and_testing_data()")
-    else:
-        df_training = df
+        raise ValueError("DataFrame is required for training")
     
     trainer = ModelTrainer()
-    return trainer.train_all_models(df_training)
+    return trainer.train_all_models(df)
 
 
 if __name__ == "__main__":
     # For standalone execution
-    train_model()
+    logger.warning("Standalone execution requires a DataFrame input")

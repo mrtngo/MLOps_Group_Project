@@ -2,6 +2,9 @@
 
 import logging
 import pandas as pd
+import argparse
+import sys
+import os
 
 from data_load.data_load import fetch_data
 from data_validation.data_validation import load_config, validate_data
@@ -12,7 +15,9 @@ from features.features import (
     select_features
 )
 from preproccess.preproccessing import scale_features, smote_oversample, split_data
-#from models.models import ModelTrainer
+from models.models import train_model
+from evaluation.evaluation import evaluate_models
+from inference.inference import run_inference
 
 def setup_logger():
     """
@@ -25,6 +30,10 @@ def setup_logger():
     log_format = log_cfg.get("format", "%(asctime)s - %(levelname)s - %(name)s - %(message)s")
     date_format = log_cfg.get("datefmt", "%Y-%m-%d %H:%M:%S")
     log_file = log_cfg.get("log_file", None)
+
+    # Create log directory if it doesn't exist
+    if log_file:
+        os.makedirs(os.path.dirname(log_file), exist_ok=True)
 
     logging.basicConfig(
         level=log_level,
@@ -40,11 +49,196 @@ def setup_logger():
     console.setFormatter(logging.Formatter(log_format, datefmt=date_format))
     logging.getLogger("").addHandler(console)
 
+def run_full_pipeline():
+    """
+    Runs the complete MLOps pipeline: data loading, validation, preprocessing, 
+    feature engineering, model training, and evaluation.
+    """
+    setup_logger()
+    logger = logging.getLogger("Pipeline")
+    logger.info("🚀 Starting complete MLOps pipeline")
+
+    try:
+        # 1. Load raw data
+        logger.info("📥 Step 1: Loading data...")
+        df = fetch_data()
+        logger.info(f"Raw data loaded | shape={df.shape}")
+
+        # 2. Load schema from config and validate
+        logger.info("✅ Step 2: Validating data...")
+        config = load_config("config.yaml")
+        schema_list = config.get("data_validation", {}).get("schema", {}).get("columns", [])
+        schema = {col["name"]: col for col in schema_list}
+        missing_strategy = config.get("data_validation", {}).get("missing_values_strategy", "drop")
+        
+        df_validated = validate_data(df, schema, logger, missing_strategy, "warn")
+        logger.info(f"Data validation completed | shape={df_validated.shape}")
+
+        # Save processed data
+        processed_path = config.get("data_source", {}).get("processed_path", "./data/processed/processed_data.csv")
+        os.makedirs(os.path.dirname(processed_path), exist_ok=True)
+        df_validated.to_csv(processed_path, index=False)
+        logger.info(f"Processed data saved to {processed_path}")
+
+        # 3. Feature engineering and preprocessing
+        logger.info("🧠 Step 3: Feature engineering and preprocessing...")
+        feature_cols, label_col = define_features_and_label()
+        df_with_direction = create_price_direction_label(df_validated, label_col)
+        logger.info("Price direction labels created")
+
+        # 4. Model training
+        logger.info("🎯 Step 4: Training models...")
+        price_model, direction_model = train_model(df_with_direction)
+        logger.info("Model training completed successfully")
+
+        # 5. Model evaluation  
+        logger.info("📊 Step 5: Evaluating models...")
+        regression_metrics, classification_metrics = evaluate_models(df_with_direction)
+        logger.info("Model evaluation completed successfully")
+
+        # Print summary metrics
+        logger.info("=" * 50)
+        logger.info("FINAL RESULTS SUMMARY")
+        logger.info("=" * 50)
+        logger.info(f"Linear Regression RMSE: {regression_metrics.get('RMSE', 'N/A'):.4f}")
+        logger.info(f"Logistic Regression Accuracy: {classification_metrics.get('Accuracy', 'N/A'):.4f}")
+        logger.info(f"Logistic Regression ROC AUC: {classification_metrics.get('ROC AUC', 'N/A'):.4f}")
+        logger.info("=" * 50)
+
+        logger.info("✅ Complete MLOps pipeline finished successfully!")
+        return df_with_direction, price_model, direction_model
+
+    except Exception as e:
+        logger.error(f"Pipeline failed: {e}")
+        raise
+
+def main():
+    """
+    Main entry point with command line argument support.
+    """
+    parser = argparse.ArgumentParser(description="MLOps pipeline orchestrator")
+    parser.add_argument(
+        "--stage",
+        default="all",
+        choices=["all", "data", "train", "evaluate", "infer"],
+        help="Pipeline stage to run (default: all)",
+    )
+    parser.add_argument(
+        "--input-csv",
+        help="Input CSV file for inference stage",
+    )
+    parser.add_argument(
+        "--output-csv", 
+        help="Output CSV file for inference stage",
+    )
+    parser.add_argument(
+        "--config",
+        default="config.yaml",
+        help="Path to YAML configuration file (default: config.yaml)",
+    )
+
+    args = parser.parse_args()
+
+    # Setup logging
+    setup_logger()
+    logger = logging.getLogger("Main")
+    logger.info(f"Pipeline started | stage={args.stage}")
+
+    try:
+        config = load_config(args.config)
+        
+        if args.stage == "all":
+            # Run complete pipeline
+            run_full_pipeline()
+            
+        elif args.stage in ("data", "train"):
+            # Data loading and validation
+            logger.info("=== Data Loading & Validation ===")
+            df = fetch_data()
+            logger.info(f"Raw data loaded | shape={df.shape}")
+            
+            schema_list = config.get("data_validation", {}).get("schema", {}).get("columns", [])
+            schema = {col["name"]: col for col in schema_list}
+            missing_strategy = config.get("data_validation", {}).get("missing_values_strategy", "drop")
+            
+            df_validated = validate_data(df, schema, logger, missing_strategy, "warn")
+            logger.info(f"Data validation completed | shape={df_validated.shape}")
+            
+            # Save processed data
+            processed_path = config.get("data_source", {}).get("processed_path", "./data/processed/processed_data.csv")
+            os.makedirs(os.path.dirname(processed_path), exist_ok=True)
+            df_validated.to_csv(processed_path, index=False)
+            logger.info(f"Processed data saved to {processed_path}")
+            
+            if args.stage == "train":
+                # Model training
+                logger.info("=== Model Training ===")
+                feature_cols, label_col = define_features_and_label()
+                df_with_direction = create_price_direction_label(df_validated, label_col)
+                
+                price_model, direction_model = train_model(df_with_direction)
+                logger.info("Model training completed successfully")
+                
+        elif args.stage == "evaluate":
+            # Model evaluation
+            logger.info("=== Model Evaluation ===")
+            processed_path = config.get("data_source", {}).get("processed_path", "./data/processed/processed_data.csv")
+            
+            if os.path.exists(processed_path):
+                df_validated = pd.read_csv(processed_path)
+                logger.info(f"Loaded processed data from {processed_path}")
+            else:
+                logger.error(f"Processed data not found at {processed_path}. Run data stage first.")
+                sys.exit(1)
+            
+            feature_cols, label_col = define_features_and_label()
+            df_with_direction = create_price_direction_label(df_validated, label_col)
+            
+            regression_metrics, classification_metrics = evaluate_models(df_with_direction)
+            logger.info("Model evaluation completed successfully")
+            
+        elif args.stage == "infer":
+            # Inference
+            if not args.input_csv or not args.output_csv:
+                logger.error("Inference stage requires --input-csv and --output-csv")
+                sys.exit(1)
+            
+            logger.info("=== Model Inference ===")
+            
+            # Validate input file exists
+            if not os.path.exists(args.input_csv):
+                logger.error(f"Input file not found: {args.input_csv}")
+                sys.exit(1)
+            
+            # Load and validate input data
+            input_df = pd.read_csv(args.input_csv)
+            logger.info(f"Loaded input data | shape={input_df.shape}")
+            
+            # Optional: validate inference input against schema
+            schema_list = config.get("data_validation", {}).get("schema", {}).get("columns", [])
+            schema = {col["name"]: col for col in schema_list}
+            input_df_validated = validate_data(input_df, schema, logger, "keep", "warn")
+            
+            # Run inference
+            run_inference(args.input_csv, args.config, args.output_csv)
+            logger.info(f"Inference completed | output saved to {args.output_csv}")
+
+    except Exception as exc:
+        logger.exception("Pipeline failed: %s", exc)
+        sys.exit(1)
+
+    logger.info("Pipeline completed successfully")
+
 def preprocess_data(df, feature_cols, y_class):
     """
     Performs scaling and optional oversampling on selected features.
+    This function is kept for backward compatibility but is now handled
+    within the ModelTrainer class in models.py
     """
     config = load_config("config.yaml")
+    logger = logging.getLogger("Preprocessing")
+    logger.warning("preprocess_data() is deprecated. Preprocessing is now handled in ModelTrainer.")
+    
     # Scale selected features
     X_train_scaled, X_test_scaled, _ = scale_features(df, feature_cols)
     # Apply SMOTE
@@ -52,8 +246,14 @@ def preprocess_data(df, feature_cols, y_class):
     return X_balanced, y_balanced
 
 def run_until_feature_engineering():
+    """
+    Legacy function - runs pipeline up to feature engineering.
+    Kept for backward compatibility.
+    """
     setup_logger()
     logger = logging.getLogger("Pipeline")
+    logger.warning("run_until_feature_engineering() is deprecated. Use run_full_pipeline() instead.")
+    
     logger.info("🚀 Starting pipeline up to feature engineering")
 
     # 1. Load raw data
@@ -74,33 +274,8 @@ def run_until_feature_engineering():
     df = create_price_direction_label(df, label_col)
     X, y_reg, y_class = prepare_features(df, feature_cols, label_col)
 
-    # 4. Preprocessing
-    #run twice to get both regression and classification targets
-    logger.info("🧪 Preprocessing features...")
-    X_train_reg, X_test_reg, y_train_reg, y_test_reg = split_data(X, y_reg)
-    X_train_class, X_test_class, y_train_class, y_test_class = split_data(X, y_class)
-    # X_preprocessed_reg, y_reg_balanced = preprocess_data(df, feature_cols, y_train_reg)
-    X_preprocessed_class, y_class_balanced = preprocess_data(df, feature_cols, y_train_class)
-
-    # 5. Feature selection
-    logger.info("🎯 Selecting top features...")
-    X_df_reg = pd.DataFrame(X_preprocessed_class, columns=feature_cols)
-    X_df_class = pd.DataFrame(X_preprocessed_class, columns=feature_cols)
-    X_df_reg_with_target = X_df_reg.copy()
-    X_df_class_with_target = X_df_class.copy()
-    X_df_class_with_target[config.get("target")] = y_reg.values
-    X_df_reg_with_target[config.get("target")] = y_reg.values
-    X_df_class_with_target['price_direction'] = y_class.values
-    selected_cols_reg = select_features(X_df_reg_with_target, feature_cols)
-    selected_cols_class = select_features(X_df_class_with_target, feature_cols)
-
-    X_selected_reg = X_df_reg[selected_cols_reg]
-    X_selected_class = X_df_class[selected_cols_class]
-
-    logger.info("✅ Feature engineering and preprocessing complete.")
-    return X_selected_reg, X_selected_class, y_class_balanced, y_reg
+    logger.info("✅ Feature engineering completed.")
+    return X, y_reg, y_class, df
 
 if __name__ == "__main__":
-    X_processed_reg, X_processed_class, y_reg, y_class = run_until_feature_engineering()
-    #trainer = ModelTrainer()
-    #price_model, direction_model = trainer.train_from_arrays(X_processed, y_reg, y_class)
+    main()

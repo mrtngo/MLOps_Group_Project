@@ -8,6 +8,7 @@ from typing import Tuple, Dict, Any, Union
 import pandas as pd
 import numpy as np
 
+from src.mlops.features.features import define_features_and_label
 from src.mlops.data_validation.data_validation import load_config
 
 logger = logging.getLogger(__name__)
@@ -18,27 +19,42 @@ class ModelInferencer:
     """Handle model inference for both price and direction prediction."""
     
     def __init__(self):
-        """Initialize ModelInferencer and load models."""
+        """Initialize ModelInferencer and load models and preprocessing pipeline."""
         self.config = config
         self.price_model = None
         self.direction_model = None
+        self.preprocessing_pipeline = None
         self._load_models()
+        self._load_preprocessing_pipeline()
     
     def _load_models(self) -> None:
         """Load both pickled models."""
         model_config = self.config.get("model", {})
         
         price_model_path = model_config.get("linear_regression", {}).get(
-            "save_path", "models/price_model.pkl"
+            "save_path", "models/linear_regression.pkl"
         )
         direction_model_path = model_config.get("logistic_regression", {}).get(
-            "save_path", "models/direction_model.pkl"
+            "save_path", "models/logistic_regression.pkl"
         )
         
         self.price_model = self._load_single_model(price_model_path)
         self.direction_model = self._load_single_model(direction_model_path)
         
         logger.info("Both models loaded successfully for inference")
+    
+    def _load_preprocessing_pipeline(self) -> None:
+        """Load preprocessing artifacts (scaler, feature selections)."""
+        artifacts_config = self.config.get("artifacts", {})
+        pipeline_path = artifacts_config.get("preprocessing_pipeline", "models/preprocessing_pipeline.pkl")
+        
+        if os.path.exists(pipeline_path):
+            with open(pipeline_path, 'rb') as f:
+                self.preprocessing_pipeline = pickle.load(f)
+            logger.info(f"Preprocessing pipeline loaded from {pipeline_path}")
+        else:
+            logger.warning(f"Preprocessing pipeline not found at {pipeline_path}")
+            logger.warning("Inference will use raw features without preprocessing")
     
     def _load_single_model(self, model_path: str) -> Any:
         """
@@ -62,43 +78,69 @@ class ModelInferencer:
         logger.info(f"Model loaded from {model_path}")
         return model
     
-    def _validate_input_data(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _validate_and_preprocess_input(self, df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
         """
-        Validate and prepare input DataFrame for inference.
+        Validate and preprocess input DataFrame for inference.
         
         Args:
             df: Input DataFrame
             
         Returns:
-            Validated DataFrame with required features
+            tuple: (processed_features_reg, processed_features_class)
             
         Raises:
-            ValueError: If required features are missing
+            ValueError: If required features are missing or preprocessing fails
         """
-        required_features = self.config.get("features", [])
+        # Get expected features from config
+        feature_cols, _ = define_features_and_label()
         
         if not isinstance(df, pd.DataFrame):
             raise ValueError("Input must be a pandas DataFrame")
         
-        missing_features = [f for f in required_features if f not in df.columns]
+        # Check for required features
+        missing_features = [f for f in feature_cols if f not in df.columns]
         if missing_features:
             raise ValueError(f"Missing required features: {missing_features}")
         
         # Select only the required features in the correct order
-        df_features = df[required_features].copy()
+        df_features = df[feature_cols].copy()
         
         # Check for missing values
         if df_features.isnull().any().any():
             logger.warning("Input data contains missing values. Consider preprocessing.")
+            # For inference, we'll forward fill then backward fill
+            df_features = df_features.ffill().bfill()
         
-        return df_features
+        if self.preprocessing_pipeline is None:
+            logger.warning("No preprocessing pipeline available. Using raw features.")
+            return df_features.values, df_features.values
+        
+        # Apply scaling
+        scaler = self.preprocessing_pipeline['scaler']
+        features_scaled = scaler.transform(df_features)
+        
+        # Apply feature selection for each model
+        selected_features_reg = self.preprocessing_pipeline['selected_features_reg']
+        selected_features_class = self.preprocessing_pipeline['selected_features_class']
+        all_feature_cols = self.preprocessing_pipeline['all_feature_cols']
+        
+        # Get feature indices
+        feature_indices_reg = [all_feature_cols.index(col) for col in selected_features_reg]
+        feature_indices_class = [all_feature_cols.index(col) for col in selected_features_class]
+        
+        features_reg = features_scaled[:, feature_indices_reg]
+        features_class = features_scaled[:, feature_indices_class]
+        
+        logger.info(f"Input preprocessed - Reg features: {features_reg.shape}, Class features: {features_class.shape}")
+        
+        return features_reg, features_class
     
     def predict_price(self, df: pd.DataFrame) -> np.ndarray:
         """
         Predict prices using the linear regression model.
         
         Args:
-            df: Preprocessed DataFrame with required features
+            df: DataFrame with required features
             
         Returns:
             Array of predicted prices
@@ -106,8 +148,8 @@ class ModelInferencer:
         if self.price_model is None:
             raise RuntimeError("Price model not loaded")
         
-        df_features = self._validate_input_data(df)
-        predictions = self.price_model.predict(df_features)
+        features_reg, _ = self._validate_and_preprocess_input(df)
+        predictions = self.price_model.predict(features_reg)
         
         logger.info(f"Generated {len(predictions)} price predictions")
         return predictions
@@ -117,7 +159,7 @@ class ModelInferencer:
         Predict price directions using the logistic regression model.
         
         Args:
-            df: Preprocessed DataFrame with required features
+            df: DataFrame with required features
             
         Returns:
             tuple: (predicted_directions, prediction_probabilities)
@@ -125,18 +167,18 @@ class ModelInferencer:
         if self.direction_model is None:
             raise RuntimeError("Direction model not loaded")
         
-        df_features = self._validate_input_data(df)
+        _, features_class = self._validate_and_preprocess_input(df)
         
         # Get class predictions
-        direction_predictions = self.direction_model.predict(df_features)
+        direction_predictions = self.direction_model.predict(features_class)
         
         # Get prediction probabilities if available
         if hasattr(self.direction_model, 'predict_proba'):
-            probabilities = self.direction_model.predict_proba(df_features)[:, 1]
+            probabilities = self.direction_model.predict_proba(features_class)[:, 1]
         else:
             # If no probabilities available, use decision function or predictions
             if hasattr(self.direction_model, 'decision_function'):
-                probabilities = self.direction_model.decision_function(df_features)
+                probabilities = self.direction_model.decision_function(features_class)
             else:
                 probabilities = direction_predictions.astype(float)
         
@@ -148,7 +190,7 @@ class ModelInferencer:
         Predict both price and direction for the input data.
         
         Args:
-            df: Preprocessed DataFrame with required features
+            df: DataFrame with required features
             
         Returns:
             Dictionary containing both predictions:
@@ -187,7 +229,7 @@ def predict_price(df: pd.DataFrame, inferencer: ModelInferencer = None) -> np.nd
     Predict prices for the given DataFrame.
     
     Args:
-        df: Preprocessed DataFrame with required features
+        df: DataFrame with required features
         inferencer: Optional pre-loaded ModelInferencer instance
         
     Returns:
@@ -204,7 +246,7 @@ def predict_direction(df: pd.DataFrame, inferencer: ModelInferencer = None) -> T
     Predict price directions for the given DataFrame.
     
     Args:
-        df: Preprocessed DataFrame with required features
+        df: DataFrame with required features
         inferencer: Optional pre-loaded ModelInferencer instance
         
     Returns:
@@ -221,7 +263,7 @@ def predict_both(df: pd.DataFrame, inferencer: ModelInferencer = None) -> Dict[s
     Predict both price and direction for the given DataFrame.
     
     Args:
-        df: Preprocessed DataFrame with required features
+        df: DataFrame with required features
         inferencer: Optional pre-loaded ModelInferencer instance
         
     Returns:
@@ -239,7 +281,7 @@ def run_inference(input_csv: str, config_path: str, output_csv: str) -> None:
     
     Args:
         input_csv: Path to input CSV file
-        config_path: Path to configuration file (unused, for compatibility)
+        config_path: Path to configuration file (for compatibility, not used)
         output_csv: Path to save output CSV file
     """
     # Load input data
