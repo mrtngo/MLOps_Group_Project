@@ -2,6 +2,7 @@ import logging
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import SMOTE
+from sklearn.model_selection import train_test_split
 from typing import Dict, Tuple, List
 from data_validation.data_validation import load_config
 
@@ -17,6 +18,27 @@ except Exception as e:
     logger.error(f"Failed to load config file: {e}")
     raise
 
+
+def split_data(X, y):
+    """
+    Splits data into training and testing sets.
+
+    Args:
+        X: feature matrix
+        y: target variable
+        test_size: float, proportion of dataset to include in the test split
+
+    Returns:
+        tuple: (X_train, X_test, y_train, y_test)
+    """
+    test_size = config.get("data_split", {}).get("test_size")
+    random_state = config.get("data_split", {}).get("random_state")
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
+    print(f"X_train shape: {X_train.shape}, X_test shape: {X_test.shape}, y_train shape: {y_train.shape}, y_test shape: {y_test.shape}")
+    return X_train, X_test, y_train, y_test
+
+
 def scale_features(df: pd.DataFrame, selected_cols: List[str]) -> Tuple[pd.DataFrame, StandardScaler]:
     """
     Scales the selected features using StandardScaler.
@@ -30,9 +52,10 @@ def scale_features(df: pd.DataFrame, selected_cols: List[str]) -> Tuple[pd.DataF
     """
     try:
         scaler = StandardScaler()
-        X = scaler.fit_transform(df[selected_cols])
+        X_train = scaler.fit_transform(df[selected_cols])
+        X_test = scaler.transform(df[selected_cols])
         logger.info(f"Successfully scaled features: {selected_cols}")
-        return X, scaler
+        return X_train, X_test, scaler
     except Exception as e:
         logger.error(f"Error in scale_features: {e}")
         raise

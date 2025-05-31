@@ -11,7 +11,7 @@ from features.features import (
     prepare_features,
     select_features
 )
-from preproccess.preproccessing import scale_features, smote_oversample
+from preproccess.preproccessing import scale_features, smote_oversample, split_data
 #from models.models import ModelTrainer
 
 def setup_logger():
@@ -46,9 +46,9 @@ def preprocess_data(df, feature_cols, y_class):
     """
     config = load_config("config.yaml")
     # Scale selected features
-    X_scaled, _ = scale_features(df, feature_cols)
+    X_train_scaled, X_test_scaled, _ = scale_features(df, feature_cols)
     # Apply SMOTE
-    X_balanced, y_balanced = smote_oversample(X_scaled, y_class)
+    X_balanced, y_balanced = smote_oversample(X_train_scaled, y_class)
     return X_balanced, y_balanced
 
 def run_until_feature_engineering():
@@ -75,22 +75,32 @@ def run_until_feature_engineering():
     X, y_reg, y_class = prepare_features(df, feature_cols, label_col)
 
     # 4. Preprocessing
+    #run twice to get both regression and classification targets
     logger.info("🧪 Preprocessing features...")
-    X_preprocessed, y_class_balanced = preprocess_data(df, feature_cols, y_class)
+    X_train_reg, X_test_reg, y_train_reg, y_test_reg = split_data(X, y_reg)
+    X_train_class, X_test_class, y_train_class, y_test_class = split_data(X, y_class)
+    # X_preprocessed_reg, y_reg_balanced = preprocess_data(df, feature_cols, y_train_reg)
+    X_preprocessed_class, y_class_balanced = preprocess_data(df, feature_cols, y_train_class)
 
     # 5. Feature selection
     logger.info("🎯 Selecting top features...")
-    X_df = pd.DataFrame(X_preprocessed, columns=feature_cols)
-    X_df_with_target = X_df.copy()
-    X_df_with_target[config.get("target")] = y_reg.values
-    selected_cols = select_features(X_df_with_target, feature_cols)
+    X_df_reg = pd.DataFrame(X_preprocessed_class, columns=feature_cols)
+    X_df_class = pd.DataFrame(X_preprocessed_class, columns=feature_cols)
+    X_df_reg_with_target = X_df_reg.copy()
+    X_df_class_with_target = X_df_class.copy()
+    X_df_class_with_target[config.get("target")] = y_reg.values
+    X_df_reg_with_target[config.get("target")] = y_reg.values
+    X_df_class_with_target['price_direction'] = y_class.values
+    selected_cols_reg = select_features(X_df_reg_with_target, feature_cols)
+    selected_cols_class = select_features(X_df_class_with_target, feature_cols)
 
-    X_selected = X_df[selected_cols]
+    X_selected_reg = X_df_reg[selected_cols_reg]
+    X_selected_class = X_df_class[selected_cols_class]
 
     logger.info("✅ Feature engineering and preprocessing complete.")
-    return X_selected, y_reg, y_class_balanced
+    return X_selected_reg, X_selected_class, y_class_balanced, y_reg
 
 if __name__ == "__main__":
-    X_processed, y_reg, y_class = run_until_feature_engineering()
+    X_processed_reg, X_processed_class, y_reg, y_class = run_until_feature_engineering()
     #trainer = ModelTrainer()
     #price_model, direction_model = trainer.train_from_arrays(X_processed, y_reg, y_class)
