@@ -1,217 +1,190 @@
-# from sklearn.model_selection import train_test_split
-# from sklearn.linear_model import LinearRegression, LogisticRegression
-# from sklearn.linear_model import LinearRegression, LogisticRegression
-# from sklearn.metrics import mean_squared_error, roc_auc_score
+"""Model training module."""
 
-# import pandas as pd
+import os
+import pickle
+import logging
+from typing import Tuple, Any
 
-# def load_data(file_path):
-#     """
-#     Loads data from a CSV file and returns a pandas DataFrame.
-    
-#     Args:
-#         file_path: str, path to the CSV file
-        
-#     Returns:
-#         pandas DataFrame
-#     """
-#     df = pd.read_csv(file_path)
-#     return df
-
-# def define_features_and_label(df, symbols):
-#     """
-#     Defines the feature columns and target label for regression and classification tasks.
-    
-#     Args:
-#         df: pandas DataFrame
-#         symbols: list of symbols
-        
-#     Returns:
-#         tuple: (feature_cols, label_col)
-#     """
-#     feature_cols = symbols  # Use the symbols list directly as feature columns
-#     label_col = "BTCUSDT_price"
-#     # print(f"Feature columns: {feature_cols}")
-#     # print(f"Label column: {label_col}")
-#     return feature_cols, label_col
-
-# def create_price_direction_label(df, label_col):
-#     """
-#     Creates a binary price direction column based on price changes.
-    
-#     Args:
-#         df: pandas DataFrame
-#         label_col: name of the price column
-        
-#     Returns:
-#         pandas DataFrame with price direction column added
-#     """
-#     df = df.sort_values('timestamp').copy()
-#     df['prev_price'] = df[label_col].shift(1)
-#     df['price_direction'] = (df[label_col] > df['prev_price']).astype(int)
-#     df = df.dropna()
-#     # print(df)
-#     return df
-
-# def prepare_features(df, feature_cols, label_col):
-#     """
-#     Prepares feature matrix and target variables for machine learning.
-    
-#     Args:
-#         df: pandas DataFrame
-#         feature_cols: list of feature column names
-#         label_col: name of the label column
-        
-#     Returns:
-#         tuple: (X, y_reg, y_class) where X is features, y_reg is regression target, y_class is classification target
-#     """
-#     X = df[feature_cols]
-#     y_reg = df[label_col]
-#     y_class = df['price_direction']
-#     # print(f"Features shape: {X.shape}, Regression target shape: {y_reg.shape}, Classification target shape: {y_class.shape}")
-#     return X, y_reg, y_class
-
-# # Load data once
-# df = load_data("./data/processed/futures_data_processed.csv")
-
-# # Define symbols (including both price and funding rate columns)
-# symbols = [
-#     "ETHUSDT_price", "XRPUSDT_price", "ADAUSDT_price", "SOLUSDT_price", "BNBUSDT_price",
-#     "BTCUSDT_funding_rate", "ETHUSDT_funding_rate", "XRPUSDT_funding_rate",
-#     "ADAUSDT_funding_rate", "SOLUSDT_funding_rate", "BNBUSDT_funding_rate"
-# ]
-
-# # Get feature columns and label
-# feature_cols, label_col = define_features_and_label(df, symbols)
-
-# # Create price direction column
-# df = create_price_direction_label(df, label_col)
-
-# # Prepare features
-# X, y_reg, y_class = prepare_features(df, feature_cols, label_col)
-
-
-# def split_data(X, y, test_size=0.2):
-#     X_train, y_train, X_test, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
-#     print(X_train, y_train, X_test, y_test)
-#     return X_train, y_train, X_test, y_test
-
-# def train_linear_regression(X_train, y_train, X_test, y_test):
-#     model = LinearRegression()
-#     model.fit(X_train, y_train)
-#     preds = model.predict(X_test)
-#     rmse = mean_squared_error(y_test, preds, squared=False)
-#     print(f"Linear Regression RMSE: {rmse}")
-#     return model, preds
-
-# def train_logistic_regression(X_train, y_train, X_test, y_test):
-#     model = LogisticRegression(max_iter=1000)
-#     model.fit(X_train, y_train)
-#     preds = model.predict(X_test)
-#     roc = roc_auc_score(y_test, preds)
-#     print(f"Logistic Regression ROC AUC: {roc}")
-#     return model, preds
-
-# # print("Training Linear Regression Model...")
-# # split_data(X, y_reg)
-
-
-# train_linear_regression(split_data(X, y_reg))
-
-
-
-from sklearn.model_selection import train_test_split
+import pandas as pd
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import mean_squared_error, roc_auc_score
-import pandas as pd
-import os
-import joblib
+
+from src.mlops.features.features import define_features_and_label, create_price_direction_label, prepare_features, select_features
+from src.mlops.data_validation.data_validation import load_config
+
+logger = logging.getLogger(__name__)
+config = load_config("config.yaml")
 
 
-def split_data(X, y, test_size=0.2):
+class ModelTrainer:
+    """Handle model training for both regression and classification tasks."""
+    
+    def __init__(self):
+        """Initialize ModelTrainer with config parameters."""
+        self.config = config
+        self.model_config = self.config.get("model", {})
+        self.ensure_model_directory()
+    
+    def ensure_model_directory(self) -> None:
+        """Create models directory if it doesn't exist."""
+        os.makedirs("models", exist_ok=True)
+    
+    def prepare_data(self, df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.Series, pd.Series]:
+        """
+        Prepare features and targets from training data using features.py functions.
+        
+        Args:
+            df: Training DataFrame with raw data
+            
+        Returns:
+            tuple: (X, y_regression, y_classification)
+        """
+        # Get feature columns and label column from config
+        feature_cols, label_col = define_features_and_label()
+        
+        # Create price direction labels
+        df_with_direction = create_price_direction_label(df, label_col)
+        
+        # Check if feature selection is enabled
+        feature_selection_config = self.config.get("feature_engineering", {}).get("feature_selection", {})
+        if feature_selection_config.get("enabled", False):
+            logger.info("Performing feature selection...")
+            selected_features = select_features(df_with_direction, feature_cols)
+            feature_cols = selected_features
+        
+        # Prepare final features and targets
+        X, y_regression, y_classification = prepare_features(df_with_direction, feature_cols, label_col)
+        
+        logger.info(f"Features shape: {X.shape}")
+        logger.info(f"Regression target shape: {y_regression.shape}")
+        logger.info(f"Classification target shape: {y_classification.shape}")
+        
+        return X, y_regression, y_classification
+    
+    def train_linear_regression(self, X: pd.DataFrame, y: pd.Series) -> LinearRegression:
+        """
+        Train linear regression model for price prediction.
+        
+        Args:
+            X: Feature matrix
+            y: Target values for regression
+            
+        Returns:
+            Trained linear regression model
+        """
+        lr_config = self.model_config.get("linear_regression", {})
+        params = lr_config.get("params", {})
+        
+        model = LinearRegression(**params)
+        model.fit(X, y)
+        
+        # Calculate training RMSE for logging
+        predictions = model.predict(X)
+        rmse = mean_squared_error(y, predictions, squared=False)
+        logger.info(f"Linear Regression Training RMSE: {rmse:.4f}")
+        
+        # Save model
+        save_path = lr_config.get("save_path", "models/price_model.pkl")
+        self._save_model(model, save_path)
+        
+        return model
+    
+    def train_logistic_regression(self, X: pd.DataFrame, y: pd.Series) -> LogisticRegression:
+        """
+        Train logistic regression model for direction prediction.
+        
+        Args:
+            X: Feature matrix
+            y: Target values for classification
+            
+        Returns:
+            Trained logistic regression model
+        """
+        log_config = self.model_config.get("logistic_regression", {})
+        params = log_config.get("params", {})
+        
+        model = LogisticRegression(**params)
+        model.fit(X, y)
+        
+        # Calculate training metrics for logging
+        predictions = model.predict(X)
+        roc_auc = roc_auc_score(y, predictions)
+        logger.info(f"Logistic Regression Training ROC AUC: {roc_auc:.4f}")
+        
+        # Save model
+        save_path = log_config.get("save_path", "models/direction_model.pkl")
+        self._save_model(model, save_path)
+        
+        return model
+    
+    def _save_model(self, model: Any, save_path: str) -> None:
+        """
+        Save model to pickle file.
+        
+        Args:
+            model: Trained model to save
+            save_path: Path where to save the model
+        """
+        with open(save_path, 'wb') as f:
+            pickle.dump(model, f)
+        logger.info(f"Model saved to {save_path}")
+    
+    def train_all_models(self, df: pd.DataFrame) -> Tuple[LinearRegression, LogisticRegression]:
+        """
+        Train both regression and classification models.
+        
+        Args:
+            df: Training DataFrame with raw data
+            
+        Returns:
+            tuple: (price_model, direction_model)
+        """
+        X, y_regression, y_classification = self.prepare_data(df)
+        
+        logger.info("Training Linear Regression model...")
+        price_model = self.train_linear_regression(X, y_regression)
+        
+        logger.info("Training Logistic Regression model...")
+        direction_model = self.train_logistic_regression(X, y_classification)
+        
+        return price_model, direction_model
+
+
+def get_training_and_testing_data():
     """
-    Splits data into training and testing sets.
+    Placeholder function to load training and testing data.
+    This should be implemented based on your data loading requirements.
+    
+    Returns:
+        tuple: (df_training, df_testing)
+    """
+    # This is a placeholder - implement based on your data loading logic
+    logger.warning("get_training_and_testing_data() is not implemented. Please implement data loading logic.")
+    return None, None
 
+
+def train_model(df: pd.DataFrame = None) -> Tuple[LinearRegression, LogisticRegression]:
+    """
+    Main function to train both models.
+    
     Args:
-        X: feature matrix
-        y: target variable
-        test_size: float, proportion of dataset to include in the test split
-
+        df: Optional preprocessed DataFrame. If None, loads from get_training_and_testing_data
+        
     Returns:
-        tuple: (X_train, X_test, y_train, y_test)
+        tuple: (price_model, direction_model)
     """
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
-    print(f"X_train shape: {X_train.shape}, X_test shape: {X_test.shape}, y_train shape: {y_train.shape}, y_test shape: {y_test.shape}")
-    return X_train, X_test, y_train, y_test
+    if df is None:
+        logger.info("Loading training data...")
+        df_training, _ = get_training_and_testing_data()
+        if df_training is None:
+            raise ValueError("No training data available. Please provide a DataFrame or implement get_training_and_testing_data()")
+    else:
+        df_training = df
+    
+    trainer = ModelTrainer()
+    return trainer.train_all_models(df_training)
 
 
-def train_linear_regression(X_train, y_train, X_test, y_test):
-    """
-    Trains a linear regression model and evaluates it.
-
-    Returns:
-        tuple: (model, predictions)
-    """
-    model_lr = LinearRegression()
-    model_lr.fit(X_train, y_train)
-    preds_lr = model_lr.predict(X_test)
-    rmse = mean_squared_error(y_test, preds_lr, squared=False)
-    print(f"Linear Regression RMSE: {rmse}")
-
-    # Ensure 'models' directory exists
-    os.makedirs("models", exist_ok=True)
-
-    # Save model
-    joblib.dump(model_lr, "models/linear_regression_model.pkl")
-    print("Linear Regression model saved to models/linear_regression_model.pkl")
-
-    return model_lr, preds_lr
-
-
-def train_logistic_regression(X_train, y_train, X_test, y_test):
-    """
-    Trains a logistic regression model and evaluates it.
-
-    Returns:
-        tuple: (model, predictions)
-    """
-    model_log = LogisticRegression(max_iter=1000)
-    model_log.fit(X_train, y_train)
-    preds_log = model_log.predict(X_test)
-    roc = roc_auc_score(y_test, preds_log)
-    print(f"Logistic Regression ROC AUC: {roc}")
-
-    # Ensure 'models' directory exists
-    os.makedirs("models", exist_ok=True)
-
-    # Save model
-    joblib.dump(model_log, "models/logistic_regression_model.pkl")
-    print("Logistic Regression model saved to models/logistic_regression_model.pkl")
-
-    return model_log, preds_log
-
-
-# def train_model(df: pd.DataFrame):
-
-#     # Define symbols (including both price and funding rate columns)
-#     symbols = [
-#         "ETHUSDT_price", "XRPUSDT_price", "ADAUSDT_price", "SOLUSDT_price", "BNBUSDT_price",
-#         "BTCUSDT_funding_rate", "ETHUSDT_funding_rate", "XRPUSDT_funding_rate",
-#         "ADAUSDT_funding_rate", "SOLUSDT_funding_rate", "BNBUSDT_funding_rate"
-#     ]
-
-#     # Get feature columns and label
-#     feature_cols, label_col = define_features_and_label(df, symbols)
-
-#     # Create price direction column
-#     df = create_price_direction_label(df, label_col)
-
-#     # Prepare features
-#     X, y_reg, y_class = prepare_features(df, feature_cols, label_col)
-
-#     # Split data for linear regression
-#     print("Training Linear Regression Model...")
-#     X_train, X_test, y_train, y_test = split_data(X, y_reg)
-
-#     # Train linear regression model
-#     model_lr, preds_lr = train_linear_regression(X_train, y_train, X_test, y_test)
+if __name__ == "__main__":
+    # For standalone execution
+    train_model()
