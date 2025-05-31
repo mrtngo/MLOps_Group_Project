@@ -81,6 +81,7 @@
 
 import pandas as pd
 from src.mlops.data_validation.data_validation import load_config
+from sklearn.ensemble import RandomForestRegressor 
 
 config = load_config("config.yaml")
 
@@ -140,3 +141,29 @@ def prepare_features(df, feature_cols, label_col):
     y_class = df['price_direction']
     print(f"Features shape: {X.shape}, Regression target shape: {y_reg.shape}, Classification target shape: {y_class.shape}")
     return X, y_reg, y_class
+
+def select_features(df: pd.DataFrame, feature_cols: list):
+    """
+    Performs RandomForest‐based feature selection, keeping the top_n most
+    important columns. Returns a list of selected column names.
+    """
+
+    # Prepare the training set for importance:
+    X = df[feature_cols].copy()
+    y = df[config.get("target")]  # This is the regression label by default
+
+    # Instantiate and fit the RacndomForest
+    rf = RandomForestRegressor
+        n_estimators=config.get("feature_engineering", {}).get('feature_selection', {}).get('params', {}).get("n_estimators")
+        random_state=config.get("feature_engineering", {}).get('feature_selection', {}).get('params', {}).get("random_state")
+    
+    rf.fit(X, y)
+
+    # Rank features by importance
+    imp = rf.feature_importances_
+    ranked = sorted(zip(feature_cols, imp), key=lambda x: x[1], reverse=True)
+
+    # Keep only the top_n names
+    selected_cols = [col for col, _ in ranked[:top_n]]
+    print(f"[select_features] top_{top_n} selected: {selected_cols}")
+    return selected_cols
