@@ -8,8 +8,8 @@ from typing import Tuple, Dict, Any, Union
 import pandas as pd
 import numpy as np
 
-from src.mlops.features.features import define_features_and_label
-from src.mlops.data_validation.data_validation import load_config
+from features.features import define_features_and_label
+from data_validation.data_validation import load_config
 
 logger = logging.getLogger(__name__)
 config = load_config("config.yaml")

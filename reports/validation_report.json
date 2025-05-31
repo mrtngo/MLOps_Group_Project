@@ -1,11 +1,14 @@
 {
   "missing_columns": [],
-  "unexpected_columns": [],
-  "type_mismatches": {
-    "price": {
-      "expected": "float64",
-      "actual": "object"
-    }
-  },
-  "missing_values": {}
+  "unexpected_columns": [
+    "BTCUSDT_price",
+    "timestamp"
+  ],
+  "type_mismatches": {},
+  "missing_values": {},
+  "out_of_range": {},
+  "summary": {
+    "total_issues": 2,
+    "validation_passed": true
+  }
 }

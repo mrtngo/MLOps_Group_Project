@@ -9,9 +9,9 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import mean_squared_error, roc_auc_score
 
-from src.mlops.features.features import define_features_and_label, create_price_direction_label, prepare_features, select_features
-from src.mlops.preproccess.preproccessing import split_data, scale_features, smote_oversample
-from src.mlops.data_validation.data_validation import load_config
+from features.features import define_features_and_label, create_price_direction_label, prepare_features, select_features
+from preproccess.preproccessing import split_data, scale_features, smote_oversample
+from data_validation.data_validation import load_config
 
 logger = logging.getLogger(__name__)
 config = load_config("config.yaml")
@@ -152,7 +152,8 @@ class ModelTrainer:
         
         # Calculate training RMSE for logging
         predictions = model.predict(X)
-        rmse = mean_squared_error(y, predictions, squared=False)
+        mse = mean_squared_error(y, predictions)
+        rmse = mse ** 0.5  # Calculate RMSE manually for compatibility
         logger.info(f"Linear Regression Training RMSE: {rmse:.4f}")
         
         # Save model
