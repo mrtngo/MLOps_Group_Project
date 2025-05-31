@@ -2,14 +2,8 @@ import logging
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import SMOTE
-<<<<<<< HEAD
-import pandas as pd
-from typing import Dict
-from data_validation.data_validation import load_config
-=======
 from typing import Dict, Tuple, List
-from mlops.data_validation.data_validation import load_config
->>>>>>> 04b66c6f97f6b7beda6b1502a056837cfd0b3e5b
+from data_validation.data_validation import load_config
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -75,4 +69,3 @@ def smote_oversample(X, y) -> Tuple[pd.DataFrame, pd.Series]:
     except Exception as e:
         logger.error(f"Error in smote_oversample: {e}")
         raise
-
