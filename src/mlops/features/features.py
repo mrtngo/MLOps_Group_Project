@@ -80,7 +80,7 @@
 
 
 import pandas as pd
-from src.mlops.data_validation.data_validation import load_config
+from data_validation.data_validation import load_config
 from sklearn.ensemble import RandomForestRegressor 
 
 config = load_config("config.yaml")
@@ -98,10 +98,19 @@ def define_features_and_label():
     Returns:
         tuple: (feature_cols, label_col)
     """
-    feature_cols = config.get("symbols", [])  # Use the symbols list directly as feature columns
-    label_col = config.get("target")
-    print(f"Feature columns: {feature_cols}")
-    print(f"Label column: {label_col}")
+    symbols = config.get("symbols", [])
+
+    feature_cols = [
+        f"{symbol}_price" for symbol in symbols if symbol != "BTCUSDT"
+    ] + [
+        f"{symbol}_funding_rate" for symbol in symbols
+    ]
+
+    label_col = "BTCUSDT_price"
+
+    print(f"[define_features_and_label] Features: {feature_cols}")
+    print(f"[define_features_and_label] Label: {label_col}")
+
     return feature_cols, label_col
 
 
@@ -156,7 +165,9 @@ def select_features(df: pd.DataFrame, feature_cols: list):
     n_estimators=config.get("feature_engineering", {}).get('feature_selection', {}).get('params', {}).get("n_estimators")
     random_state=config.get("feature_engineering", {}).get('feature_selection', {}).get('params', {}).get("random_state")
 
-    rf = RandomForestRegressor(n_estimators, random_state)
+    print(f"n_estimators {n_estimators},random_state {random_state}")
+    rf = RandomForestRegressor(n_estimators=n_estimators, random_state=random_state)
+
         
     
     rf.fit(X, y)

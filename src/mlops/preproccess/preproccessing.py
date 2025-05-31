@@ -2,7 +2,7 @@ from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import SMOTE
 import pandas as pd
 from typing import Dict
-from mlops.data_validation.data_validation import load_config
+from data_validation.data_validation import load_config
 
 config = load_config("config.yaml")
 params = config.get("preprocessing", {})
