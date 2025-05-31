@@ -92,5 +92,5 @@ def run_until_feature_engineering():
 
 if __name__ == "__main__":
     X_processed, y_reg, y_class = run_until_feature_engineering()
-    trainer = ModelTrainer()
-    price_model, direction_model = trainer.train_from_arrays(X_processed, y_reg, y_class)
+    #trainer = ModelTrainer()
+    #price_model, direction_model = trainer.train_from_arrays(X_processed, y_reg, y_class)
