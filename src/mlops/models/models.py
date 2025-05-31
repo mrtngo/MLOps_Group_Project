@@ -8,12 +8,32 @@ from typing import Tuple, Any
 import pandas as pd
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import mean_squared_error, roc_auc_score
+from sklearn.model_selection import train_test_split
 
 from src.mlops.features.features import define_features_and_label, create_price_direction_label, prepare_features, select_features
 from src.mlops.data_validation.data_validation import load_config
 
 logger = logging.getLogger(__name__)
 config = load_config("config.yaml")
+
+
+
+def split_data(X, y, test_size=0.2):
+    """
+    Splits data into training and testing sets.
+
+    Args:
+        X: feature matrix
+        y: target variable
+        test_size: float, proportion of dataset to include in the test split
+
+    Returns:
+        tuple: (X_train, X_test, y_train, y_test)
+    """
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
+    print(f"X_train shape: {X_train.shape}, X_test shape: {X_test.shape}, y_train shape: {y_train.shape}, y_test shape: {y_test.shape}")
+    return X_train, X_test, y_train, y_test
+
 
 
 class ModelTrainer:
@@ -24,6 +44,8 @@ class ModelTrainer:
         self.config = config
         self.model_config = self.config.get("model", {})
         self.ensure_model_directory()
+    
+
     
     def ensure_model_directory(self) -> None:
         """Create models directory if it doesn't exist."""
