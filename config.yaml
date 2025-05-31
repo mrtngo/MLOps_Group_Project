@@ -132,12 +132,14 @@ data_validation:
         max: 1
         on_error: warn
 
-preprocessing:
-  data_split:
+
+data_split:
     test_size: 0.2
     valid_size: 0.2
     random_state: 42
-
+    
+preprocessing:
+  
   scaling:
     method: standard
     columns: [] # or list of columns
