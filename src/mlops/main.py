@@ -12,7 +12,7 @@ from features.features import (
     select_features
 )
 from preproccess.preproccessing import scale_features, smote_oversample
-from models.models import ModelTrainer
+#from models.models import ModelTrainer
 
 def setup_logger():
     """
