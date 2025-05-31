@@ -4,16 +4,16 @@ data_source:
   raw_path_futures: "https://fapi.binance.com/fapi/v1/fundingRate"
   raw_path_spot: "https://api.binance.com/api/v3/klines"
   processed_path: "./data/processed/futures_data_processed_.csv" # Path to save processed data 
-  type: "csv"                      # Data file type: 'csv'
-  delimiter: ","                   # Only used if type == 'csv'
-  header: 0                        # Row number to use as column names (0-indexed), update if needed
-  encoding: "utf-8"                # File encoding (utf-8 covers most cases)
+  
 
 logging:
   level: "INFO"                         # Logging level: DEBUG (verbose), INFO (default), WARNING, ERROR, CRITICAL
   log_file: "./logs/main.log"    # File path for log output
   format: "%(asctime)s - %(levelname)s - %(name)s - %(message)s"  # Log message format
   datefmt: "%Y-%m-%d %H:%M:%S"          # Date format for logs
+
+
+data_loading:
 
 
 symbols:
