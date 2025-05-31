@@ -1,23 +1,12 @@
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import SMOTE
 import pandas as pd
 from typing import Dict
-from src.mlops.data_validation.data_validation import load_config
+from mlops.data_validation.data_validation import load_config
 
 config = load_config("config.yaml")
-params = config.get("feature_engineering", {}).get("feature_selection", {}).get("params", {})
-
-def select_features(df, feature_cols):
-    X = df[feature_cols]
-    y = df[config.get("target")]
-    rf = RandomForestRegressor(n_estimators=params["n_estimators"], random_state=params["random_state"])
-    rf.fit(X, y)
-    importance = rf.feature_importances_
-    ranked = sorted(zip(feature_cols, importance), key=lambda x: x[1], reverse=True)
-    selected_cols = [x[0] for x in ranked[:config.get("feature_engineering", {}).get("feature_selection", {}).get("top_n")]]
-    print(f"Selected Features: {selected_cols}")
-    return selected_cols
+params = config.get("preprocessing", {})
+data_split = config.get('data_split')
 
 
 def scale_features(df, selected_cols):
