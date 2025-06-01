@@ -275,7 +275,7 @@ def predict_both(df: pd.DataFrame, inferencer: ModelInferencer = None) -> Dict[s
     return inferencer.predict_both(df)
 
 
-def run_inference(input_csv: str, config_path: str, output_csv: str) -> None:
+def run_inference(df:pd.DataFrame , config_path: str, output_csv: str) -> None:
     """
     Run inference on a CSV file and save results.
     
@@ -284,9 +284,7 @@ def run_inference(input_csv: str, config_path: str, output_csv: str) -> None:
         config_path: Path to configuration file (for compatibility, not used)
         output_csv: Path to save output CSV file
     """
-    # Load input data
-    df = pd.read_csv(input_csv)
-    logger.info(f"Loaded input data from {input_csv}, shape: {df.shape}")
+    logger.info("shape: {df.shape}")
     
     # Load models and run inference
     inferencer = ModelInferencer()

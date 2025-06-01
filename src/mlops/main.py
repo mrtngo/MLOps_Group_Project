@@ -23,6 +23,7 @@ def setup_logger():
     """
     Configure logging using parameters from config.yaml
     """
+    print("hello")
     config = load_config("config.yaml")
     log_cfg = config.get("logging", {})
 
@@ -49,19 +50,19 @@ def setup_logger():
     console.setFormatter(logging.Formatter(log_format, datefmt=date_format))
     logging.getLogger("").addHandler(console)
 
-def run_full_pipeline():
+def run_full_pipeline(start_date,end_date):
     """
     Runs the complete MLOps pipeline: data loading, validation, preprocessing, 
     feature engineering, model training, and evaluation.
     """
-    setup_logger()
+    #setup_logger()
     logger = logging.getLogger("Pipeline")
     logger.info("🚀 Starting complete MLOps pipeline")
 
     try:
         # 1. Load raw data
         logger.info("📥 Step 1: Loading data...")
-        df = fetch_data()
+        df = fetch_data(start_date=start_date,end_date=end_date)
         logger.info(f"Raw data loaded | shape={df.shape}")
 
         # 2. Load schema from config and validate
@@ -116,111 +117,65 @@ def main():
     """
     Main entry point with command line argument support.
     """
+    
     parser = argparse.ArgumentParser(description="MLOps pipeline orchestrator")
     parser.add_argument(
         "--stage",
         default="all",
-        choices=["all", "data", "train", "evaluate", "infer"],
+        choices=["all", "infer"],
         help="Pipeline stage to run (default: all)",
     )
     parser.add_argument(
-        "--input-csv",
-        help="Input CSV file for inference stage",
-    )
-    parser.add_argument(
-        "--output-csv", 
-        help="Output CSV file for inference stage",
-    )
+    "--output-csv", 
+    default="data/processed/output.csv",
+    help="Output CSV file for inference stage",
+)
     parser.add_argument(
         "--config",
         default="config.yaml",
         help="Path to YAML configuration file (default: config.yaml)",
     )
+    parser.add_argument(
+        "--start-date",
+        default="2023-01-01",
+        help="Start date for fetching the date",
+    )
+    parser.add_argument(
+        "--end-date",
+        default="2023-12-31",
+        help="End date for fetching the date",
+    )
 
     args = parser.parse_args()
-
-    # Setup logging
     setup_logger()
     logger = logging.getLogger("Main")
     logger.info(f"Pipeline started | stage={args.stage}")
 
     try:
         config = load_config(args.config)
-        
         if args.stage == "all":
-            # Run complete pipeline
-            run_full_pipeline()
+            run_full_pipeline(args.start_date,args.end_date)
             
-        elif args.stage in ("data", "train"):
-            # Data loading and validation
-            logger.info("=== Data Loading & Validation ===")
-            df = fetch_data()
-            logger.info(f"Raw data loaded | shape={df.shape}")
-            
-            schema_list = config.get("data_validation", {}).get("schema", {}).get("columns", [])
-            schema = {col["name"]: col for col in schema_list}
-            missing_strategy = config.get("data_validation", {}).get("missing_values_strategy", "drop")
-            
-            df_validated = validate_data(df, schema, logger, missing_strategy, "warn")
-            logger.info(f"Data validation completed | shape={df_validated.shape}")
-            
-            # Save processed data
-            processed_path = config.get("data_source", {}).get("processed_path", "./data/processed/processed_data.csv")
-            os.makedirs(os.path.dirname(processed_path), exist_ok=True)
-            df_validated.to_csv(processed_path, index=False)
-            logger.info(f"Processed data saved to {processed_path}")
-            
-            if args.stage == "train":
-                # Model training
-                logger.info("=== Model Training ===")
-                feature_cols, label_col = define_features_and_label()
-                df_with_direction = create_price_direction_label(df_validated, label_col)
-                
-                price_model, direction_model = train_model(df_with_direction)
-                logger.info("Model training completed successfully")
-                
-        elif args.stage == "evaluate":
-            # Model evaluation
-            logger.info("=== Model Evaluation ===")
-            processed_path = config.get("data_source", {}).get("processed_path", "./data/processed/processed_data.csv")
-            
-            if os.path.exists(processed_path):
-                df_validated = pd.read_csv(processed_path)
-                logger.info(f"Loaded processed data from {processed_path}")
-            else:
-                logger.error(f"Processed data not found at {processed_path}. Run data stage first.")
-                sys.exit(1)
-            
-            feature_cols, label_col = define_features_and_label()
-            df_with_direction = create_price_direction_label(df_validated, label_col)
-            
-            regression_metrics, classification_metrics = evaluate_models(df_with_direction)
-            logger.info("Model evaluation completed successfully")
             
         elif args.stage == "infer":
             # Inference
-            if not args.input_csv or not args.output_csv:
-                logger.error("Inference stage requires --input-csv and --output-csv")
+            if not args.output_csv:
+                logger.error("Inference stage requires --output-csv")
                 sys.exit(1)
             
             logger.info("=== Model Inference ===")
-            
-            # Validate input file exists
-            if not os.path.exists(args.input_csv):
-                logger.error(f"Input file not found: {args.input_csv}")
-                sys.exit(1)
-            
-            # Load and validate input data
-            input_df = pd.read_csv(args.input_csv)
+ 
+            # Fetch and validate input data
+            input_df = fetch_data(start_date=args.start_date,end_date=args.end_date)
             logger.info(f"Loaded input data | shape={input_df.shape}")
             
             # Optional: validate inference input against schema
             schema_list = config.get("data_validation", {}).get("schema", {}).get("columns", [])
             schema = {col["name"]: col for col in schema_list}
-            input_df_validated = validate_data(input_df, schema, logger, "keep", "warn")
+            #input_df_validated = validate_data(input_df, schema, logger, "keep", "warn")
             
             # Run inference
-            run_inference(args.input_csv, args.config, args.output_csv)
+            run_inference(input_df, args.config, args.output_csv)
             logger.info(f"Inference completed | output saved to {args.output_csv}")
 
     except Exception as exc:
@@ -250,7 +205,7 @@ def run_until_feature_engineering():
     Legacy function - runs pipeline up to feature engineering.
     Kept for backward compatibility.
     """
-    setup_logger()
+    #setup_logger()
     logger = logging.getLogger("Pipeline")
     logger.warning("run_until_feature_engineering() is deprecated. Use run_full_pipeline() instead.")
     

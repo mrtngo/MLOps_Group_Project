@@ -375,6 +375,7 @@ def fetch_binance_funding_rate(
 def fetch_data(start_date: Optional[str] = None,
                end_date:   Optional[str] = None):
     try:
+        print(f"start date {start_date}")
         logger.info("Starting data fetch process")
         price_dfs, funding_dfs = [], []
         failed_symbols = []
@@ -429,5 +430,5 @@ def fetch_data(start_date: Optional[str] = None,
         raise
 
 
-df = fetch_data("2023-01-01", "2023-12-31")
-print(df.head())  # Display the first few rows of the fetched data
+#df = fetch_data("2023-01-01", "2023-12-31")
+#print(df.head())  # Display the first few rows of the fetched data
