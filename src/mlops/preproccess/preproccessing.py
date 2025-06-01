@@ -4,11 +4,14 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
-from typing import Dict, Tuple, List
+from typing import Tuple, List
 from mlops.data_validation.data_validation import load_config
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 try:
@@ -34,17 +37,26 @@ def split_data(X, y):
     test_size = config.get("data_split", {}).get("test_size", 0.2)
     random_state = config.get("data_split", {}).get("random_state", 42)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
-    logger.info(f"Data split completed - Train: {X_train.shape}, Test: {X_test.shape}")
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=random_state
+    )
+    shape_msg = (
+        f"Data split completed - Train: {X_train.shape}, "
+        f"Test: {X_test.shape}"
+    )
+    logger.info(shape_msg)
     return X_train, X_test, y_train, y_test
 
 
-def scale_features(df: pd.DataFrame, selected_cols: List[str]) -> Tuple[np.ndarray, np.ndarray, StandardScaler]:
+def scale_features(df: pd.DataFrame,
+                   selected_cols: List[str]) -> Tuple[
+                       np.ndarray, np.ndarray, StandardScaler]:
     """
     Scales the selected features using StandardScaler.
-    
-    Note: This function now expects a DataFrame that represents the training set,
-    and returns scaled training data, scaled test data placeholder, and the fitted scaler.
+
+    Note: This function now expects a DataFrame that
+    represents the training set, and returns scaled training data,
+    scaled test data placeholder, and the fitted scaler.
     For proper train/test scaling, use this in conjunction with split_data.
 
     Args:
@@ -56,31 +68,33 @@ def scale_features(df: pd.DataFrame, selected_cols: List[str]) -> Tuple[np.ndarr
     """
     try:
         scaler = StandardScaler()
-        
+
         # Fit scaler on the provided DataFrame (should be training data)
         X_scaled = scaler.fit_transform(df[selected_cols])
-        
+
         # Return scaled training data and the scaler for later use on test data
-        # The second return value is a placeholder - real test data should be scaled separately
+        # The second return value is a placeholder
+        # real test data should be scaled separately
         X_test_placeholder = np.array([])  # Placeholder
-        
+
         logger.info(f"Successfully scaled features: {selected_cols}")
         return X_scaled, X_test_placeholder, scaler
-        
+
     except Exception as e:
         logger.error(f"Error in scale_features: {e}")
         raise
 
 
-def scale_test_data(X_test: pd.DataFrame, scaler: StandardScaler, selected_cols: List[str]) -> np.ndarray:
+def scale_test_data(X_test: pd.DataFrame, scaler: StandardScaler,
+                    selected_cols: List[str]) -> np.ndarray:
     """
     Scale test data using a pre-fitted scaler.
-    
+
     Args:
         X_test: Test DataFrame
         scaler: Pre-fitted StandardScaler
         selected_cols: List of column names to scale
-        
+
     Returns:
         Scaled test features
     """
@@ -111,36 +125,52 @@ def smote_oversample(X, y) -> Tuple[np.ndarray, np.ndarray]:
         else:
             unique, counts = np.unique(y, return_counts=True)
             class_counts = dict(zip(unique, counts))
-        
+
         if len(class_counts) < 2:
-            logger.warning("Only one class found in target. SMOTE not applicable.")
+            warning_msg = (
+                "Only one class found in target. SMOTE not applicable.")
+            logger.warning(warning_msg)
             return X, y
-            
+
         maj = max(class_counts, key=class_counts.get)
         min_ = min(class_counts, key=class_counts.get)
         ratio = class_counts[maj] / class_counts[min_]
 
         logger.info(f"Class distribution: {class_counts}")
-        
+
         # Get threshold from config
-        threshold = config.get("preprocessing", {}).get("sampling", {}).get("threshold_ratio", 1.5)
+        threshold = config.get("preprocessing", {}).get(
+            "sampling", {}
+        ).get("threshold_ratio", 1.5)
 
         if ratio > threshold:
             logger.info("Applying SMOTE oversampling...")
-            
+
             # Get SMOTE parameters from config
-            sampling_strategy = config.get("preprocessing", {}).get("sampling", {}).get("params", {}).get("sampling_strategy", "auto")
-            random_state = config.get("preprocessing", {}).get("sampling", {}).get("params", {}).get("random_state", 42)
-            
-            sm = SMOTE(sampling_strategy=sampling_strategy, random_state=random_state)
+            sampling_params = config.get("preprocessing", {}).get(
+                "sampling", {}
+            ).get("params", {})
+            sampling_strategy = sampling_params.get(
+                "sampling_strategy", "auto")
+            random_state = sampling_params.get("random_state", 42)
+
+            sm = SMOTE(
+                sampling_strategy=sampling_strategy,
+                random_state=random_state
+            )
             X_res, y_res = sm.fit_resample(X, y)
-            
-            logger.info(f"SMOTE applied successfully. New shape: {X_res.shape}")
-            logger.info(f"New class distribution: {dict(zip(*np.unique(y_res, return_counts=True)))}")
+
+            logger.info(f"SMOTE apply successful. New shape: {X_res.shape}")
+            new_dist = dict(zip(*np.unique(y_res, return_counts=True)))
+            logger.info(f"New class distribution: {new_dist}")
         else:
             X_res, y_res = X, y
-            logger.info(f"Class ratio ({ratio:.2f}) below threshold ({threshold}). SMOTE not applied.")
-            
+            ratio_msg = (
+                f"Class ratio ({ratio:.2f}) below threshold ({threshold}). "
+                f"SMOTE not applied."
+            )
+            logger.info(ratio_msg)
+
         return X_res, y_res
 
     except Exception as e:
@@ -148,41 +178,49 @@ def smote_oversample(X, y) -> Tuple[np.ndarray, np.ndarray]:
         raise
 
 
-def preprocess_pipeline(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train, 
-                       feature_cols: List[str], apply_smote: bool = False) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, StandardScaler]:
+def preprocess_pipeline(X_train: pd.DataFrame, X_test: pd.DataFrame,
+                        y_train, feature_cols: List[str],
+                        apply_smote: bool = False) -> Tuple[
+                            np.ndarray, np.ndarray, np.ndarray, np.ndarray,
+                            StandardScaler]:
     """
     Complete preprocessing pipeline: scaling and optional SMOTE.
-    
+
     Args:
         X_train: Training features DataFrame
-        X_test: Test features DataFrame  
+        X_test: Test features DataFrame
         y_train: Training targets
         feature_cols: List of feature column names
         apply_smote: Whether to apply SMOTE oversampling
-        
+
     Returns:
-        Tuple of (X_train_processed, X_test_processed, y_train_processed, y_test_unchanged, scaler)
+        Tuple of (X_train_processed, X_test_processed, y_train_processed,
+                 y_test_unchanged, scaler)
     """
     try:
         logger.info("Starting preprocessing pipeline...")
-        
+
         # Scale features
         X_train_scaled, _, scaler = scale_features(X_train, feature_cols)
         X_test_scaled = scale_test_data(X_test, scaler, feature_cols)
-        
+
         # Apply SMOTE if requested
         if apply_smote:
-            X_train_final, y_train_final = smote_oversample(X_train_scaled, y_train)
+            X_train_final, y_train_final = smote_oversample(
+                X_train_scaled, y_train
+            )
         else:
             X_train_final, y_train_final = X_train_scaled, y_train
-            
+
         logger.info("Preprocessing pipeline completed successfully")
         return X_train_final, X_test_scaled, y_train_final, y_train, scaler
-        
+
     except Exception as e:
         logger.error(f"Error in preprocessing pipeline: {e}")
         raise
 
 
 if __name__ == "__main__":
-    logger.info("preproccessing.py - Use functions by importing them in other modules")
+    info_msg = (
+        "preproccessing.py - Use functions by importing them in other modules")
+    logger.info(info_msg)
