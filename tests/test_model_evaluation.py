@@ -4,16 +4,17 @@ import pandas as pd
 import json
 import pickle
 from unittest import mock
-from pathlib import Path
 
 from mlops.evaluation.evaluation import (
     ModelEvaluator,
     generate_report
 )
 
-# Fixture for a dummy DataFrame that includes all features expected by define_features_and_label
+
 @pytest.fixture
 def dummy_dataframe():
+    """Fixture for a dummy DataFrame that includes all features expected
+    by define_features_and_label"""
     return pd.DataFrame({
         "timestamp": pd.date_range(start="2024-01-01", periods=10),
         "BTCUSDT_price": np.linspace(100, 110, 10),
@@ -67,7 +68,9 @@ def test_plot_regression_predictions(evaluator):
 def test_save_metrics_report(tmp_path, evaluator):
     """Test saving regression and classification metrics to a JSON file."""
     regression_metrics = {"RMSE": 1.23}
-    classification_metrics = {"Accuracy": 0.9, "F1 Score": 0.89, "ROC AUC": 0.88}
+    classification_metrics = {
+        "Accuracy": 0.9, "F1 Score": 0.89, "ROC AUC": 0.88
+    }
 
     metrics_path = tmp_path / "metrics.json"
     evaluator.config["artifacts"]["metrics_path"] = str(metrics_path)
@@ -83,7 +86,9 @@ def test_save_metrics_report(tmp_path, evaluator):
 
 def test_generate_report_calls_evaluate_models():
     """Ensure that generate_report calls evaluate_models as expected."""
-    with mock.patch("mlops.evaluation.evaluation.evaluate_models") as mock_eval:
+    with mock.patch(
+        "mlops.evaluation.evaluation.evaluate_models"
+    ) as mock_eval:
         generate_report({"some": "config"})
         mock_eval.assert_called_once()
 
@@ -128,7 +133,7 @@ def test_load_both_models(tmp_path, evaluator):
 
 
 def test_prepare_test_data_without_pipeline(evaluator, dummy_dataframe):
-    """Test prepare_test_data fallback behavior when no pipeline is provided."""
+    """Test prepare_test_data fallback when no pipeline is provided."""
     evaluator.preprocessing_pipeline = None
     Xr, Xc, yr, yc = evaluator.prepare_test_data(dummy_dataframe)
     assert len(Xr) == len(yr)

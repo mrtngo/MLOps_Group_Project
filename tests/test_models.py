@@ -1,55 +1,3 @@
-# import pytest
-# import pandas as pd
-# import numpy as np
-# from sklearn.linear_model import LinearRegression
-# from unittest.mock import patch, MagicMock
-# from mlops.models.models import ModelTrainer
-
-# @pytest.fixture
-# def dummy_config():
-#     return {
-#         "model": {
-#             "linear_regression": {
-#                 "params": {},
-#                 "save_path": "models/test_lr.pkl"
-#             }
-#         },
-#         "artifacts": {
-#             "preprocessing_pipeline": "models/test_pipeline.pkl"
-#         },
-#         "target": "price"
-#     }
-
-# @patch("mlops.models.models.load_config")
-# def test_train_linear_regression(mock_config):
-#     mock_config.return_value = {
-#         "model": {
-#             "linear_regression": {
-#                 "params": {"fit_intercept": True},
-#                 "save_path": "models/test_lr.pkl"
-#             }
-#         },
-#         "artifacts": {
-#             "preprocessing_pipeline": "models/test_pipeline.pkl"
-#         },
-#         "target": "price"
-#     }
-
-#     trainer = ModelTrainer()
-
-#     # Dummy training data
-#     X = pd.DataFrame(np.array([[1], [2], [3], [4]]), columns=["feature1"])
-#     y = pd.Series([10, 20, 30, 40])
-
-#     model = trainer.train_linear_regression(X, y)
-
-#     assert isinstance(model, LinearRegression)
-#     assert hasattr(model, "predict")
-#     preds = model.predict(X)
-#     assert np.allclose(preds, [10, 20, 30, 40], atol=1e-1)
-
-
-import pytest
 import pandas as pd
 import numpy as np
 from unittest.mock import patch, MagicMock
@@ -77,12 +25,21 @@ def test_prepare_data(
     }
 
     mock_define.return_value = (["f1", "f2"], "price")
-    mock_create_label.return_value = pd.DataFrame({"f1": [1], "f2": [2], "price": [10], "price_direction": [1]})
-    mock_prepare_feat.return_value = (np.array([[1, 2]]), pd.Series([10]), pd.Series([1]))
-    mock_split.return_value = (np.array([[1, 2]]), np.array([[3, 4]]), pd.Series([10]), pd.Series([20]))
+    mock_create_label.return_value = pd.DataFrame({
+        "f1": [1], "f2": [2], "price": [10], "price_direction": [1]
+    })
+    mock_prepare_feat.return_value = (
+        np.array([[1, 2]]), pd.Series([10]), pd.Series([1])
+    )
+    mock_split.return_value = (
+        np.array([[1, 2]]), np.array([[3, 4]]),
+        pd.Series([10]), pd.Series([20])
+    )
 
     scaler = StandardScaler().fit([[1, 2], [3, 4]])
-    mock_scale.return_value = (np.array([[1.1, 2.2]]), np.array([[1.3, 2.5]]), scaler)
+    mock_scale.return_value = (
+        np.array([[1.1, 2.2]]), np.array([[1.3, 2.5]]), scaler
+    )
 
     mock_select.side_effect = lambda df, f: f
     mock_smote.return_value = (np.array([[9, 9]]), pd.Series([1]))

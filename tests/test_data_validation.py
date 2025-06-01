@@ -1,8 +1,6 @@
-
 import pytest
 import pandas as pd
 import logging
-from io import StringIO
 from mlops.data_validation.data_validation import (
     validate_data,
     check_unexpected_columns,
@@ -11,6 +9,7 @@ from mlops.data_validation.data_validation import (
     handle_missing_values,
     save_validation_report
 )
+
 
 @pytest.fixture
 def schema():
@@ -29,12 +28,14 @@ def schema():
         }
     }
 
+
 @pytest.fixture
 def logger():
-    logger = logging.getLogger("test_logger")
-    logger.setLevel(logging.DEBUG)
-    logger.addHandler(logging.StreamHandler())
-    return logger
+    test_logger = logging.getLogger("test_logger")
+    test_logger.setLevel(logging.DEBUG)
+    test_logger.addHandler(logging.StreamHandler())
+    return test_logger
+
 
 def test_check_unexpected_columns(schema, logger):
     df = pd.DataFrame({
@@ -46,22 +47,30 @@ def test_check_unexpected_columns(schema, logger):
     check_unexpected_columns(df, schema, logger, "warn", report)
     assert "unexpected_columns" in report
 
+
 def test_check_schema_and_types_success(schema, logger):
     df = pd.DataFrame({
         "timestamp": pd.date_range("2024-01-01", periods=2),
         "price": [100.0, 200.0]
     })
-    report = {"missing_columns": [], "unexpected_columns": [], "type_mismatches": {}, "missing_values": {}}
+    report = {
+        "missing_columns": [],
+        "unexpected_columns": [],
+        "type_mismatches": {},
+        "missing_values": {}
+    }
     check_schema_and_types(df, schema, logger, "warn", report)
     assert report["type_mismatches"] == {}
 
+
 def test_check_schema_and_types_type_mismatch(logger):
-    """Expect warning (not exception) for timestamp format mismatch when on_error='warn'."""
+    """Expect warning (not exception) for timestamp format mismatch
+    when on_error='warn'."""
     schema = {
         "timestamp": {
             "dtype": "datetime64[ns]",
             "required": True,
-            "on_error": "warn"  # חשוב!
+            "on_error": "warn"
         },
         "price": {
             "dtype": "float64",
@@ -75,9 +84,15 @@ def test_check_schema_and_types_type_mismatch(logger):
         "timestamp": ["not_a_date", "still_not_a_date"],
         "price": [100.0, 200.0]
     })
-    report = {"missing_columns": [], "unexpected_columns": [], "type_mismatches": {}, "missing_values": {}}
+    report = {
+        "missing_columns": [],
+        "unexpected_columns": [],
+        "type_mismatches": {},
+        "missing_values": {}
+    }
     check_schema_and_types(df, schema, logger, "warn", report)
     assert "timestamp" in report["type_mismatches"]
+
 
 def test_check_missing_values(schema, logger):
     df = pd.DataFrame({
@@ -89,26 +104,32 @@ def test_check_missing_values(schema, logger):
     assert "timestamp" in report["missing_values"]
     assert "price" in report["missing_values"]
 
+
 def test_handle_missing_values_drop(logger):
     df = pd.DataFrame({"a": [1, None], "b": [2, 3]})
     cleaned = handle_missing_values(df, "drop", logger)
     assert cleaned.shape[0] == 1
+
 
 def test_handle_missing_values_impute(logger):
     df = pd.DataFrame({"a": [1, None, 3], "b": [2, 3, 4]})
     cleaned = handle_missing_values(df, "impute", logger)
     assert cleaned.isnull().sum().sum() == 0
 
+
 def test_handle_missing_values_keep(logger):
     df = pd.DataFrame({"a": [1, None], "b": [2, 3]})
     cleaned = handle_missing_values(df, "keep", logger)
     assert cleaned.equals(df)
 
+
 def test_save_validation_report(tmp_path, logger):
     report = {"dummy": "report"}
     os_path = tmp_path / "validation_report.json"
     save_validation_report(report, logger)
-    assert os_path.exists() is False  # Because path is hardcoded in function
+    # Path is hardcoded in function, so file won't exist at tmp_path
+    assert os_path.exists() is False
+
 
 def test_validate_data_all_valid(schema, logger):
     df = pd.DataFrame({
@@ -118,10 +139,12 @@ def test_validate_data_all_valid(schema, logger):
     validated = validate_data(df, schema, logger)
     assert not validated.empty
 
+
 def test_validate_data_raise_on_missing_required(schema, logger):
     df = pd.DataFrame({"price": [50.0, 100.0]})
     with pytest.raises(ValueError):
         validate_data(df, schema, logger)
+
 
 def test_validate_data_warn_on_range(schema, logger):
     df = pd.DataFrame({

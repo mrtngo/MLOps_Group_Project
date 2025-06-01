@@ -11,7 +11,6 @@ from mlops.preproccess.preproccessing import (
     preprocess_pipeline
 )
 
-# ---------- Fixtures ----------
 
 @pytest.fixture
 def sample_df():
@@ -25,18 +24,23 @@ def sample_df():
     })
     return df
 
-# ---------- Tests ----------
 
 def test_scale_features(sample_df):
     selected_cols = ['feat1', 'feat2']
-    X_scaled, X_test_placeholder, scaler = scale_features(sample_df, selected_cols)
+    X_scaled, X_test_placeholder, scaler = scale_features(
+        sample_df, selected_cols
+    )
 
     assert X_scaled.shape == (100, 2)
     assert X_test_placeholder.size == 0
     assert isinstance(scaler, StandardScaler)
 
-    np.testing.assert_almost_equal(X_scaled.mean(axis=0), np.zeros(2), decimal=1)
-    np.testing.assert_almost_equal(X_scaled.std(axis=0), np.ones(2), decimal=1)
+    np.testing.assert_almost_equal(
+        X_scaled.mean(axis=0), np.zeros(2), decimal=1
+    )
+    np.testing.assert_almost_equal(
+        X_scaled.std(axis=0), np.ones(2), decimal=1
+    )
 
 
 def test_scale_test_data(sample_df):
@@ -91,9 +95,11 @@ def test_preprocess_pipeline(sample_df):
 
     X_train, X_test, y_train, y_test = split_data(X, y)
 
-    X_train_prep, X_test_prep, y_train_prep, y_train_orig, scaler = preprocess_pipeline(
+    pipeline_result = preprocess_pipeline(
         X_train, X_test, y_train, feature_cols, apply_smote=True
     )
+    X_train_prep, X_test_prep, y_train_prep, y_train_orig, scaler = (
+        pipeline_result)
 
     assert X_train_prep.shape[1] == len(feature_cols)
     assert X_test_prep.shape == X_test.shape
