@@ -172,7 +172,7 @@ model:
   logistic_regression:
     save_path: models/logistic_regression.pkl
     params:
-      penalty: "12"
+      penalty: "l2"
       solver: "lbfgs"
       random_state: 42
       max_iter: 200

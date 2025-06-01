@@ -29,3 +29,8 @@
 # Python
 *.py[cod]
 __pycache__/
+data/raw/example.csv
+.DS_Store
+.gitignore
+.gitignore
+config.yaml
