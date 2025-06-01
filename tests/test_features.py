@@ -1,6 +1,7 @@
 import pytest
 import pandas as pd
-from mlops.features import features as features_module  # Avoid conflict with 'features' variable name
+from mlops.features.features import define_features_and_label,prepare_features,create_price_direction_label
+from mlops.data_validation.data_validation import load_config
 
 # Fixture: provides a small DataFrame with timestamp, price, and sample features
 @pytest.fixture
@@ -13,20 +14,27 @@ def sample_df():
     }
     return pd.DataFrame(data)
 
-def test_define_features_and_label(sample_df):
+def test_define_features_and_label_from_config():
     """
     Test that the define_features_and_label function returns:
-    - The same list of features as provided.
+    - The correct feature columns based on the config.yaml symbols list.
     - The expected label column name ("BTCUSDT_price").
 
-    This test ensures that the function correctly identifies which columns will be used as
-    inputs (features) and which will be the target for prediction (label), which is a
-    critical setup step for model training.
+    This test ensures that the function reads symbols from the config and derives
+    the correct feature and label names accordingly.
     """
-    symbols = ['ETHUSDT_price', 'BTCUSDT_funding_rate']
-    feature_cols, label_col = features_module.define_features_and_label(sample_df, symbols)
+    config = load_config("config.yaml")
+    symbols = config.get("symbols", [])
 
-    assert feature_cols == symbols
+    expected_features = [
+        f"{symbol}_price" for symbol in symbols if symbol != "BTCUSDT"
+    ] + [
+        f"{symbol}_funding_rate" for symbol in symbols
+    ]
+
+    feature_cols, label_col = define_features_and_label()
+
+    assert set(feature_cols) == set(expected_features)
     assert label_col == "BTCUSDT_price"
 
 def test_create_price_direction_label(sample_df):
@@ -42,7 +50,7 @@ def test_create_price_direction_label(sample_df):
     This function is essential for transforming regression data into a classification
     problem by computing the direction of price movement.
     """
-    df_result = features_module.create_price_direction_label(sample_df, 'BTCUSDT_price')
+    df_result = create_price_direction_label(sample_df, 'BTCUSDT_price')
 
     assert 'price_direction' in df_result.columns
     assert df_result['price_direction'].isin([0, 1]).all()
@@ -59,11 +67,11 @@ def test_prepare_features(sample_df):
     both regression and classification models. This test ensures that the function
     returns clean, aligned, and valid data ready for modeling.
     """
-    df = features_module.create_price_direction_label(sample_df, 'BTCUSDT_price')
+    df = create_price_direction_label(sample_df, 'BTCUSDT_price')
     feature_cols = ['ETHUSDT_price', 'BTCUSDT_funding_rate']
     label_col = 'BTCUSDT_price'
     
-    X, y_reg, y_class = features_module.prepare_features(df, feature_cols, label_col)
+    X, y_reg, y_class = prepare_features(df, feature_cols, label_col)
 
     assert X.shape[0] == y_reg.shape[0] == y_class.shape[0]
     assert X.shape[1] == len(feature_cols)

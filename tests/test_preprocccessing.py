@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import pytest
 from sklearn.preprocessing import StandardScaler
-from src.mlops.preproccess.preproccessing import select_features, scale_features, smote_oversample
+from mlops.preproccess.preproccessing import select_features, scale_features, smote_oversample
 
 @pytest.fixture
 def sample_df():

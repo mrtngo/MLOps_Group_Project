@@ -3,7 +3,7 @@ import pytest
 import pandas as pd
 import logging
 from io import StringIO
-from src.mlops.data_validation.data_validation import (
+from mlops.data_validation.data_validation import (
     validate_data,
     check_unexpected_columns,
     check_schema_and_types,

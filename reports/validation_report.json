@@ -1,14 +1,19 @@
 {
   "missing_columns": [],
-  "unexpected_columns": [
-    "BTCUSDT_price",
-    "timestamp"
-  ],
+  "unexpected_columns": [],
   "type_mismatches": {},
   "missing_values": {},
-  "out_of_range": {},
+  "out_of_range": {
+    "price": {
+      "count": 2,
+      "min_allowed": 10.0,
+      "max_allowed": 100000.0,
+      "actual_min": 5.0,
+      "actual_max": 500000.0
+    }
+  },
   "summary": {
-    "total_issues": 2,
+    "total_issues": 1,
     "validation_passed": true
   }
 }

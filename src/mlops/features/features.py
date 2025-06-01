@@ -1,5 +1,5 @@
 import pandas as pd
-from data_validation.data_validation import load_config
+from mlops.data_validation.data_validation import load_config
 from sklearn.ensemble import RandomForestRegressor 
 
 config = load_config("config.yaml")
