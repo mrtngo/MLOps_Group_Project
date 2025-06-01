@@ -5,7 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
 from typing import Dict, Tuple, List
-from data_validation.data_validation import load_config
+from mlops.data_validation.data_validation import load_config
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
