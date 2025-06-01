@@ -2,7 +2,16 @@ import pandas as pd
 import numpy as np
 import pytest
 from sklearn.preprocessing import StandardScaler
-from mlops.preproccess.preproccessing import select_features, scale_features, smote_oversample
+
+from mlops.preproccess.preproccessing import (
+    scale_features,
+    scale_test_data,
+    split_data,
+    smote_oversample,
+    preprocess_pipeline
+)
+
+# ---------- Fixtures ----------
 
 @pytest.fixture
 def sample_df():
@@ -16,36 +25,77 @@ def sample_df():
     })
     return df
 
-def test_select_features(sample_df):
-    selected = select_features(sample_df, ['feat1', 'feat2', 'feat3', 'feat4'], 'BTCUSDT_price', top_n=2)
-    assert isinstance(selected, list)
-    assert len(selected) == 2
-    for col in selected:
-        assert col in ['feat1', 'feat2', 'feat3', 'feat4']
+# ---------- Tests ----------
 
 def test_scale_features(sample_df):
     selected_cols = ['feat1', 'feat2']
-    X_scaled, scaler = scale_features(sample_df, selected_cols)
+    X_scaled, X_test_placeholder, scaler = scale_features(sample_df, selected_cols)
+
     assert X_scaled.shape == (100, 2)
+    assert X_test_placeholder.size == 0
     assert isinstance(scaler, StandardScaler)
-    # Check mean ~ 0 and std ~ 1
-    np.testing.assert_almost_equal(X_scaled.mean(axis=0), np.array([0, 0]), decimal=1)
+
+    np.testing.assert_almost_equal(X_scaled.mean(axis=0), np.zeros(2), decimal=1)
+    np.testing.assert_almost_equal(X_scaled.std(axis=0), np.ones(2), decimal=1)
+
+
+def test_scale_test_data(sample_df):
+    selected_cols = ['feat1', 'feat2']
+    X_train = sample_df[selected_cols].iloc[:80]
+    X_test = sample_df[selected_cols].iloc[80:]
+
+    _, _, scaler = scale_features(X_train, selected_cols)
+    X_test_scaled = scale_test_data(X_test, scaler, selected_cols)
+
+    assert X_test_scaled.shape == (20, 2)
+    assert isinstance(X_test_scaled, np.ndarray)
+
+
+def test_split_data(sample_df):
+    X = sample_df[['feat1', 'feat2']]
+    y = sample_df['feat3']
+    X_train, X_test, y_train, y_test = split_data(X, y)
+
+    assert len(X_train) + len(X_test) == len(X)
+    assert len(y_train) + len(y_test) == len(y)
+    assert X_train.shape[1] == X.shape[1]
+
 
 def test_smote_oversample_applies():
     X = np.random.rand(30, 2)
-    y = [0]*24 + [1]*6  # יחס 4:1, אך עם 6 דגימות במחלקת המיעוט
+    y = [0]*24 + [1]*6
     X_res, y_res = smote_oversample(X, y)
+
     assert len(X_res) > len(X)
     assert len(X_res) == len(y_res)
+
     unique, counts = np.unique(y_res, return_counts=True)
-    ratio = max(counts) / min(counts)
-    assert ratio <= 1.5
+    assert set(unique) == {0, 1}
+    assert abs(counts[0] - counts[1]) <= 1
 
 
 def test_smote_oversample_skips():
     X = np.random.rand(20, 2)
-    y = [0]*10 + [1]*10  # Balanced
+    y = [0]*10 + [1]*10
     X_res, y_res = smote_oversample(X, y)
+
     assert len(X_res) == len(X)
-    assert np.array_equal(X, X_res)
+    assert np.allclose(X, X_res)
     assert np.array_equal(y, y_res)
+
+
+def test_preprocess_pipeline(sample_df):
+    feature_cols = ['feat1', 'feat2']
+    X = sample_df[feature_cols]
+    y = [0]*80 + [1]*20
+
+    X_train, X_test, y_train, y_test = split_data(X, y)
+
+    X_train_prep, X_test_prep, y_train_prep, y_train_orig, scaler = preprocess_pipeline(
+        X_train, X_test, y_train, feature_cols, apply_smote=True
+    )
+
+    assert X_train_prep.shape[1] == len(feature_cols)
+    assert X_test_prep.shape == X_test.shape
+    assert len(y_train_prep) == len(X_train_prep)
+    assert isinstance(scaler, StandardScaler)
