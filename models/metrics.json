@@ -1,6 +1,6 @@
 {
   "linear_regression": {
-    "RMSE": 1369.1195312602506
+    "RMSE": 1369.119531260251
   },
   "logistic_regression": {
     "Accuracy": 0.4927536231884058,

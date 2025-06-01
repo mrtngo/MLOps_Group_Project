@@ -1,5 +1,3 @@
-"""Model inference module."""
-
 import os
 import pickle
 import logging
@@ -8,8 +6,8 @@ from typing import Tuple, Dict, Any, Union
 import pandas as pd
 import numpy as np
 
-from features.features import define_features_and_label
-from data_validation.data_validation import load_config
+from mlops.features.features import define_features_and_label
+from mlops.data_validation.data_validation import load_config
 
 logger = logging.getLogger(__name__)
 config = load_config("config.yaml")

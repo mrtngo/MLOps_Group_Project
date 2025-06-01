@@ -6,18 +6,18 @@ import argparse
 import sys
 import os
 
-from data_load.data_load import fetch_data
-from data_validation.data_validation import load_config, validate_data
-from features.features import (
+from mlops.data_load.data_load import fetch_data
+from mlops.data_validation.data_validation import load_config, validate_data
+from mlops.features.features import (
     define_features_and_label,
     create_price_direction_label,
     prepare_features,
     select_features
 )
-from preproccess.preproccessing import scale_features, smote_oversample, split_data
-from models.models import train_model
-from evaluation.evaluation import evaluate_models
-from inference.inference import run_inference
+from mlops.preproccess.preproccessing import scale_features, smote_oversample, split_data
+from mlops.models.models import train_model
+from mlops.evaluation.evaluation import evaluate_models
+from mlops.inference.inference import run_inference
 
 def setup_logger():
     """
