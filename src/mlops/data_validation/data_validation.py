@@ -431,7 +431,7 @@ def validate_data(df: pd.DataFrame, schema: Dict,
             success_msg = "✓ Success: Data validation completed with no issues"
             logger.info(success_msg)
         else:
-            issues_msg = (f"⚠ Data validation completed with {total_issues} "
+            issues_msg = (f"Data validation completed with {total_issues} "
                           f"issues (see report for details)")
             logger.info(issues_msg)
 

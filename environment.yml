@@ -1,11 +1,21 @@
-name: gp_env
-
+name: mlops_project
 channels:
-  - conda-forge
   - defaults
+  - conda-forge
 dependencies:
   - python=3.13
   - pip
   - pip:
-      - cookiecutter
+      - pandas
+      - numpy
+      - scikit-learn
+      - matplotlib
+      - seaborn
+      - pyyaml
+      - pytest
+      - pytest-cov
+      # - xprocess
+      - imbalanced-learn
+      - requests
+
 

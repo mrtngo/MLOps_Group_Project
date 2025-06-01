@@ -64,16 +64,16 @@ def run_full_pipeline(start_date, end_date):
     feature engineering, model training, and evaluation.
     """
     logger = logging.getLogger("Pipeline")
-    logger.info("🚀 Starting complete MLOps pipeline")
+    logger.info("Starting complete MLOps pipeline")
 
     try:
         # 1. Load raw data
-        logger.info("📥 Step 1: Loading data...")
+        logger.info("Step 1: Loading data...")
         df = fetch_data(start_date=start_date, end_date=end_date)
         logger.info(f"Raw data loaded | shape={df.shape}")
 
         # 2. Load schema from config and validate
-        logger.info("✅ Step 2: Validating data...")
+        logger.info("Step 2: Validating data...")
         config = load_config("config.yaml")
         schema_list = config.get("data_validation", {}).get(
             "schema", {}
@@ -97,7 +97,7 @@ def run_full_pipeline(start_date, end_date):
         logger.info(f"Processed data saved to {processed_path}")
 
         # 3. Feature engineering and preprocessing
-        logger.info("🧠 Step 3: Feature engineering and preprocessing...")
+        logger.info("Step 3: Feature engineering and preprocessing...")
         feature_cols, label_col = define_features_and_label()
         df_with_direction = create_price_direction_label(
             df_validated, label_col
@@ -105,12 +105,12 @@ def run_full_pipeline(start_date, end_date):
         logger.info("Price direction labels created")
 
         # 4. Model training
-        logger.info("🎯 Step 4: Training models...")
+        logger.info("Step 4: Training models...")
         price_model, direction_model = train_model(df_with_direction)
         logger.info("Model training completed successfully")
 
         # 5. Model evaluation
-        logger.info("📊 Step 5: Evaluating models...")
+        logger.info("Step 5: Evaluating models...")
         regression_metrics, classification_metrics = evaluate_models(
             df_with_direction
         )
@@ -140,7 +140,7 @@ def run_full_pipeline(start_date, end_date):
 
         logger.info("=" * 50)
 
-        logger.info("✅ Complete MLOps pipeline finished successfully!")
+        logger.info("Complete MLOps pipeline finished successfully!")
         return df_with_direction, price_model, direction_model
 
     except Exception as e:
@@ -256,10 +256,10 @@ def run_until_feature_engineering():
     )
     logger.warning(deprecation_msg)
 
-    logger.info("🚀 Starting pipeline up to feature engineering")
+    logger.info("Starting pipeline up to feature engineering")
 
     # 1. Load raw data
-    logger.info("📥 Loading data...")
+    logger.info("Loading data...")
     df = fetch_data()
 
     # 2. Load schema from config and validate
@@ -269,18 +269,18 @@ def run_until_feature_engineering():
     ).get("columns", [])
     schema = {col["name"]: col for col in schema_list}
 
-    logger.info("✅ Validating data...")
+    logger.info("Validating data...")
     df = validate_data(
         df, schema, logger, missing_strategy="drop", on_error="warn"
     )
 
     # 3. Feature engineering
-    logger.info("🧠 Creating features and labels...")
+    logger.info("Creating features and labels...")
     feature_cols, label_col = define_features_and_label()
     df = create_price_direction_label(df, label_col)
     X, y_reg, y_class = prepare_features(df, feature_cols, label_col)
 
-    logger.info("✅ Feature engineering completed.")
+    logger.info("Feature engineering completed.")
     return X, y_reg, y_class, df
 
 
