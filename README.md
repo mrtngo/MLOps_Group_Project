@@ -218,9 +218,18 @@ The API will be accessible at `http://localhost:8000`.
 
 ### Testing the API
 
-You can test the running API using the `scripts/call_api.py` script:
+You can test the running API using the `scripts/call_api.py` script.
+
+**For a single prediction:**
 ```bash
-python scripts/call_api.py
+python scripts/call_api.py --url http://localhost:8000/predict
+```
+
+**For batch predictions from a file:**
+```bash
+# Create a sample csv file first if you don't have one
+# For example, data/inference/new_data.csv
+python scripts/call_api.py --url http://localhost:8000/predict_batch --input data/inference/new_data.csv
 ```
 
 Alternatively, you can use `curl` to send a request directly to the `/predict` endpoint:
@@ -247,4 +256,12 @@ curl -X 'POST' \
 
 ## Testing
 
-Run the test suite:
+This project includes a comprehensive test suite using `pytest`. To run all tests, navigate to the project's root directory and execute the following command:
+
+```bash
+pytest
+```
+
+This will automatically discover and run all tests located in the `tests/` directory.
+
+## License
