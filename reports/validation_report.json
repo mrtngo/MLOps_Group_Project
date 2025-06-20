@@ -1,13 +1,8 @@
 {
   "missing_columns": [],
   "unexpected_columns": [
-<<<<<<< HEAD
     "timestamp",
     "BTCUSDT_price"
-=======
-    "BTCUSDT_price",
-    "timestamp"
->>>>>>> bfaef5c79d04c97da9491966e37ad3390979c1f7
   ],
   "type_mismatches": {},
   "missing_values": {},
