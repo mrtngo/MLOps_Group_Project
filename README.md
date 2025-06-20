@@ -193,14 +193,53 @@ The pipeline generates the following artifacts with their default storage locati
 
 All output paths are configurable through `config.yaml` in the respective sections (`artifacts`, `data_source`, `logging`, etc.).
 
+## API and Docker Usage
+
+### Running with Docker
+
+To build and run the application as a Docker container, use the following commands:
+
+```bash
+# 1. Build the Docker image
+docker build -t crypto-prediction-api .
+
+# 2. Run the Docker container
+docker run -d -p 8000:8000 crypto-prediction-api
+```
+
+The API will be accessible at `http://localhost:8000`.
+
+### Testing the API
+
+You can test the running API using the `scripts/call_api.py` script:
+```bash
+python scripts/call_api.py
+```
+
+Alternatively, you can use `curl` to send a request directly to the `/predict` endpoint:
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "ETHUSDT_price": 1800.0,
+    "BNBUSDT_price": 300.0,
+    "XRPUSDT_price": 0.5,
+    "ADAUSDT_price": 0.3,
+    "SOLUSDT_price": 25.0,
+    "BTCUSDT_funding_rate": 0.0001,
+    "ETHUSDT_funding_rate": 0.0001,
+    "BNBUSDT_funding_rate": 0.0001,
+    "XRPUSDT_funding_rate": 0.0001,
+    "ADAUSDT_funding_rate": 0.0001,
+    "SOLUSDT_funding_rate": 0.0001
+  }'
+```
+
 ## Testing
 
 Run the test suite:
 
-```bash
-pytest tests/
-```
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+``
