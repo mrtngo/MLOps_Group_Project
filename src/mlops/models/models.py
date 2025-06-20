@@ -101,10 +101,10 @@ class ModelTrainer:
 
         # Select features for each model
         self.selected_features_reg = select_features(
-            df_reg_train, feature_cols
+            df_reg_train, feature_cols, label_col
         )
         self.selected_features_class = select_features(
-            df_class_train, feature_cols
+            df_class_train, feature_cols, 'price_direction'
         )
 
         # Apply feature selection

@@ -1,0 +1,16 @@
+{
+  "os":  "macOS-14.0-arm64-arm-64bit-Mach-O",
+  "python":  "CPython 3.13.1",
+  "startedAt":  "2025-06-20T16:39:56.674303Z",
+  "program":  "/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/main.py",
+  "codePath":  "main.py",
+  "git":  {
+    "remote":  "https://github.com/mrtngo/MLOps_Group_Project/",
+    "commit":  "4b391cda96e97b3b285c968652b1f9acaac3f0e3"
+  },
+  "email":  "aviv275@gmail.com",
+  "root":  "/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project",
+  "host":  "192.168.1.4",
+  "executable":  "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+  "codePathLocal":  "main.py"
+}

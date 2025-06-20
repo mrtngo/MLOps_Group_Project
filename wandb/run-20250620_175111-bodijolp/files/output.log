@@ -1,0 +1,66 @@
+[2025-06-20 17:51:12,354][CryptoMLOps][INFO] - Started WandB run: crypto_orchestrator_20250620_175110
+2025-06-20 17:51:12 - INFO - CryptoMLOps - Started WandB run: crypto_orchestrator_20250620_175110
+[2025-06-20 17:51:12,354][CryptoMLOps][INFO] - Running crypto pipeline steps: ['model']
+2025-06-20 17:51:12 - INFO - CryptoMLOps - Running crypto pipeline steps: ['model']
+[2025-06-20 17:51:12,355][CryptoMLOps][INFO] - Step: model (training)
+2025-06-20 17:51:12 - INFO - CryptoMLOps - Step: model (training)
+[2025-06-20 17:51:12,669][src.mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:51:12 - INFO - src.mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:51:12,675][src.mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:51:12 - INFO - src.mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:51:12,774][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:51:12 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:51:12,781][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:51:12 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:51:12,781][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:51:12 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:51:12,786][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:51:12 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[define_features_and_label] Features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[define_features_and_label] Label: BTCUSDT_price
+                   timestamp  ETHUSDT_price  ...  prev_price  price_direction
+0  2023-01-01 16:00:00+00:00        1200.34  ...    16526.19                1
+1  2023-01-02 00:00:00+00:00        1213.09  ...    16616.75                1
+2  2023-01-03 16:00:00+00:00        1214.55  ...    16721.28                0
+3  2023-01-04 00:00:00+00:00        1252.00  ...    16675.18                1
+4  2023-01-05 16:00:00+00:00        1251.24  ...    16869.44                0
+
+[5 rows x 15 columns]
+[create_price_direction_label] Created price direction shape=(688, 15)
+Features shape: (688, 11), Regression target shape: (688,), Classification target shape: (688,)
+[2025-06-20 17:51:12,796][mlops.preproccess.preproccessing][INFO] - Data split completed - Train: (550, 11), Test: (138, 11)
+2025-06-20 17:51:12 - INFO - mlops.preproccess.preproccessing - Data split completed - Train: (550, 11), Test: (138, 11)
+[2025-06-20 17:51:12,796][mlops.preproccess.preproccessing][INFO] - Data split completed - Train: (550, 11), Test: (138, 11)
+2025-06-20 17:51:12 - INFO - mlops.preproccess.preproccessing - Data split completed - Train: (550, 11), Test: (138, 11)
+[2025-06-20 17:51:12,797][mlops.preproccess.preproccessing][INFO] - Successfully scaled features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+2025-06-20 17:51:12 - INFO - mlops.preproccess.preproccessing - Successfully scaled features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[2025-06-20 17:51:12,799][FeatureSelection][INFO] - Selected 9 features based on correlation > 0.05 with 'BTCUSDT_price'
+2025-06-20 17:51:12 - INFO - FeatureSelection - Selected 9 features based on correlation > 0.05 with 'BTCUSDT_price'
+[2025-06-20 17:51:12,799][FeatureSelection][INFO] - Selected 2 features based on correlation > 0.05 with 'price_direction'
+2025-06-20 17:51:12 - INFO - FeatureSelection - Selected 2 features based on correlation > 0.05 with 'price_direction'
+[2025-06-20 17:51:12,800][mlops.preproccess.preproccessing][INFO] - Class distribution: {1: 294, 0: 256}
+2025-06-20 17:51:12 - INFO - mlops.preproccess.preproccessing - Class distribution: {1: 294, 0: 256}
+[2025-06-20 17:51:12,801][mlops.preproccess.preproccessing][INFO] - Class ratio (1.15) below threshold (1.5). SMOTE not applied.
+2025-06-20 17:51:12 - INFO - mlops.preproccess.preproccessing - Class ratio (1.15) below threshold (1.5). SMOTE not applied.
+[2025-06-20 17:51:12,802][mlops.models.models][INFO] - Preprocessing pipeline saved to models/preprocessing_pipeline.pkl
+2025-06-20 17:51:12 - INFO - mlops.models.models - Preprocessing pipeline saved to models/preprocessing_pipeline.pkl
+[2025-06-20 17:51:12,802][mlops.models.models][INFO] - Regression features: ['ETHUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+2025-06-20 17:51:12 - INFO - mlops.models.models - Regression features: ['ETHUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[2025-06-20 17:51:12,802][mlops.models.models][INFO] - Classification features: ['XRPUSDT_funding_rate', 'ADAUSDT_funding_rate']
+2025-06-20 17:51:12 - INFO - mlops.models.models - Classification features: ['XRPUSDT_funding_rate', 'ADAUSDT_funding_rate']
+[2025-06-20 17:51:12,802][mlops.models.models][INFO] - Final training shapes - Reg: (550, 9), Class: (550, 2)
+2025-06-20 17:51:12 - INFO - mlops.models.models - Final training shapes - Reg: (550, 9), Class: (550, 2)
+[2025-06-20 17:51:12,802][mlops.models.models][INFO] - Training Linear Regression model...
+2025-06-20 17:51:12 - INFO - mlops.models.models - Training Linear Regression model...
+[2025-06-20 17:51:12,804][mlops.models.models][INFO] - Linear Regression Training RMSE: 1447.1826
+2025-06-20 17:51:12 - INFO - mlops.models.models - Linear Regression Training RMSE: 1447.1826
+[2025-06-20 17:51:12,804][mlops.models.models][INFO] - Model saved to models/linear_regression.pkl
+2025-06-20 17:51:12 - INFO - mlops.models.models - Model saved to models/linear_regression.pkl
+[2025-06-20 17:51:12,805][mlops.models.models][INFO] - Training Logistic Regression model...
+2025-06-20 17:51:12 - INFO - mlops.models.models - Training Logistic Regression model...
+[2025-06-20 17:51:12,808][mlops.models.models][INFO] - Logistic Regression Training ROC AUC: 0.5192
+2025-06-20 17:51:12 - INFO - mlops.models.models - Logistic Regression Training ROC AUC: 0.5192
+[2025-06-20 17:51:12,809][mlops.models.models][INFO] - Model saved to models/logistic_regression.pkl
+2025-06-20 17:51:12 - INFO - mlops.models.models - Model saved to models/logistic_regression.pkl
+[2025-06-20 17:51:12,809][CryptoMLOps][INFO] - 🎉 Crypto MLOps pipeline completed successfully!
+2025-06-20 17:51:12 - INFO - CryptoMLOps - 🎉 Crypto MLOps pipeline completed successfully!

@@ -12,6 +12,7 @@ dependencies:
   - numpy
   - scikit-learn
   - requests
+  - imbalanced-learn
   - pip
   - pip:
       - mlflow-skinny

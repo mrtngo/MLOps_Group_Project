@@ -53,17 +53,18 @@ def run_preprocessing(input_artifact: str):
             # --- 1. Load Data ---
             logger.info(f"Loading feature-engineered data from: {input_artifact}")
             df = pd.read_csv(input_artifact)
-            mlflow.log_param("input_artifact", input_artifact)
-            wandb.config.update({"input_artifact": input_artifact})
+            # MLflow already logs the input artifact parameter, no need to do it manually
+            # mlflow.log_param("input_artifact", input_artifact)
+            # wandb.config.update({"input_artifact": input_artifact})
 
             # --- 2. Feature Engineering ---
-            feature_cols, label_col = define_features_and_label()
+            feature_cols, label_col = define_features_and_label(config)
             X, y_reg, y_class = prepare_features(df, feature_cols, label_col)
             logger.info("Feature engineering complete.")
 
             # --- 3. Data Splitting ---
-            X_train_reg, X_test_reg, y_train_reg, y_test_reg = split_data(X, y_reg)
-            X_train_class, X_test_class, y_train_class, y_test_class = split_data(X, y_class)
+            X_train_reg, X_test_reg, y_train_reg, y_test_reg = split_data(X, y_reg, config)
+            X_train_class, X_test_class, y_train_class, y_test_class = split_data(X, y_class, config)
             logger.info("Data splitting complete.")
 
             # --- 4. Scaling and Feature Selection ---
@@ -77,13 +78,13 @@ def run_preprocessing(input_artifact: str):
             df_reg_train = pd.DataFrame(X_train_reg_scaled, columns=feature_cols, index=X_train_reg.index)
             df_reg_train[config.get("target")] = y_train_reg.values
             selected_features_reg = select_features(
-                df_reg_train, feature_cols, target_col=config.get("target")
+                df_reg_train, feature_cols, target_col=config.get("target"), config=config
             )
             
             df_class_train = pd.DataFrame(X_train_class_scaled, columns=feature_cols, index=X_train_class.index)
             df_class_train["price_direction"] = y_train_class.values
             selected_features_class = select_features(
-                df_class_train, feature_cols, target_col="price_direction"
+                df_class_train, feature_cols, target_col="price_direction", config=config
             )
             
             logger.info(f"Selected regression features: {selected_features_reg}")
@@ -97,9 +98,9 @@ def run_preprocessing(input_artifact: str):
             X_test_class_scaled = pd.DataFrame(X_test_class_scaled, columns=feature_cols)[selected_features_class]
 
             # --- 5. Oversampling (SMOTE) ---
-            smote_params = config.get("preprocessing", {}).get("smote", {})
-            if smote_params.get("apply", True):
-                X_train_class_balanced, y_train_class_balanced = smote_oversample(X_train_class_selected, y_train_class)
+            smote_params = config.get("preprocessing", {}).get("sampling", {})
+            if smote_params.get("method") == "smote":
+                X_train_class_balanced, y_train_class_balanced = smote_oversample(X_train_class_selected, y_train_class, config)
                 logger.info("SMOTE applied to classification training data.")
             else:
                 X_train_class_balanced, y_train_class_balanced = X_train_class_selected, y_train_class

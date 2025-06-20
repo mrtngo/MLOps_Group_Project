@@ -16,7 +16,8 @@ from sklearn.metrics import (
     confusion_matrix,
     classification_report,
     accuracy_score,
-    f1_score
+    f1_score,
+    roc_curve
 )
 
 from mlops.features.features import (
@@ -34,33 +35,138 @@ config = load_config("conf/config.yaml")
 class ModelEvaluator:
     """Handle model evaluation for both regression and classification tasks."""
 
-    def __init__(self):
-        """Initialize ModelEvaluator with config parameters."""
+    def __init__(self, model_path: str, test_data_dir: str, config: dict):
+        """
+        Initialize ModelEvaluator.
+
+        Args:
+            model_path (str): Path to the trained model artifact.
+            test_data_dir (str): Path to the directory containing test data.
+            config (dict): Configuration dictionary.
+        """
+        self.model_path = model_path
+        self.test_data_dir = test_data_dir
         self.config = config
-        self.preprocessing_pipeline = None
-        self.ensure_output_directories()
-        self._load_preprocessing_pipeline()
+        self.model = self._load_model()
+        self.output_dir = "reports/evaluation"
+        os.makedirs(self.output_dir, exist_ok=True)
 
-    def ensure_output_directories(self) -> None:
-        """Create necessary output directories."""
-        os.makedirs("reports", exist_ok=True)
-        os.makedirs("plots", exist_ok=True)
+    def _load_model(self) -> Any:
+        """Load the model from the specified path."""
+        try:
+            with open(self.model_path, 'rb') as f:
+                model = pickle.load(f)
+            logger.info(f"Model loaded successfully from {self.model_path}")
+            return model
+        except FileNotFoundError:
+            logger.error(f"Model file not found at: {self.model_path}")
+            raise
+        except Exception as e:
+            logger.error(f"Error loading model: {e}")
+            raise
+            
+    def _load_test_data(self, file_name: str) -> Tuple[pd.DataFrame, pd.Series]:
+        """Loads a specific test dataset (X, y) from the test data directory."""
+        X_path = os.path.join(self.test_data_dir, f"X_{file_name}.csv")
+        y_path = os.path.join(self.test_data_dir, f"y_{file_name}.csv")
+        
+        if not os.path.exists(X_path) or not os.path.exists(y_path):
+            raise FileNotFoundError(f"Test data files for '{file_name}' not found in {self.test_data_dir}")
+            
+        X_test = pd.read_csv(X_path)
+        y_test = pd.read_csv(y_path).squeeze()
+        return X_test, y_test
 
-    def _load_preprocessing_pipeline(self) -> None:
-        """Load preprocessing artifacts (scaler, feature selections)."""
-        artifacts_config = self.config.get("artifacts", {})
-        pipeline_path = artifacts_config.get(
-            "preprocessing_pipeline", "models/preprocessing_pipeline.pkl"
-        )
+    def evaluate_regression(self) -> Dict[str, float]:
+        """Evaluates the regression model."""
+        try:
+            X_test, y_test = self._load_test_data("test_reg")
+            predictions = self.model.predict(X_test)
+            rmse = np.sqrt(mean_squared_error(y_test, predictions))
+            metrics = {"rmse": rmse}
+            logger.info(f"Regression evaluation complete. RMSE: {rmse}")
+            return metrics
+        except FileNotFoundError as e:
+            logger.warning(f"Skipping regression evaluation: {e}")
+            return {}
+        except Exception as e:
+            logger.error(f"An error occurred during regression evaluation: {e}")
+            return {}
 
-        if os.path.exists(pipeline_path):
-            with open(pipeline_path, 'rb') as f:
-                self.preprocessing_pipeline = pickle.load(f)
-            logger.info(
-                f"Preprocessing pipeline loaded from {pipeline_path}")
-        else:
-            logger.warning(
-                f"Preprocessing pipeline not found at {pipeline_path}")
+    def evaluate_classification(self) -> Tuple[Dict, Dict, pd.DataFrame]:
+        """Evaluates the classification model."""
+        plots = {}
+        metrics = {}
+        sample_df = pd.DataFrame()
+
+        try:
+            X_test, y_test = self._load_test_data("test_class")
+            
+            predictions = self.model.predict(X_test)
+            probabilities = self.model.predict_proba(X_test)[:, 1] if hasattr(self.model, 'predict_proba') else None
+            
+            # --- Calculate Metrics ---
+            accuracy = accuracy_score(y_test, predictions)
+            f1 = f1_score(y_test, predictions, average='weighted')
+            roc_auc = roc_auc_score(y_test, probabilities) if probabilities is not None else 'N/A'
+            metrics = {"accuracy": accuracy, "f1_score": f1, "roc_auc": roc_auc}
+            logger.info(f"Classification metrics: {metrics}")
+
+            # --- Create Plots ---
+            # Confusion Matrix
+            cm_path = os.path.join(self.output_dir, "confusion_matrix.png")
+            self._plot_confusion_matrix(y_test, predictions, save_path=cm_path)
+            plots["confusion_matrix"] = cm_path
+
+            # ROC Curve
+            if probabilities is not None:
+                roc_path = os.path.join(self.output_dir, "roc_curve.png")
+                self._plot_roc_curve(y_test, probabilities, save_path=roc_path)
+                plots["roc_curve"] = roc_path
+
+            # --- Create Sample Predictions Table ---
+            sample_df = X_test.head(20).copy()
+            sample_df["actual_direction"] = y_test.head(20).values
+            sample_df["predicted_direction"] = predictions[:20]
+            if probabilities is not None:
+                sample_df["prediction_probability"] = probabilities[:20]
+            
+            return metrics, plots, sample_df
+
+        except FileNotFoundError as e:
+            logger.warning(f"Skipping classification evaluation: {e}")
+            return metrics, plots, sample_df
+        except Exception as e:
+            logger.error(f"An error occurred during classification evaluation: {e}", exc_info=True)
+            return metrics, plots, sample_df
+
+    def _plot_confusion_matrix(self, y_true, y_pred, save_path):
+        """Generates and saves a confusion matrix plot."""
+        cm = confusion_matrix(y_true, y_pred)
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                    xticklabels=['Down', 'Up'], yticklabels=['Down', 'Up'])
+        plt.xlabel('Predicted Label')
+        plt.ylabel('True Label')
+        plt.title('Confusion Matrix')
+        plt.savefig(save_path)
+        plt.close()
+        logger.info(f"Confusion matrix saved to {save_path}")
+
+    def _plot_roc_curve(self, y_true, y_probs, save_path):
+        """Generates and saves an ROC curve plot."""
+        fpr, tpr, _ = roc_curve(y_true, y_probs)
+        roc_auc = roc_auc_score(y_true, y_probs)
+        plt.figure(figsize=(8, 6))
+        plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:0.2f})')
+        plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('Receiver Operating Characteristic (ROC) Curve')
+        plt.legend(loc="lower right")
+        plt.savefig(save_path)
+        plt.close()
+        logger.info(f"ROC curve saved to {save_path}")
 
     def load_model(self, model_path: str) -> Any:
         """

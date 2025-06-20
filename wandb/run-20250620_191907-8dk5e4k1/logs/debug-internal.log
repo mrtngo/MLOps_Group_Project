@@ -1,0 +1,17 @@
+{"time":"2025-06-20T19:19:07.138875+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_191907-8dk5e4k1/logs/debug-core.log"}
+{"time":"2025-06-20T19:19:07.273088+02:00","level":"INFO","msg":"stream: created new stream","id":"8dk5e4k1"}
+{"time":"2025-06-20T19:19:07.273241+02:00","level":"INFO","msg":"stream: started","id":"8dk5e4k1"}
+{"time":"2025-06-20T19:19:07.273256+02:00","level":"INFO","msg":"handler: started","stream_id":"8dk5e4k1"}
+{"time":"2025-06-20T19:19:07.273294+02:00","level":"INFO","msg":"sender: started","stream_id":"8dk5e4k1"}
+{"time":"2025-06-20T19:19:07.273314+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"8dk5e4k1"}
+{"time":"2025-06-20T19:19:07.516535+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T19:19:09.350444+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T19:19:09.350496+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T19:19:10.355727+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact processed-data","runtime_seconds":1.011157459}],"total_operations":1}}
+{"time":"2025-06-20T19:19:12.599555+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T19:19:12.680919+02:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/aviv275-ie-university/mlops-project/8dk5e4k1/file_stream\": read tcp 192.168.1.4:52042->35.186.228.49:443: read: connection reset by peer"}
+{"time":"2025-06-20T19:19:15.163866+02:00","level":"INFO","msg":"stream: closing","id":"8dk5e4k1"}
+{"time":"2025-06-20T19:19:15.164095+02:00","level":"INFO","msg":"handler: closed","stream_id":"8dk5e4k1"}
+{"time":"2025-06-20T19:19:15.164169+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"8dk5e4k1"}
+{"time":"2025-06-20T19:19:15.164184+02:00","level":"INFO","msg":"sender: closed","stream_id":"8dk5e4k1"}
+{"time":"2025-06-20T19:19:15.164938+02:00","level":"INFO","msg":"stream: closed","id":"8dk5e4k1"}

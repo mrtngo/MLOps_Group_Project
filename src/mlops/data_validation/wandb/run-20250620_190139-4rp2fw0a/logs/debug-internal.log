@@ -1,0 +1,16 @@
+{"time":"2025-06-20T19:01:39.382128+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/data_validation/wandb/run-20250620_190139-4rp2fw0a/logs/debug-core.log"}
+{"time":"2025-06-20T19:01:39.530619+02:00","level":"INFO","msg":"stream: created new stream","id":"4rp2fw0a"}
+{"time":"2025-06-20T19:01:39.53069+02:00","level":"INFO","msg":"stream: started","id":"4rp2fw0a"}
+{"time":"2025-06-20T19:01:39.530694+02:00","level":"INFO","msg":"handler: started","stream_id":"4rp2fw0a"}
+{"time":"2025-06-20T19:01:39.530715+02:00","level":"INFO","msg":"sender: started","stream_id":"4rp2fw0a"}
+{"time":"2025-06-20T19:01:39.530755+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"4rp2fw0a"}
+{"time":"2025-06-20T19:01:39.951435+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T19:01:41.118924+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T19:01:41.119006+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T19:01:42.127126+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-4rp2fw0a-summary_stats","runtime_seconds":1.738168041},{"desc":"uploading artifact run-4rp2fw0a-sample_rows","runtime_seconds":1.213054667,"subtasks":[{"desc":"sample_rows.table.json","runtime_seconds":0.463784,"progress":"4.7KB/4.7KB"}]}],"total_operations":2}}
+{"time":"2025-06-20T19:01:43.082879+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T19:01:43.311922+02:00","level":"INFO","msg":"stream: closing","id":"4rp2fw0a"}
+{"time":"2025-06-20T19:01:43.31266+02:00","level":"INFO","msg":"handler: closed","stream_id":"4rp2fw0a"}
+{"time":"2025-06-20T19:01:43.312692+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"4rp2fw0a"}
+{"time":"2025-06-20T19:01:43.312787+02:00","level":"INFO","msg":"sender: closed","stream_id":"4rp2fw0a"}
+{"time":"2025-06-20T19:01:43.313191+02:00","level":"INFO","msg":"stream: closed","id":"4rp2fw0a"}

@@ -1,0 +1,16 @@
+{"time":"2025-06-20T18:27:08.893153+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_182708-mwkfprl0/logs/debug-core.log"}
+{"time":"2025-06-20T18:27:09.164753+02:00","level":"INFO","msg":"stream: created new stream","id":"mwkfprl0"}
+{"time":"2025-06-20T18:27:09.164965+02:00","level":"INFO","msg":"stream: started","id":"mwkfprl0"}
+{"time":"2025-06-20T18:27:09.165064+02:00","level":"INFO","msg":"handler: started","stream_id":"mwkfprl0"}
+{"time":"2025-06-20T18:27:09.165129+02:00","level":"INFO","msg":"sender: started","stream_id":"mwkfprl0"}
+{"time":"2025-06-20T18:27:09.165236+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"mwkfprl0"}
+{"time":"2025-06-20T18:27:09.407935+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T18:27:31.080912+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T18:27:31.081107+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T18:27:32.088826+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-mwkfprl0-sample_rows","runtime_seconds":1.695700917,"subtasks":[{"desc":"sample_rows.table.json","runtime_seconds":0.479170542,"progress":"14.0KB/14.0KB"}]},{"desc":"uploading artifact run-mwkfprl0-summary_stats","runtime_seconds":1.202136125,"subtasks":[{"desc":"summary_stats.table.json","runtime_seconds":0.472487167,"progress":"3.0KB/3.0KB"}]}],"total_operations":2}}
+{"time":"2025-06-20T18:27:33.224009+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T18:27:33.400814+02:00","level":"INFO","msg":"stream: closing","id":"mwkfprl0"}
+{"time":"2025-06-20T18:27:33.401047+02:00","level":"INFO","msg":"handler: closed","stream_id":"mwkfprl0"}
+{"time":"2025-06-20T18:27:33.401083+02:00","level":"INFO","msg":"sender: closed","stream_id":"mwkfprl0"}
+{"time":"2025-06-20T18:27:33.401387+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"mwkfprl0"}
+{"time":"2025-06-20T18:27:33.401654+02:00","level":"INFO","msg":"stream: closed","id":"mwkfprl0"}

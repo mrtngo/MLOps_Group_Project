@@ -4,8 +4,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
-from typing import Tuple, List
-from mlops.data_validation.data_validation import load_config
+from typing import Tuple, List, Dict
 
 # Configure logging
 logging.basicConfig(
@@ -14,22 +13,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-try:
-    config = load_config("conf/config.yaml")
-    params = config.get("preprocessing", {})
-    data_split = config.get("data_split", {})
-except Exception as e:
-    logger.error(f"Failed to load config file: {e}")
-    raise
 
-
-def split_data(X, y):
+def split_data(X, y, config: Dict):
     """
     Splits data into training and testing sets.
 
     Args:
         X: feature matrix
         y: target variable
+        config: Configuration dictionary.
 
     Returns:
         tuple: (X_train, X_test, y_train, y_test)
@@ -107,13 +99,14 @@ def scale_test_data(X_test: pd.DataFrame, scaler: StandardScaler,
         raise
 
 
-def smote_oversample(X, y) -> Tuple[np.ndarray, np.ndarray]:
+def smote_oversample(X, y, config: Dict) -> Tuple[np.ndarray, np.ndarray]:
     """
     Applies SMOTE oversampling if class imbalance ratio > threshold.
 
     Args:
         X: Feature matrix
         y: Target labels
+        config: Configuration dictionary.
 
     Returns:
         Tuple of resampled X and y
@@ -132,6 +125,11 @@ def smote_oversample(X, y) -> Tuple[np.ndarray, np.ndarray]:
             logger.warning(warning_msg)
             return X, y
 
+        min_val = min(class_counts.values())
+        if min_val == 0:
+            logger.warning("One class has zero samples. SMOTE not applicable.")
+            return X, y
+            
         maj = max(class_counts, key=class_counts.get)
         min_ = min(class_counts, key=class_counts.get)
         ratio = class_counts[maj] / class_counts[min_]
@@ -179,7 +177,7 @@ def smote_oversample(X, y) -> Tuple[np.ndarray, np.ndarray]:
 
 
 def preprocess_pipeline(X_train: pd.DataFrame, X_test: pd.DataFrame,
-                        y_train, feature_cols: List[str],
+                        y_train, feature_cols: List[str], config: Dict,
                         apply_smote: bool = False) -> Tuple[
                             np.ndarray, np.ndarray, np.ndarray, np.ndarray,
                             StandardScaler]:
@@ -191,6 +189,7 @@ def preprocess_pipeline(X_train: pd.DataFrame, X_test: pd.DataFrame,
         X_test: Test features DataFrame
         y_train: Training targets
         feature_cols: List of feature column names
+        config: Configuration dictionary.
         apply_smote: Whether to apply SMOTE oversampling
 
     Returns:
@@ -207,7 +206,7 @@ def preprocess_pipeline(X_train: pd.DataFrame, X_test: pd.DataFrame,
         # Apply SMOTE if requested
         if apply_smote:
             X_train_final, y_train_final = smote_oversample(
-                X_train_scaled, y_train
+                X_train_scaled, y_train, config
             )
         else:
             X_train_final, y_train_final = X_train_scaled, y_train

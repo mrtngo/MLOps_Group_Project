@@ -1,0 +1,16 @@
+{"time":"2025-06-20T18:54:17.693986+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/data_load/wandb/run-20250620_185417-w0peqon3/logs/debug-core.log"}
+{"time":"2025-06-20T18:54:17.879375+02:00","level":"INFO","msg":"stream: created new stream","id":"w0peqon3"}
+{"time":"2025-06-20T18:54:17.879463+02:00","level":"INFO","msg":"stream: started","id":"w0peqon3"}
+{"time":"2025-06-20T18:54:17.879467+02:00","level":"INFO","msg":"handler: started","stream_id":"w0peqon3"}
+{"time":"2025-06-20T18:54:17.879483+02:00","level":"INFO","msg":"sender: started","stream_id":"w0peqon3"}
+{"time":"2025-06-20T18:54:17.879513+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"w0peqon3"}
+{"time":"2025-06-20T18:54:18.12969+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T18:54:40.268608+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T18:54:40.269314+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T18:54:41.277704+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-w0peqon3-summary_stats","runtime_seconds":1.183463042},{"desc":"uploading artifact raw-data","runtime_seconds":1.015030166}],"total_operations":2}}
+{"time":"2025-06-20T18:54:43.621988+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T18:54:43.826864+02:00","level":"INFO","msg":"stream: closing","id":"w0peqon3"}
+{"time":"2025-06-20T18:54:43.826907+02:00","level":"INFO","msg":"handler: closed","stream_id":"w0peqon3"}
+{"time":"2025-06-20T18:54:43.826928+02:00","level":"INFO","msg":"sender: closed","stream_id":"w0peqon3"}
+{"time":"2025-06-20T18:54:43.82715+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"w0peqon3"}
+{"time":"2025-06-20T18:54:43.827288+02:00","level":"INFO","msg":"stream: closed","id":"w0peqon3"}

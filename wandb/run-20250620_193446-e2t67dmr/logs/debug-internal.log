@@ -1,0 +1,16 @@
+{"time":"2025-06-20T19:34:46.155864+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_193446-e2t67dmr/logs/debug-core.log"}
+{"time":"2025-06-20T19:34:46.301627+02:00","level":"INFO","msg":"stream: created new stream","id":"e2t67dmr"}
+{"time":"2025-06-20T19:34:46.301699+02:00","level":"INFO","msg":"stream: started","id":"e2t67dmr"}
+{"time":"2025-06-20T19:34:46.301699+02:00","level":"INFO","msg":"handler: started","stream_id":"e2t67dmr"}
+{"time":"2025-06-20T19:34:46.30172+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"e2t67dmr"}
+{"time":"2025-06-20T19:34:46.301746+02:00","level":"INFO","msg":"sender: started","stream_id":"e2t67dmr"}
+{"time":"2025-06-20T19:34:46.646148+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T19:35:08.476789+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T19:35:08.477053+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T19:35:09.48254+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-e2t67dmr-sample_rows","runtime_seconds":1.7343840419999998},{"desc":"uploading artifact run-e2t67dmr-summary_stats","runtime_seconds":1.181409916}],"total_operations":2}}
+{"time":"2025-06-20T19:35:10.087708+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T19:35:10.317643+02:00","level":"INFO","msg":"stream: closing","id":"e2t67dmr"}
+{"time":"2025-06-20T19:35:10.31769+02:00","level":"INFO","msg":"handler: closed","stream_id":"e2t67dmr"}
+{"time":"2025-06-20T19:35:10.317721+02:00","level":"INFO","msg":"sender: closed","stream_id":"e2t67dmr"}
+{"time":"2025-06-20T19:35:10.317883+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"e2t67dmr"}
+{"time":"2025-06-20T19:35:10.318058+02:00","level":"INFO","msg":"stream: closed","id":"e2t67dmr"}

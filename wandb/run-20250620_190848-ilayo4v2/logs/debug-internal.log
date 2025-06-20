@@ -1,0 +1,15 @@
+{"time":"2025-06-20T19:08:48.475292+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_190848-ilayo4v2/logs/debug-core.log"}
+{"time":"2025-06-20T19:08:48.890153+02:00","level":"INFO","msg":"stream: created new stream","id":"ilayo4v2"}
+{"time":"2025-06-20T19:08:48.8902+02:00","level":"INFO","msg":"stream: started","id":"ilayo4v2"}
+{"time":"2025-06-20T19:08:48.890232+02:00","level":"INFO","msg":"handler: started","stream_id":"ilayo4v2"}
+{"time":"2025-06-20T19:08:48.890228+02:00","level":"INFO","msg":"sender: started","stream_id":"ilayo4v2"}
+{"time":"2025-06-20T19:08:48.890427+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"ilayo4v2"}
+{"time":"2025-06-20T19:08:49.273363+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T19:08:49.666166+02:00","level":"INFO","msg":"stream: closing","id":"ilayo4v2"}
+{"time":"2025-06-20T19:08:49.666373+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T19:08:49.666397+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T19:08:50.320633+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T19:08:50.512167+02:00","level":"INFO","msg":"handler: closed","stream_id":"ilayo4v2"}
+{"time":"2025-06-20T19:08:50.512209+02:00","level":"INFO","msg":"sender: closed","stream_id":"ilayo4v2"}
+{"time":"2025-06-20T19:08:50.513092+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"ilayo4v2"}
+{"time":"2025-06-20T19:08:50.513137+02:00","level":"INFO","msg":"stream: closed","id":"ilayo4v2"}

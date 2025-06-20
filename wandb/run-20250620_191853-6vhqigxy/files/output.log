@@ -1,0 +1,30 @@
+2025-06-20 19:18:54,573 [INFO] Loading raw data from: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/raw/raw_data.csv
+2025-06-20 19:18:54,577 [INFO] Validating data against the schema...
+2025-06-20 19:18:54,577 [INFO] Starting validation for DataFrame with shape (1500, 13)
+2025-06-20 19:18:54,577 [INFO] Validation: missing_strategy='impute', on_error='warn'
+2025-06-20 19:18:54,577 [INFO] Found 2 unexpected columns: ['BTCUSDT_price', 'timestamp']
+2025-06-20 19:18:54,577 [WARNING] Continuing despite unexpected columns
+2025-06-20 19:18:54,577 [INFO] Validating schema for 11 columns
+2025-06-20 19:18:54,578 [INFO] Schema validation completed
+2025-06-20 19:18:54,579 [INFO] Column 'ETHUSDT_price': 405 missing values (27.0%)
+2025-06-20 19:18:54,579 [INFO] Column 'BNBUSDT_price': 405 missing values (27.0%)
+2025-06-20 19:18:54,579 [INFO] Column 'XRPUSDT_price': 405 missing values (27.0%)
+2025-06-20 19:18:54,579 [INFO] Column 'ADAUSDT_price': 405 missing values (27.0%)
+2025-06-20 19:18:54,579 [INFO] Column 'SOLUSDT_price': 405 missing values (27.0%)
+2025-06-20 19:18:54,579 [INFO] Column 'BTCUSDT_funding_rate': 405 missing values (27.0%)
+2025-06-20 19:18:54,579 [INFO] Column 'ETHUSDT_funding_rate': 405 missing values (27.0%)
+2025-06-20 19:18:54,579 [INFO] Column 'BNBUSDT_funding_rate': 405 missing values (27.0%)
+2025-06-20 19:18:54,579 [INFO] Column 'XRPUSDT_funding_rate': 405 missing values (27.0%)
+2025-06-20 19:18:54,579 [INFO] Column 'ADAUSDT_funding_rate': 405 missing values (27.0%)
+2025-06-20 19:18:54,579 [INFO] Column 'SOLUSDT_funding_rate': 405 missing values (27.0%)
+2025-06-20 19:18:54,579 [INFO] Total missing values in all columns: 4455
+2025-06-20 19:18:54,579 [INFO] Handling missing values with strategy: 'impute'
+2025-06-20 19:18:54,581 [INFO] Imputed 4860 missing values using forward/backward fill
+2025-06-20 19:18:54,582 [INFO] Validation report saved to: reports/validation_report.json
+2025-06-20 19:18:54,582 [INFO] Data validation completed with 2 issues (see report for details)
+2025-06-20 19:18:54,582 [INFO] Final DataFrame shape: (1500, 13)
+2025-06-20 19:18:54,582 [INFO] Data validation completed. Shape after validation: (1500, 13)
+2025-06-20 19:18:54,583 [INFO] Generating and logging summary statistics and sample rows to W&B...
+2025-06-20 19:18:55,563 [INFO] Successfully logged W&B Tables.
+2025-06-20 19:18:55,734 [INFO] Logged validated data artifact to MLflow and W&B: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/data_validation/../../.././data/processed/futures_data_processed_.csv
+2025-06-20 19:18:55,735 [INFO] --- Data Validation Step Completed Successfully ---

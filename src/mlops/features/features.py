@@ -1,14 +1,12 @@
 import pandas as pd
 from src.mlops.data_validation.data_validation import load_config
 from sklearn.ensemble import RandomForestRegressor
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 import yaml
 import logging
 
-config = load_config("conf/config.yaml")
 
-
-def define_features_and_label():
+def define_features_and_label(config: Dict):
     """
     Defines the feature columns and target label
     for regression and classification tasks.
@@ -80,7 +78,7 @@ def prepare_features(df, feature_cols, label_col):
     return X, y_reg, y_class
 
 
-def select_features(df: pd.DataFrame, feature_cols: list[str], target_col: str) -> list[str]:
+def select_features(df: pd.DataFrame, feature_cols: list[str], target_col: str, config: Dict) -> list[str]:
     """
     Selects features based on correlation with the target variable.
 
@@ -88,12 +86,13 @@ def select_features(df: pd.DataFrame, feature_cols: list[str], target_col: str) 
         df: DataFrame containing features and the target.
         feature_cols: List of potential feature columns.
         target_col: The name of the target column.
+        config: Configuration dictionary.
 
     Returns:
         List of selected feature names.
     """
     logger = logging.getLogger("FeatureSelection")
-    selection_config = config.get("feature_selection", {})
+    selection_config = config.get("feature_engineering", {}).get("feature_selection", {})
     correlation_threshold = selection_config.get("correlation_threshold", 0.05)
 
     if target_col not in df.columns:
@@ -110,11 +109,12 @@ def select_features(df: pd.DataFrame, feature_cols: list[str], target_col: str) 
     return selected
 
 
-def get_training_and_testing_data(df: pd.DataFrame = None):
+def get_training_and_testing_data(config: Dict, df: pd.DataFrame = None):
     """
     Load or split training and testing data.
 
     Args:
+        config: Configuration dictionary.
         df: Optional DataFrame to split. If None, loads from processed path.
 
     Returns:

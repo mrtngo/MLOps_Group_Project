@@ -1,0 +1,16 @@
+{"time":"2025-06-20T19:40:58.717861+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_194058-lyp5eyis/logs/debug-core.log"}
+{"time":"2025-06-20T19:40:58.887313+02:00","level":"INFO","msg":"stream: created new stream","id":"lyp5eyis"}
+{"time":"2025-06-20T19:40:58.887513+02:00","level":"INFO","msg":"stream: started","id":"lyp5eyis"}
+{"time":"2025-06-20T19:40:58.887501+02:00","level":"INFO","msg":"handler: started","stream_id":"lyp5eyis"}
+{"time":"2025-06-20T19:40:58.887541+02:00","level":"INFO","msg":"sender: started","stream_id":"lyp5eyis"}
+{"time":"2025-06-20T19:40:58.88754+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"lyp5eyis"}
+{"time":"2025-06-20T19:40:59.22586+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T19:41:00.157771+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T19:41:00.157817+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T19:41:01.15971+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-lyp5eyis-sample_predictions","runtime_seconds":1.008854125}],"total_operations":1}}
+{"time":"2025-06-20T19:41:01.935982+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T19:41:02.239471+02:00","level":"INFO","msg":"stream: closing","id":"lyp5eyis"}
+{"time":"2025-06-20T19:41:02.239544+02:00","level":"INFO","msg":"handler: closed","stream_id":"lyp5eyis"}
+{"time":"2025-06-20T19:41:02.239568+02:00","level":"INFO","msg":"sender: closed","stream_id":"lyp5eyis"}
+{"time":"2025-06-20T19:41:02.239566+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"lyp5eyis"}
+{"time":"2025-06-20T19:41:02.239875+02:00","level":"INFO","msg":"stream: closed","id":"lyp5eyis"}

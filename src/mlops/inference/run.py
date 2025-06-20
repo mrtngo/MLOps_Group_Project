@@ -3,122 +3,74 @@ import logging
 import os
 import sys
 import pandas as pd
+import joblib
 
-# Add project root to path
+# Add the project root to the Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
 import mlflow
 import wandb
-from src.mlops.data_validation.data_validation import load_config
-from src.mlops.inference.inference import ModelInferencer
+from src.mlops.data_load.data_load import load_config
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
-
-def run_inference(input_csv: str, output_csv: str):
+def run_inference(model_artifact_path: str, inference_data_path: str):
     """
-    Executes the batch inference step.
-    - Loads new data from an input CSV.
-    - Loads the trained models and preprocessing pipeline.
+    Executes the model inference step.
+    - Loads a trained model and new data.
     - Generates predictions.
-    - Saves predictions to an output CSV and logs artifacts.
+    - Logs predictions as an artifact.
     """
-    logger.info("--- Starting Standalone Batch Inference Step ---")
+    logger.info("--- Starting Standalone Model Inference Step ---")
 
-    config = load_config("conf/config.yaml")
+    # Find the project root directory and load config
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.join(current_dir, '..', '..', '..')
+    config_path = os.path.join(project_root, 'conf', 'config.yaml')
+    config = load_config(config_path)
 
-    # Set MLflow experiment
+    # Set MLflow and W&B experiment
     mlflow_config = config.get("mlflow_tracking", {})
     experiment_name = mlflow_config.get("experiment_name", "MLOps-Group-Project-Experiment")
     mlflow.set_experiment(experiment_name)
-    logger.info(f"MLflow experiment set to '{experiment_name}'")
-
-    # Initialize a new W&B run
+    
     wandb_config = config.get("wandb", {})
-    wandb_run = wandb.init(
+    wandb.init(
         project=wandb_config.get("project", "mlops-project"),
-        entity=wandb_config.get("entity"),
-        name="inference-standalone",
-        job_type="inference"
+        name="model_inference-standalone",
+        config=config
     )
 
-    try:
-        with mlflow.start_run(run_name="inference") as mlrun:
-            # --- 1. Load Input Data ---
-            logger.info(f"Loading new data for inference from: {input_csv}")
-            if not os.path.exists(input_csv):
-                logger.error(f"Input data file not found at {input_csv}")
-                sys.exit(1)
-            df_input = pd.read_csv(input_csv)
-            mlflow.log_param("input_csv", input_csv)
-            wandb.config.update({"input_csv": input_csv})
+    with mlflow.start_run(run_name="model_inference") as mlrun:
+        logger.info(f"Loading model from: {model_artifact_path}")
+        model = joblib.load(model_artifact_path)
+        
+        logger.info(f"Loading inference data from: {inference_data_path}")
+        inference_df = pd.read_csv(inference_data_path)
 
-            # --- 2. Run Inference ---
-            logger.info("Initializing ModelInferencer and generating predictions...")
-            inferencer = ModelInferencer()
-            
-            # Use the correct prediction method
-            predictions = inferencer.predict_both(df_input)
-            
-            # Combine predictions with input data
-            df_predictions = df_input.copy()
-            df_predictions['predicted_price'] = predictions['price_predictions']
-            df_predictions['predicted_binned_price'] = predictions['direction_predictions']
-            df_predictions['prediction_probability'] = predictions['direction_probabilities']
-
-            logger.info(f"Inference complete. Shape of predictions: {df_predictions.shape}")
-
-            # --- 3. Save and Log Output ---
-            os.makedirs(os.path.dirname(output_csv), exist_ok=True)
-            df_predictions.to_csv(output_csv, index=False)
-            logger.info(f"Predictions saved to: {output_csv}")
-
-            # Log to MLflow and W&B
-            mlflow.log_artifact(input_csv, "inference-input-data")
-            mlflow.log_artifact(output_csv, "inference-predictions")
-
-            # Log a sample of predictions to W&B
-            prediction_sample = df_predictions.head(50)
-            wandb.log({"prediction_samples": wandb.Table(dataframe=prediction_sample)})
-
-            # --- 4. Log Visualizations ---
-            logger.info("Generating and logging visualizations...")
-            
-            # Log prediction artifact to W&B
-            prediction_artifact = wandb.Artifact("predictions", type="result")
-            prediction_artifact.add_file(output_csv)
-            wandb.log_artifact(prediction_artifact)
-            
-            logger.info("All inference artifacts logged successfully.")
-
-        logger.info("--- Batch Inference Step Completed Successfully ---")
-
-    except Exception as e:
-        logger.exception("Inference step failed")
-        if wandb_run:
-            wandb.log({"status": "failed", "error": str(e)})
-        raise
-    finally:
-        if wandb_run:
-            wandb.finish()
-
+        logger.info(f"Generating predictions for {len(inference_df)} records...")
+        predictions = model.predict(inference_df)
+        
+        # Save predictions to a file
+        predictions_df = pd.DataFrame(predictions, columns=["prediction"])
+        output_path = os.path.join(project_root, "data", "predictions", "predictions.csv")
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        predictions_df.to_csv(output_path, index=False)
+        
+        logger.info(f"Predictions saved to: {output_path}")
+        
+        # Log predictions artifact
+        mlflow.log_artifact(output_path, artifact_path="predictions")
+        wandb.log({"predictions_table": wandb.Table(dataframe=predictions_df.head(100))})
+        
+        logger.info("--- Model Inference Step Completed Successfully ---")
+        wandb.finish()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run the batch inference pipeline step.")
-    
-    # You would typically provide a path to new, unseen data here
-    parser.add_argument(
-        "--input-csv", 
-        default="data/raw/test.csv", # Using test.csv as an example
-        help="Path to the input CSV file with new data for inference."
-    )
-    parser.add_argument(
-        "--output-csv", 
-        default="data/processed/predictions.csv",
-        help="Path to save the output CSV file with predictions."
-    )
+    parser = argparse.ArgumentParser(description="Run the model inference script.")
+    parser.add_argument("--model-artifact", type=str, required=True, help="Path to the model artifact.")
+    parser.add_argument("--inference-data", type=str, required=True, help="Path to the inference data CSV.")
     args = parser.parse_args()
-
-    run_inference(args.input_csv, args.output_csv) 
+    run_inference(args.model_artifact, args.inference_data) 

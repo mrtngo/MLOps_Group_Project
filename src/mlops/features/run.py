@@ -32,7 +32,12 @@ def run_feature_engineering(input_artifact: str):
     """
     logger.info("--- Starting Standalone Feature Engineering Step ---")
 
-    config = load_config("conf/config.yaml")
+    # Find the project root directory (where conf/config.yaml is located)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.join(current_dir, '..', '..', '..')
+    config_path = os.path.join(project_root, 'conf', 'config.yaml')
+    
+    config = load_config(config_path)
 
     # Set MLflow experiment
     mlflow_config = config.get("mlflow_tracking", {})
@@ -54,11 +59,12 @@ def run_feature_engineering(input_artifact: str):
             # --- 1. Load Data ---
             logger.info(f"Loading validated data from: {input_artifact}")
             df = pd.read_csv(input_artifact)
-            mlflow.log_param("input_artifact", input_artifact)
-            wandb.config.update({"input_artifact": input_artifact})
+            # MLflow already logs the input artifact parameter, no need to do it manually
+            # mlflow.log_param("input_artifact", input_artifact)
+            # wandb.config.update({"input_artifact": input_artifact})
 
             # --- 2. Feature Engineering ---
-            feature_cols, label_col = define_features_and_label()
+            feature_cols, label_col = define_features_and_label(config)
             df_with_features = create_price_direction_label(df, label_col)
             logger.info("Feature engineering complete.")
 
@@ -85,6 +91,8 @@ def run_feature_engineering(input_artifact: str):
 
             # --- 4. Log Output Artifact ---
             output_path = config.get("artifacts", {}).get("feature_engineered_path", "data/processed/feature_engineered_data.csv")
+            # Use absolute path for saving data
+            output_path = os.path.join(project_root, output_path)
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
             df_with_features.to_csv(output_path, index=False)
             
@@ -113,8 +121,15 @@ def run_feature_engineering(input_artifact: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the feature engineering pipeline step.")
-    config = load_config("conf/config.yaml")
+    # Find the project root directory and load config
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.join(current_dir, '..', '..', '..')
+    config_path = os.path.join(project_root, 'conf', 'config.yaml')
+    config = load_config(config_path)
+    
     default_input = config.get("data_source", {}).get("processed_path", "data/processed/validated_data.csv")
+    # Use absolute path for default input
+    default_input = os.path.join(project_root, default_input)
     
     parser.add_argument(
         "--input-artifact", 

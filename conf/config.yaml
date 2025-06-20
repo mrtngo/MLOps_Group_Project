@@ -11,8 +11,8 @@ defaults:
 
 main:
   # list or string, depending on how main.py expects it
-  steps: ["data_load"]      # or "all" if that’s your usual default
-  WANDB_PROJECT: MLOPS # whatever you call the project in Weights & Biases
+  steps: ["data_load"]      # or "all" if that's your usual default
+  WANDB_PROJECT: mlops-project # whatever you call the project in Weights & Biases
   WANDB_ENTITY: aviv275-ie-university          # optional; omit if you use the default entity
 
 
@@ -20,6 +20,8 @@ data_source:
   raw_path_futures: "https://fapi.binance.com/fapi/v1/fundingRate"
   raw_path_spot: "https://api.binance.com/api/v3/klines"
   processed_path: "./data/processed/futures_data_processed_.csv" # Path to save processed data
+  # Path to the raw data file after fetching
+  raw_path: data/raw/raw_data.csv
 
 logging:
   level: "INFO" # Logging level: DEBUG (verbose), INFO (default), WARNING, ERROR, CRITICAL
@@ -41,6 +43,9 @@ data_load:
     - taker_base
     - taker_quote
     - ignore
+  # Add these keys for conditional logging in W&B
+  log_sample_rows: true
+  log_summary_stats: true
 
 symbols:
   - ETHUSDT
@@ -106,48 +111,35 @@ data_validation:
         max: 5000
         on_error: warn
 
-      - name: "BTCUSDT_funding_rate"
-        dtype: "float64"
-        required: true
-        min: -1
-        max: 1
-        on_error: warn
-
       - name: "ETHUSDT_funding_rate"
         dtype: "float64"
-        required: true
-        min: -1
-        max: 1
-        on_error: warn
-
+        description: "Funding rate for ETHUSDT"
       - name: "BNBUSDT_funding_rate"
         dtype: "float64"
-        required: true
-        min: -1
-        max: 1
-        on_error: warn
-
+        description: "Funding rate for BNBUSDT"
       - name: "XRPUSDT_funding_rate"
         dtype: "float64"
-        required: true
-        min: -1
-        max: 1
-        on_error: warn
-
+        description: "Funding rate for XRPUSDT"
       - name: "ADAUSDT_funding_rate"
         dtype: "float64"
-        required: true
-        min: -1
-        max: 1
-        on_error: warn
-
+        description: "Funding rate for ADAUSDT"
       - name: "SOLUSDT_funding_rate"
         dtype: "float64"
-        required: true
-        min: -1
-        max: 1
-        on_error: warn
+        description: "Funding rate for SOLUSDT"
+        
+      - name: "BTCUSDT_funding_rate"
+        dtype: "float64"
+        description: "Funding rate for BTCUSDT"
+      - name: "BTCUSDT_price"
+        dtype: "float64"
+        description: "Price for BTCUSDT (Target Variable)"
+      - name: "timestamp"
+        dtype: "object" # Pandas reads datetime-like strings as object
+        description: "Timestamp of the data point"
 
+    # Strategy for handling missing values: 'drop' or 'impute'
+    missing_values_strategy: "impute"
+    # Action on validation error: 'raise' or 'warn'
 
 data_split:
     test_size: 0.2
@@ -216,3 +208,7 @@ artifacts:
   preprocessing_pipeline: models/preprocessing_pipeline.pkl
   splits_dir: data/splits
   processed_dir: data/processed
+
+inference:
+  input_csv: data/raw/test.csv
+  output_csv: data/processed/predictions.csv

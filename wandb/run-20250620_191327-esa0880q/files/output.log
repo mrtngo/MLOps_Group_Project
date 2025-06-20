@@ -1,0 +1,58 @@
+2025-06-20 19:13:28,014 - INFO - __main__ - Fetching data from 2023-01-01 to 2023-12-31...
+start date 2023-01-01
+2025-06-20 19:13:28,014 - INFO - src.mlops.data_load.data_load - Starting data fetch process
+2025-06-20 19:13:28,014 - INFO - src.mlops.data_load.data_load - Loaded 6 symbols: ['ETHUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'SOLUSDT', 'BTCUSDT']
+2025-06-20 19:13:28,014 - INFO - src.mlops.data_load.data_load - Processing ETHUSDT...
+2025-06-20 19:13:28,014 - INFO - src.mlops.data_load.data_load - Fetching klines for ETHUSDT (interval: 8h)
+2025-06-20 19:13:28,014 - INFO - src.mlops.data_load.data_load - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 19:13:29,678 - INFO - src.mlops.data_load.data_load - [ETHUSDT] No more data available
+2025-06-20 19:13:29,679 - INFO - src.mlops.data_load.data_load - [ETHUSDT] Successfully fetched 1095 klines
+2025-06-20 19:13:29,689 - INFO - src.mlops.data_load.data_load - Fetching funding rates for ETHUSDT
+2025-06-20 19:13:31,536 - INFO - src.mlops.data_load.data_load - [ETHUSDT] No more funding data available
+2025-06-20 19:13:31,536 - INFO - src.mlops.data_load.data_load - [ETHUSDT] Successfully fetched 1095 funding rates
+2025-06-20 19:13:31,544 - INFO - src.mlops.data_load.data_load - Processing BNBUSDT...
+2025-06-20 19:13:31,544 - INFO - src.mlops.data_load.data_load - Fetching klines for BNBUSDT (interval: 8h)
+2025-06-20 19:13:31,545 - INFO - src.mlops.data_load.data_load - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 19:13:33,345 - INFO - src.mlops.data_load.data_load - [BNBUSDT] No more data available
+2025-06-20 19:13:33,345 - INFO - src.mlops.data_load.data_load - [BNBUSDT] Successfully fetched 1095 klines
+2025-06-20 19:13:33,353 - INFO - src.mlops.data_load.data_load - Fetching funding rates for BNBUSDT
+2025-06-20 19:13:35,049 - INFO - src.mlops.data_load.data_load - [BNBUSDT] No more funding data available
+2025-06-20 19:13:35,050 - INFO - src.mlops.data_load.data_load - [BNBUSDT] Successfully fetched 1095 funding rates
+2025-06-20 19:13:35,056 - INFO - src.mlops.data_load.data_load - Processing XRPUSDT...
+2025-06-20 19:13:35,057 - INFO - src.mlops.data_load.data_load - Fetching klines for XRPUSDT (interval: 8h)
+2025-06-20 19:13:35,057 - INFO - src.mlops.data_load.data_load - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 19:13:36,779 - INFO - src.mlops.data_load.data_load - [XRPUSDT] No more data available
+2025-06-20 19:13:36,780 - INFO - src.mlops.data_load.data_load - [XRPUSDT] Successfully fetched 1095 klines
+2025-06-20 19:13:36,787 - INFO - src.mlops.data_load.data_load - Fetching funding rates for XRPUSDT
+2025-06-20 19:13:38,487 - INFO - src.mlops.data_load.data_load - [XRPUSDT] No more funding data available
+2025-06-20 19:13:38,488 - INFO - src.mlops.data_load.data_load - [XRPUSDT] Successfully fetched 1095 funding rates
+2025-06-20 19:13:38,494 - INFO - src.mlops.data_load.data_load - Processing ADAUSDT...
+2025-06-20 19:13:38,495 - INFO - src.mlops.data_load.data_load - Fetching klines for ADAUSDT (interval: 8h)
+2025-06-20 19:13:38,495 - INFO - src.mlops.data_load.data_load - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 19:13:40,164 - INFO - src.mlops.data_load.data_load - [ADAUSDT] No more data available
+2025-06-20 19:13:40,165 - INFO - src.mlops.data_load.data_load - [ADAUSDT] Successfully fetched 1095 klines
+2025-06-20 19:13:40,172 - INFO - src.mlops.data_load.data_load - Fetching funding rates for ADAUSDT
+2025-06-20 19:13:42,020 - INFO - src.mlops.data_load.data_load - [ADAUSDT] No more funding data available
+2025-06-20 19:13:42,021 - INFO - src.mlops.data_load.data_load - [ADAUSDT] Successfully fetched 1095 funding rates
+2025-06-20 19:13:42,027 - INFO - src.mlops.data_load.data_load - Processing SOLUSDT...
+2025-06-20 19:13:42,027 - INFO - src.mlops.data_load.data_load - Fetching klines for SOLUSDT (interval: 8h)
+2025-06-20 19:13:42,028 - INFO - src.mlops.data_load.data_load - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 19:13:43,831 - INFO - src.mlops.data_load.data_load - [SOLUSDT] No more data available
+2025-06-20 19:13:43,831 - INFO - src.mlops.data_load.data_load - [SOLUSDT] Successfully fetched 1095 klines
+2025-06-20 19:13:43,839 - INFO - src.mlops.data_load.data_load - Fetching funding rates for SOLUSDT
+2025-06-20 19:13:45,540 - INFO - src.mlops.data_load.data_load - [SOLUSDT] No more funding data available
+2025-06-20 19:13:45,540 - INFO - src.mlops.data_load.data_load - [SOLUSDT] Successfully fetched 1095 funding rates
+2025-06-20 19:13:45,545 - INFO - src.mlops.data_load.data_load - Processing BTCUSDT...
+2025-06-20 19:13:45,545 - INFO - src.mlops.data_load.data_load - Fetching klines for BTCUSDT (interval: 8h)
+2025-06-20 19:13:45,545 - INFO - src.mlops.data_load.data_load - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 19:13:47,261 - INFO - src.mlops.data_load.data_load - [BTCUSDT] No more data available
+2025-06-20 19:13:47,261 - INFO - src.mlops.data_load.data_load - [BTCUSDT] Successfully fetched 1095 klines
+2025-06-20 19:13:47,263 - INFO - src.mlops.data_load.data_load - Fetching funding rates for BTCUSDT
+2025-06-20 19:13:48,969 - INFO - src.mlops.data_load.data_load - [BTCUSDT] No more funding data available
+2025-06-20 19:13:48,969 - INFO - src.mlops.data_load.data_load - [BTCUSDT] Successfully fetched 1095 funding rates
+2025-06-20 19:13:48,987 - INFO - src.mlops.data_load.data_load - Final dataset shape: (1500, 13)
+2025-06-20 19:13:48,988 - INFO - __main__ - Raw data loaded | shape=(1500, 13)
+2025-06-20 19:13:49,010 - INFO - __main__ - Logging sample rows to W&B...
+2025-06-20 19:13:49,480 - INFO - __main__ - Logging summary stats to W&B...
+2025-06-20 19:13:49,889 - INFO - __main__ - Logged raw data artifact to MLflow and W&B: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/data_load/../../../data/raw/raw_data.csv
+2025-06-20 19:13:49,894 - INFO - __main__ - --- Data Load Step Completed Successfully ---

@@ -1,0 +1,36 @@
+[2025-06-20 17:46:14,719][CryptoMLOps][INFO] - Started WandB run: crypto_orchestrator_20250620_174613
+2025-06-20 17:46:14 - INFO - CryptoMLOps - Started WandB run: crypto_orchestrator_20250620_174613
+[2025-06-20 17:46:14,720][CryptoMLOps][INFO] - Running crypto pipeline steps: ['data_validation']
+2025-06-20 17:46:14 - INFO - CryptoMLOps - Running crypto pipeline steps: ['data_validation']
+[2025-06-20 17:46:14,720][CryptoMLOps][INFO] - Step: data_validation
+2025-06-20 17:46:14 - INFO - CryptoMLOps - Step: data_validation
+[2025-06-20 17:46:14,724][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:46:14 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:46:14,729][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:46:14 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:46:14,729][CryptoMLOps][INFO] - Starting validation for DataFrame with shape (690, 13)
+2025-06-20 17:46:14 - INFO - CryptoMLOps - Starting validation for DataFrame with shape (690, 13)
+[2025-06-20 17:46:14,729][CryptoMLOps][INFO] - Validation: missing_strategy='impute', on_error='warn'
+2025-06-20 17:46:14 - INFO - CryptoMLOps - Validation: missing_strategy='impute', on_error='warn'
+[2025-06-20 17:46:14,729][CryptoMLOps][INFO] - Found 2 unexpected columns: ['BTCUSDT_price', 'timestamp']
+2025-06-20 17:46:14 - INFO - CryptoMLOps - Found 2 unexpected columns: ['BTCUSDT_price', 'timestamp']
+[2025-06-20 17:46:14,729][CryptoMLOps][WARNING] - Continuing despite unexpected columns
+2025-06-20 17:46:14 - WARNING - CryptoMLOps - Continuing despite unexpected columns
+[2025-06-20 17:46:14,729][CryptoMLOps][INFO] - Validating schema for 11 columns
+2025-06-20 17:46:14 - INFO - CryptoMLOps - Validating schema for 11 columns
+[2025-06-20 17:46:14,731][CryptoMLOps][INFO] - Schema validation completed
+2025-06-20 17:46:14 - INFO - CryptoMLOps - Schema validation completed
+[2025-06-20 17:46:14,731][CryptoMLOps][INFO] - No missing values found
+2025-06-20 17:46:14 - INFO - CryptoMLOps - No missing values found
+[2025-06-20 17:46:14,731][CryptoMLOps][INFO] - Handling missing values with strategy: 'impute'
+2025-06-20 17:46:14 - INFO - CryptoMLOps - Handling missing values with strategy: 'impute'
+[2025-06-20 17:46:14,732][CryptoMLOps][INFO] - Imputed 0 missing values using forward/backward fill
+2025-06-20 17:46:14 - INFO - CryptoMLOps - Imputed 0 missing values using forward/backward fill
+[2025-06-20 17:46:14,732][CryptoMLOps][INFO] - Validation report saved to: reports/validation_report.json
+2025-06-20 17:46:14 - INFO - CryptoMLOps - Validation report saved to: reports/validation_report.json
+[2025-06-20 17:46:14,732][CryptoMLOps][INFO] - Data validation completed with 2 issues (see report for details)
+2025-06-20 17:46:14 - INFO - CryptoMLOps - Data validation completed with 2 issues (see report for details)
+[2025-06-20 17:46:14,732][CryptoMLOps][INFO] - Final DataFrame shape: (690, 13)
+2025-06-20 17:46:14 - INFO - CryptoMLOps - Final DataFrame shape: (690, 13)
+[2025-06-20 17:46:14,737][CryptoMLOps][INFO] - 🎉 Crypto MLOps pipeline completed successfully!
+2025-06-20 17:46:14 - INFO - CryptoMLOps - 🎉 Crypto MLOps pipeline completed successfully!

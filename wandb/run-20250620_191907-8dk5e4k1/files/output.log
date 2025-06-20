@@ -1,0 +1,25 @@
+2025-06-20 19:19:07,634 [INFO] Loading feature-engineered data from: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/processed/feature_engineered_data.csv
+[define_features_and_label] Features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[define_features_and_label] Label: BTCUSDT_price
+Features shape: (1499, 11), Regression target shape: (1499,), Classification target shape: (1499,)
+2025-06-20 19:19:07,638 [INFO] Feature engineering complete.
+2025-06-20 19:19:07,639 [INFO] Data split completed - Train: (1199, 11), Test: (300, 11)
+2025-06-20 19:19:07,640 [INFO] Data split completed - Train: (1199, 11), Test: (300, 11)
+2025-06-20 19:19:07,640 [INFO] Data splitting complete.
+2025-06-20 19:19:07,641 [INFO] Successfully scaled features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+2025-06-20 19:19:07,642 [INFO] Successfully scaled features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+2025-06-20 19:19:07,643 [INFO] Selected 10 features based on correlation > 0.05 with 'BTCUSDT_price'
+2025-06-20 19:19:07,644 [INFO] Selected 5 features based on correlation > 0.05 with 'price_direction'
+2025-06-20 19:19:07,644 [INFO] Selected regression features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+2025-06-20 19:19:07,644 [INFO] Selected classification features: ['BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'ETHUSDT_funding_rate', 'ADAUSDT_funding_rate']
+2025-06-20 19:19:07,645 [INFO] Class distribution: {0: 761, 1: 438}
+2025-06-20 19:19:07,645 [INFO] Applying SMOTE oversampling...
+2025-06-20 19:19:07,650 [INFO] SMOTE apply successful. New shape: (1522, 5)
+2025-06-20 19:19:07,650 [INFO] New class distribution: {np.int64(0): np.int64(761), np.int64(1): np.int64(761)}
+2025-06-20 19:19:07,651 [INFO] SMOTE applied to classification training data.
+2025-06-20 19:19:07,651 [INFO] Generating and logging visualizations to W&B...
+2025-06-20 19:19:09,015 [INFO] Visualizations logged successfully.
+2025-06-20 19:19:09,015 [INFO] Saving and logging all processed artifacts...
+[34m[1mwandb[0m: Adding directory to artifact (./data/processed/training_data)... Done. 0.1s
+2025-06-20 19:19:09,346 [INFO] All artifacts logged successfully.
+2025-06-20 19:19:09,349 [INFO] --- Preprocessing Step Completed Successfully ---

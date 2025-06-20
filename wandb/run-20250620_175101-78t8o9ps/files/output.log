@@ -1,0 +1,70 @@
+[2025-06-20 17:51:02,471][CryptoMLOps][INFO] - Started WandB run: crypto_orchestrator_20250620_175101
+2025-06-20 17:51:02 - INFO - CryptoMLOps - Started WandB run: crypto_orchestrator_20250620_175101
+[2025-06-20 17:51:02,472][CryptoMLOps][INFO] - Running crypto pipeline steps: ['evaluation']
+2025-06-20 17:51:02 - INFO - CryptoMLOps - Running crypto pipeline steps: ['evaluation']
+[2025-06-20 17:51:02,472][CryptoMLOps][INFO] - Step: evaluation
+2025-06-20 17:51:02 - INFO - CryptoMLOps - Step: evaluation
+[2025-06-20 17:51:03,062][src.mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:51:03 - INFO - src.mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:51:03,067][src.mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:51:03 - INFO - src.mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:51:03,219][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:51:03 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:51:03,224][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:51:03 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:51:03,224][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:51:03 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:51:03,229][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:51:03 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:51:03,231][mlops.evaluation.evaluation][INFO] - Preprocessing pipeline loaded from models/preprocessing_pipeline.pkl
+2025-06-20 17:51:03 - INFO - mlops.evaluation.evaluation - Preprocessing pipeline loaded from models/preprocessing_pipeline.pkl
+[2025-06-20 17:51:03,231][mlops.evaluation.evaluation][INFO] - Model loaded from models/linear_regression.pkl
+2025-06-20 17:51:03 - INFO - mlops.evaluation.evaluation - Model loaded from models/linear_regression.pkl
+[2025-06-20 17:51:03,232][mlops.evaluation.evaluation][INFO] - Model loaded from models/logistic_regression.pkl
+2025-06-20 17:51:03 - INFO - mlops.evaluation.evaluation - Model loaded from models/logistic_regression.pkl
+[define_features_and_label] Features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[define_features_and_label] Label: BTCUSDT_price
+                   timestamp  ETHUSDT_price  ...  prev_price  price_direction
+0  2023-01-01 16:00:00+00:00        1200.34  ...    16526.19                1
+1  2023-01-02 00:00:00+00:00        1213.09  ...    16616.75                1
+2  2023-01-03 16:00:00+00:00        1214.55  ...    16721.28                0
+3  2023-01-04 00:00:00+00:00        1252.00  ...    16675.18                1
+4  2023-01-05 16:00:00+00:00        1251.24  ...    16869.44                0
+
+[5 rows x 15 columns]
+[create_price_direction_label] Created price direction shape=(688, 15)
+Features shape: (688, 11), Regression target shape: (688,), Classification target shape: (688,)
+[2025-06-20 17:51:03,241][mlops.preproccess.preproccessing][INFO] - Data split completed - Train: (550, 11), Test: (138, 11)
+2025-06-20 17:51:03 - INFO - mlops.preproccess.preproccessing - Data split completed - Train: (550, 11), Test: (138, 11)
+[2025-06-20 17:51:03,242][mlops.preproccess.preproccessing][INFO] - Data split completed - Train: (550, 11), Test: (138, 11)
+2025-06-20 17:51:03 - INFO - mlops.preproccess.preproccessing - Data split completed - Train: (550, 11), Test: (138, 11)
+[2025-06-20 17:51:03,243][mlops.evaluation.evaluation][INFO] - Test data prepared - Reg: (138, 9), Class: (138, 2)
+2025-06-20 17:51:03 - INFO - mlops.evaluation.evaluation - Test data prepared - Reg: (138, 9), Class: (138, 2)
+[2025-06-20 17:51:03,243][mlops.evaluation.evaluation][INFO] - Evaluating regression model...
+2025-06-20 17:51:03 - INFO - mlops.evaluation.evaluation - Evaluating regression model...
+[2025-06-20 17:51:03,243][mlops.evaluation.evaluation][INFO] - Linear Regression Test RMSE: 1602.3719
+2025-06-20 17:51:03 - INFO - mlops.evaluation.evaluation - Linear Regression Test RMSE: 1602.3719
+[2025-06-20 17:51:03,356][matplotlib.category][INFO] - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-06-20 17:51:03 - INFO - matplotlib.category - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[2025-06-20 17:51:03,360][matplotlib.category][INFO] - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-06-20 17:51:03 - INFO - matplotlib.category - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[2025-06-20 17:51:03,363][matplotlib.category][INFO] - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-06-20 17:51:03 - INFO - matplotlib.category - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[2025-06-20 17:51:03,368][matplotlib.category][INFO] - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-06-20 17:51:03 - INFO - matplotlib.category - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[2025-06-20 17:51:04,064][mlops.evaluation.evaluation][INFO] - Price prediction plot saved to plots/price_prediction_plot.png
+2025-06-20 17:51:04 - INFO - mlops.evaluation.evaluation - Price prediction plot saved to plots/price_prediction_plot.png
+[2025-06-20 17:51:04,064][mlops.evaluation.evaluation][INFO] - Evaluating classification model...
+2025-06-20 17:51:04 - INFO - mlops.evaluation.evaluation - Evaluating classification model...
+[2025-06-20 17:51:04,067][mlops.evaluation.evaluation][INFO] - Logistic Regression Test Accuracy: 0.4348
+2025-06-20 17:51:04 - INFO - mlops.evaluation.evaluation - Logistic Regression Test Accuracy: 0.4348
+[2025-06-20 17:51:04,067][mlops.evaluation.evaluation][INFO] - Logistic Regression Test F1 Score: 0.5714
+2025-06-20 17:51:04 - INFO - mlops.evaluation.evaluation - Logistic Regression Test F1 Score: 0.5714
+[2025-06-20 17:51:04,067][mlops.evaluation.evaluation][INFO] - Logistic Regression Test ROC AUC: 0.5228
+2025-06-20 17:51:04 - INFO - mlops.evaluation.evaluation - Logistic Regression Test ROC AUC: 0.5228
+[2025-06-20 17:51:04,172][mlops.evaluation.evaluation][INFO] - Confusion matrix saved to plots/confusion_matrix.png
+2025-06-20 17:51:04 - INFO - mlops.evaluation.evaluation - Confusion matrix saved to plots/confusion_matrix.png
+[2025-06-20 17:51:04,175][mlops.evaluation.evaluation][INFO] - Metrics report saved to models/metrics.json
+2025-06-20 17:51:04 - INFO - mlops.evaluation.evaluation - Metrics report saved to models/metrics.json
+[2025-06-20 17:51:04,175][CryptoMLOps][INFO] - 🎉 Crypto MLOps pipeline completed successfully!
+2025-06-20 17:51:04 - INFO - CryptoMLOps - 🎉 Crypto MLOps pipeline completed successfully!

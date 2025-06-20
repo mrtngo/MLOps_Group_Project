@@ -3,7 +3,7 @@ import time
 import yaml
 import pandas as pd
 import logging
-from typing import Dict, Optional
+from typing import Dict, List, Optional, Tuple
 import mlflow
 import wandb
 import os
@@ -12,7 +12,7 @@ import os
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
@@ -54,33 +54,30 @@ def default_window(days: int = 365) -> tuple[int, int]:
     return start_ms, end_ms
 
 
-def load_symbols() -> list:
+def load_symbols(config: Dict) -> Tuple[List[str], Dict]:
     """Load symbols from config with error handling."""
     try:
-        cfg = load_config("conf/config.yaml")
-        symbols = cfg.get("symbols", [])
+        symbols = config.get("symbols", [])
         if not symbols:
             logger.warning("No symbols found in config")
         else:
             logger.info(f"Loaded {len(symbols)} symbols: {symbols}")
-        return symbols, cfg
+        return symbols, config
     except Exception as e:
         logger.error(f"Failed to load config: {e}")
         return [], {}
 
 
-SYMBOLS, cfg = load_symbols()
-
-
 def fetch_binance_klines(
     symbol: str,
+    config: Dict,
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
     interval: str = "8h",
     days: int = 365
 ):
     try:
-        url = cfg["data_source"]["raw_path_spot"]
+        url = config["data_source"]["raw_path_spot"]
         logger.info(f"Fetching klines for {symbol} (interval: {interval})")
 
         if start_date and end_date:
@@ -141,7 +138,7 @@ def fetch_binance_klines(
 
         df = pd.DataFrame(
             rows,
-            columns=cfg.get("data_load", {}).get("column_names", [])
+            columns=config.get("data_load", {}).get("column_names", [])
         )
         df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms", utc=True)
         df["close"] = df["close"].astype(float)
@@ -159,12 +156,13 @@ def fetch_binance_klines(
 
 def fetch_binance_funding_rate(
     symbol: str,
+    config: Dict,
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
     days: int = 365
 ):
     try:
-        url = cfg["data_source"]["raw_path_futures"]
+        url = config["data_source"]["raw_path_futures"]
         logger.info(f"Fetching funding rates for {symbol}")
 
         if start_date and end_date:
@@ -239,63 +237,66 @@ def fetch_binance_funding_rate(
         raise
 
 
-def fetch_data(start_date: Optional[str] = None,
+def fetch_data(config: Dict, start_date: Optional[str] = None,
                end_date: Optional[str] = None):
     try:
         print(f"start date {start_date}")
         logger.info("Starting data fetch process")
+        
+        # Load symbols from config
+        symbols, _ = load_symbols(config)
+        
         price_dfs, funding_dfs = [], []
         failed_symbols = []
 
-        for symbol in SYMBOLS:
+        for symbol in symbols:
             try:
                 logger.info(f"Processing {symbol}...")
-                price_df = fetch_binance_klines(symbol, start_date, end_date)
+                price_df = fetch_binance_klines(symbol, config, start_date, end_date)
                 funding_df = fetch_binance_funding_rate(
-                    symbol, start_date, end_date
+                    symbol, config, start_date, end_date
                 )
 
-                price_dfs.append(price_df)
-                funding_dfs.append(funding_df)
-                logger.info(f"✓ {symbol} completed successfully")
+                if not price_df.empty:
+                    price_dfs.append(price_df)
+                if not funding_df.empty:
+                    funding_dfs.append(funding_df)
 
             except Exception as e:
-                logger.error(f"✗ Failed to fetch data for {symbol}: {e}")
+                logger.error(f"Failed to fetch data for {symbol}: {e}")
                 failed_symbols.append(symbol)
-                continue
 
         if failed_symbols:
-            failed_msg = f"Failed to fetch data for symbols: {failed_symbols}"
-            logger.warning(failed_msg)
+            logger.warning(f"Failed to fetch data for symbols: {failed_symbols}")
 
-        if not price_dfs or not funding_dfs:
-            logger.error("No data was successfully fetched")
+        if not price_dfs and not funding_dfs:
+            logger.error("No data fetched for any symbol")
             return pd.DataFrame()
 
-        # merge helpers
         def merge_frames(frames):
             if not frames:
                 return pd.DataFrame()
-            out = frames[0]
-            for f in frames[1:]:
-                out = out.merge(f, on="timestamp", how="outer")
-            return out
+            result = frames[0]
+            for frame in frames[1:]:
+                result = result.merge(frame, on="timestamp", how="outer")
+            return result.sort_values("timestamp").reset_index(drop=True)
 
-        logger.info("Merging price data...")
-        combined_price = merge_frames(price_dfs)
+        price_data = merge_frames(price_dfs)
+        funding_data = merge_frames(funding_dfs)
 
-        logger.info("Merging funding data...")
-        combined_funding = merge_frames(funding_dfs)
+        if price_data.empty and funding_data.empty:
+            logger.error("No data available after merging")
+            return pd.DataFrame()
 
-        logger.info("Combining price and funding data...")
-        data = combined_price.merge(
-            combined_funding, on="timestamp", how="inner"
-        )
+        if not price_data.empty and not funding_data.empty:
+            final_data = price_data.merge(funding_data, on="timestamp", how="outer")
+        elif not price_data.empty:
+            final_data = price_data
+        else:
+            final_data = funding_data
 
-        logger.info(f"Final dataset shape: {data.shape}")
-        logger.info("Data fetch process completed successfully")
-
-        return data
+        logger.info(f"Final dataset shape: {final_data.shape}")
+        return final_data
 
     except Exception as e:
         logger.error(f"Error in fetch_data: {e}")

@@ -1,14 +1,157 @@
 {
-  "missing_columns": [],
-  "unexpected_columns": [
-    "timestamp",
-    "BTCUSDT_price"
-  ],
-  "type_mismatches": {},
-  "missing_values": {},
-  "out_of_range": {},
-  "summary": {
-    "total_issues": 2,
-    "validation_passed": true
-  }
+    "status": "pass",
+    "issues": {
+        "errors": [],
+        "warnings": []
+    },
+    "column_details": {
+        "ETHUSDT_price": {
+            "expected_type": "float64",
+            "status": "pass",
+            "sample_values": [
+                "1195.06",
+                "1196.81",
+                "1200.34",
+                "1213.09",
+                "1219.0"
+            ]
+        },
+        "BNBUSDT_price": {
+            "expected_type": "float64",
+            "status": "pass",
+            "sample_values": [
+                "244.0",
+                "244.6",
+                "244.4",
+                "246.4",
+                "247.0"
+            ]
+        },
+        "XRPUSDT_price": {
+            "expected_type": "float64",
+            "status": "pass",
+            "sample_values": [
+                "0.3368",
+                "0.3369",
+                "0.3387",
+                "0.3378",
+                "0.3512"
+            ]
+        },
+        "ADAUSDT_price": {
+            "expected_type": "float64",
+            "status": "pass",
+            "sample_values": [
+                "0.2452",
+                "0.2462",
+                "0.2499",
+                "0.2541",
+                "0.2546"
+            ]
+        },
+        "SOLUSDT_price": {
+            "expected_type": "float64",
+            "status": "pass",
+            "sample_values": [
+                "9.8",
+                "9.87",
+                "9.99",
+                "11.09",
+                "11.11"
+            ]
+        },
+        "ETHUSDT_funding_rate": {
+            "expected_type": "float64",
+            "status": "pass",
+            "sample_values": [
+                "0.0001",
+                "8.878e-05",
+                "7.464e-05",
+                "8.9e-06",
+                "5.228e-05"
+            ]
+        },
+        "BNBUSDT_funding_rate": {
+            "expected_type": "float64",
+            "status": "pass",
+            "sample_values": [
+                "-1.05e-05",
+                "0.0",
+                "-7.526e-05",
+                "-9.889e-05",
+                "-5.595e-05"
+            ]
+        },
+        "XRPUSDT_funding_rate": {
+            "expected_type": "float64",
+            "status": "pass",
+            "sample_values": [
+                "0.0001",
+                "-0.00040233",
+                "-0.00026116",
+                "-0.00051373",
+                "9.23e-06"
+            ]
+        },
+        "ADAUSDT_funding_rate": {
+            "expected_type": "float64",
+            "status": "pass",
+            "sample_values": [
+                "-7.036e-05",
+                "-1.809e-05",
+                "-0.00028022",
+                "-0.00013088",
+                "-0.00010514"
+            ]
+        },
+        "SOLUSDT_funding_rate": {
+            "expected_type": "float64",
+            "status": "pass",
+            "sample_values": [
+                "-0.00092452",
+                "-0.00039729",
+                "-0.00097445",
+                "-0.00105604",
+                "-0.00073395"
+            ]
+        },
+        "BTCUSDT_funding_rate": {
+            "expected_type": "float64",
+            "status": "pass",
+            "sample_values": [
+                "0.0001",
+                "6.91e-06",
+                "-1.488e-05",
+                "-4.356e-05",
+                "2.67e-05"
+            ]
+        },
+        "BTCUSDT_price": {
+            "expected_type": "float64",
+            "status": "pass",
+            "sample_values": [
+                "16526.19",
+                "16558.73",
+                "16616.75",
+                "16721.28",
+                "16734.66"
+            ]
+        },
+        "timestamp": {
+            "expected_type": "object",
+            "status": "pass",
+            "sample_values": [
+                "2023-01-01 00:00:00+00:00",
+                "2023-01-01 08:00:00+00:00",
+                "2023-01-01 08:00:00.008000+00:00",
+                "2023-01-01 16:00:00+00:00",
+                "2023-01-02 00:00:00+00:00"
+            ]
+        }
+    },
+    "missing_values_summary": {
+        "strategy": "impute",
+        "missing_before": 4860,
+        "total_imputed": 4860
+    }
 }

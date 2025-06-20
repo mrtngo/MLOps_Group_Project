@@ -1,0 +1,67 @@
+2025-06-20 18:07:30,217 - INFO - Fetching data from 2023-01-01 to 2023-12-31...
+start date 2023-01-01
+2025-06-20 18:07:30,217 - INFO - Starting data fetch process
+2025-06-20 18:07:30,217 - INFO - Processing ETHUSDT...
+2025-06-20 18:07:30,217 - INFO - Fetching klines for ETHUSDT (interval: 8h)
+2025-06-20 18:07:30,218 - INFO - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 18:07:31,861 - INFO - [ETHUSDT] No more data available
+2025-06-20 18:07:31,862 - INFO - [ETHUSDT] Successfully fetched 1095 klines
+2025-06-20 18:07:31,882 - INFO - Fetching funding rates for ETHUSDT
+2025-06-20 18:07:33,568 - INFO - [ETHUSDT] No more funding data available
+2025-06-20 18:07:33,569 - INFO - [ETHUSDT] Successfully fetched 1095 funding rates
+2025-06-20 18:07:33,575 - INFO - ✓ ETHUSDT completed successfully
+2025-06-20 18:07:33,575 - INFO - Processing BNBUSDT...
+2025-06-20 18:07:33,575 - INFO - Fetching klines for BNBUSDT (interval: 8h)
+2025-06-20 18:07:33,575 - INFO - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 18:07:35,328 - INFO - [BNBUSDT] No more data available
+2025-06-20 18:07:35,328 - INFO - [BNBUSDT] Successfully fetched 1095 klines
+2025-06-20 18:07:35,331 - INFO - Fetching funding rates for BNBUSDT
+2025-06-20 18:07:37,111 - INFO - [BNBUSDT] No more funding data available
+2025-06-20 18:07:37,111 - INFO - [BNBUSDT] Successfully fetched 1095 funding rates
+2025-06-20 18:07:37,120 - INFO - ✓ BNBUSDT completed successfully
+2025-06-20 18:07:37,120 - INFO - Processing XRPUSDT...
+2025-06-20 18:07:37,120 - INFO - Fetching klines for XRPUSDT (interval: 8h)
+2025-06-20 18:07:37,120 - INFO - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 18:07:38,815 - INFO - [XRPUSDT] No more data available
+2025-06-20 18:07:38,815 - INFO - [XRPUSDT] Successfully fetched 1095 klines
+2025-06-20 18:07:38,821 - INFO - Fetching funding rates for XRPUSDT
+2025-06-20 18:07:40,386 - INFO - [XRPUSDT] No more funding data available
+2025-06-20 18:07:40,386 - INFO - [XRPUSDT] Successfully fetched 1095 funding rates
+2025-06-20 18:07:40,389 - INFO - ✓ XRPUSDT completed successfully
+2025-06-20 18:07:40,390 - INFO - Processing ADAUSDT...
+2025-06-20 18:07:40,390 - INFO - Fetching klines for ADAUSDT (interval: 8h)
+2025-06-20 18:07:40,390 - INFO - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 18:07:41,966 - INFO - [ADAUSDT] No more data available
+2025-06-20 18:07:41,967 - INFO - [ADAUSDT] Successfully fetched 1095 klines
+2025-06-20 18:07:41,974 - INFO - Fetching funding rates for ADAUSDT
+2025-06-20 18:07:43,686 - INFO - [ADAUSDT] No more funding data available
+2025-06-20 18:07:43,687 - INFO - [ADAUSDT] Successfully fetched 1095 funding rates
+2025-06-20 18:07:43,693 - INFO - ✓ ADAUSDT completed successfully
+2025-06-20 18:07:43,693 - INFO - Processing SOLUSDT...
+2025-06-20 18:07:43,694 - INFO - Fetching klines for SOLUSDT (interval: 8h)
+2025-06-20 18:07:43,694 - INFO - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 18:07:45,492 - INFO - [SOLUSDT] No more data available
+2025-06-20 18:07:45,493 - INFO - [SOLUSDT] Successfully fetched 1095 klines
+2025-06-20 18:07:45,498 - INFO - Fetching funding rates for SOLUSDT
+2025-06-20 18:07:47,354 - INFO - [SOLUSDT] No more funding data available
+2025-06-20 18:07:47,355 - INFO - [SOLUSDT] Successfully fetched 1095 funding rates
+2025-06-20 18:07:47,363 - INFO - ✓ SOLUSDT completed successfully
+2025-06-20 18:07:47,363 - INFO - Processing BTCUSDT...
+2025-06-20 18:07:47,363 - INFO - Fetching klines for BTCUSDT (interval: 8h)
+2025-06-20 18:07:47,363 - INFO - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 18:07:49,260 - INFO - [BTCUSDT] No more data available
+2025-06-20 18:07:49,261 - INFO - [BTCUSDT] Successfully fetched 1095 klines
+2025-06-20 18:07:49,268 - INFO - Fetching funding rates for BTCUSDT
+2025-06-20 18:07:50,871 - INFO - [BTCUSDT] No more funding data available
+2025-06-20 18:07:50,872 - INFO - [BTCUSDT] Successfully fetched 1095 funding rates
+2025-06-20 18:07:50,879 - INFO - ✓ BTCUSDT completed successfully
+2025-06-20 18:07:50,879 - INFO - Merging price data...
+2025-06-20 18:07:50,889 - INFO - Merging funding data...
+2025-06-20 18:07:50,892 - INFO - Combining price and funding data...
+2025-06-20 18:07:50,896 - INFO - Final dataset shape: (690, 13)
+2025-06-20 18:07:50,896 - INFO - Data fetch process completed successfully
+2025-06-20 18:07:50,896 - INFO - Raw data loaded | shape=(690, 13)
+2025-06-20 18:07:50,899 - INFO - Generating summary statistics and data sample for W&B...
+2025-06-20 18:07:51,549 - INFO - Logged summary_stats and sample_rows to W&B run summary.
+2025-06-20 18:07:51,743 - INFO - Logged raw data artifact to MLflow and W&B: data/raw/raw_data.csv
+2025-06-20 18:07:51,747 - INFO - --- Data Load Step Completed Successfully ---

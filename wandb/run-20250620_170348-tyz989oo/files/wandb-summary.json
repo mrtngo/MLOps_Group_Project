@@ -1,0 +1,1 @@
+{"error_message":"Unsupported type for main.steps: <class 'omegaconf.listconfig.ListConfig'>","_wandb":{"runtime":0},"pipeline_status":"failed"}

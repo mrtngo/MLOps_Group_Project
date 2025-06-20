@@ -1,0 +1,16 @@
+{"time":"2025-06-20T19:20:39.738153+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_192039-qzmqtdwh/logs/debug-core.log"}
+{"time":"2025-06-20T19:20:40.006303+02:00","level":"INFO","msg":"stream: created new stream","id":"qzmqtdwh"}
+{"time":"2025-06-20T19:20:40.006581+02:00","level":"INFO","msg":"stream: started","id":"qzmqtdwh"}
+{"time":"2025-06-20T19:20:40.006636+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"qzmqtdwh"}
+{"time":"2025-06-20T19:20:40.006647+02:00","level":"INFO","msg":"sender: started","stream_id":"qzmqtdwh"}
+{"time":"2025-06-20T19:20:40.006687+02:00","level":"INFO","msg":"handler: started","stream_id":"qzmqtdwh"}
+{"time":"2025-06-20T19:20:40.423273+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T19:21:10.836175+02:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/aviv275-ie-university/mlops-project/qzmqtdwh/file_stream\": read tcp 192.168.1.4:52196->35.186.228.49:443: read: connection reset by peer"}
+{"time":"2025-06-20T19:21:38.578874+02:00","level":"INFO","msg":"stream: closing","id":"qzmqtdwh"}
+{"time":"2025-06-20T19:21:38.579008+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T19:21:38.580113+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T19:21:39.010528+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T19:21:39.209228+02:00","level":"INFO","msg":"handler: closed","stream_id":"qzmqtdwh"}
+{"time":"2025-06-20T19:21:39.209238+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"qzmqtdwh"}
+{"time":"2025-06-20T19:21:39.209244+02:00","level":"INFO","msg":"sender: closed","stream_id":"qzmqtdwh"}
+{"time":"2025-06-20T19:21:39.209853+02:00","level":"INFO","msg":"stream: closed","id":"qzmqtdwh"}

@@ -10,6 +10,7 @@ import wandb
 import logging
 import sys
 from pathlib import Path
+import pandas as pd
 
 # Set up project paths
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -19,18 +20,20 @@ if str(SRC_ROOT) not in sys.path:
 
 load_dotenv()
 
-# Pipeline steps for crypto prediction
+# Define the sequence of steps in the pipeline
 PIPELINE_STEPS = [
     "data_load",
-    "data_validation", 
-    "feature_engineering",
-    "model",
+    "data_validation",
+    "features",
+    "preprocess",
+    "models",
     "evaluation",
     "inference",
 ]
 
-# Steps that accept Hydra overrides
-STEPS_WITH_OVERRIDES = {"model", "feature_engineering"}
+# Define steps that can receive Hydra configuration overrides via MLflow
+# This is useful for hyperparameter tuning during the model training step
+STEPS_WITH_OVERRIDES = {"models"}
 
 
 def setup_logging(config: DictConfig) -> None:
@@ -62,82 +65,85 @@ def setup_logging(config: DictConfig) -> None:
 
 @hydra.main(config_name="config", config_path="conf", version_base=None)
 def main(cfg: DictConfig):
-    """Main orchestrator for crypto prediction pipeline with Hydra configuration."""
-    # Setup logging first
-    setup_logging(cfg)
-    logger = logging.getLogger("CryptoMLOps")
-    
-    logger.info("🚀 Starting Crypto MLOps Pipeline with Hydra configuration")
-    logger.info(f"Working directory: {os.getcwd()}")
-    
-    # Set W&B environment variables
+    """
+    Main orchestrator for the MLOps pipeline.
+
+    Initializes a W&B run and then executes each pipeline step
+    as a separate MLflow Project.
+    """
+    # Set W&B environment variables from the Hydra config
     os.environ["WANDB_PROJECT"] = cfg.main.WANDB_PROJECT
     os.environ["WANDB_ENTITY"] = cfg.main.WANDB_ENTITY
 
-    run_name = f"crypto_orchestrator_{datetime.now():%Y%m%d_%H%M%S}"
-    
-    try:
-        # Initialize W&B run for orchestrator
-        run = wandb.init(
-            project=cfg.main.WANDB_PROJECT,
-            entity=cfg.main.WANDB_ENTITY,
-            job_type="orchestrator",
-            name=run_name,
-            config=dict(cfg),
-            tags=["crypto", "orchestrator"]
-        )
-        logger.info(f"Started WandB run: {run.name}")
+    # Initialize a parent W&B run for the orchestrator
+    run_name = f"orchestrator_{datetime.now():%Y%m%d_%H%M%S}"
+    run = wandb.init(
+        project=cfg.main.WANDB_PROJECT,
+        entity=cfg.main.WANDB_ENTITY,
+        job_type="orchestrator",
+        name=run_name,
+    )
+    print(f"✅ Started W&B orchestrator run: {run.name}")
 
-        # Parse which steps to run
-        steps_raw = cfg.main.steps
-        active_steps = [s.strip() for s in steps_raw.split(",") if s.strip()] \
-            if steps_raw != "all" else PIPELINE_STEPS
+    # Set the MLflow experiment for the orchestrator
+    mlflow_config = cfg.get("mlflow_tracking", {})
+    experiment_name = mlflow_config.get("experiment_name", "MLOps-Group-Project-Experiment")
+    mlflow.set_experiment(experiment_name)
+    print(f"✅ Set MLflow experiment to: '{experiment_name}'")
 
-        # Get hydra overrides for applicable steps
-        hydra_override = cfg.main.hydra_options if hasattr(
-            cfg.main, "hydra_options") else ""
+    # Determine which steps to run
+    steps_raw = cfg.main.steps
+    if isinstance(steps_raw, str) and steps_raw != "all":
+         active_steps = [s.strip() for s in steps_raw.split(",")]
+    else:
+        active_steps = PIPELINE_STEPS
 
-        logger.info(f"Running crypto pipeline steps: {active_steps}")
+    # Get any Hydra command-line overrides
+    hydra_override = cfg.main.get("hydra_options", "")
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Define artifact paths to pass between steps
+        artifacts = {
+            "raw_data": os.path.join(hydra.utils.get_original_cwd(), cfg.data_source.raw_path),
+            "validated_data": os.path.join(hydra.utils.get_original_cwd(), cfg.data_source.processed_path),
+            "feature_engineered_data": os.path.join(hydra.utils.get_original_cwd(), "data/processed/feature_engineered_data.csv"),
+            "processed_data_path": os.path.join(hydra.utils.get_original_cwd(), "data/processed/training_data"),
+            "model_path": os.path.join(hydra.utils.get_original_cwd(), "models/logistic_regression.pkl"),
+            "test_data_path_class": os.path.join(hydra.utils.get_original_cwd(), "data/processed/training_data/X_test_class.csv")
+        }
         
-        # Create output directories
-        for dir_path in ["data/processed", "models", "logs", "plots"]:
-            os.makedirs(dir_path, exist_ok=True)
+        for step in active_steps:
+            if step not in PIPELINE_STEPS:
+                logging.warning(f"Skipping unknown step: {step}")
+                continue
 
-        # For now, run the existing pipeline (you can update this later)
-        logger.info("🔄 Running your existing pipeline...")
-        
-        # Import your existing main function
-        from mlops.main import run_full_pipeline
-        
-        # Convert dates if provided
-        start_date = cfg.data_source.get("start_date", "2023-01-01")
-        end_date = cfg.data_source.get("end_date", "2023-12-31")
-        
-        # Run your existing pipeline
-        run_full_pipeline(start_date, end_date)
+            print(f"▶️  Running step: '{step}'...")
 
-        logger.info("🎉 Crypto MLOps pipeline completed successfully!")
-        
-        # Log pipeline summary to W&B
-        wandb.summary.update({
-            "pipeline_status": "success",
-            "steps_completed": len(active_steps),
-            "steps_list": active_steps,
-        })
+            # Define parameters for the current step
+            params = {}
+            if step == "data_validation":
+                params["input_artifact"] = artifacts["raw_data"]
+            elif step == "features":
+                params["input_artifact"] = artifacts["validated_data"]
+            elif step == "preprocess":
+                params["input_artifact"] = artifacts["feature_engineered_data"]
+            elif step == "models":
+                params["input_artifact"] = artifacts["processed_data_path"]
+            elif step == "evaluation":
+                params["model_artifact"] = artifacts["model_path"]
+                params["test_data_path"] = artifacts["processed_data_path"]
+            elif step == "inference":
+                params["model_artifact"] = artifacts["model_path"]
+                params["inference_data"] = artifacts["test_data_path_class"]
 
-    except Exception as e:
-        logger.error(f"❌ Crypto pipeline failed: {e}")
-        if 'run' in locals():
-            wandb.summary.update({
-                "pipeline_status": "failed",
-                "error_message": str(e)
-            })
-        raise
-    finally:
-        # Cleanup W&B run
-        if 'run' in locals():
-            wandb.finish()
-            logger.info("Finished W&B orchestrator run")
+            # MLflow will now use the conda.yaml file specified in each
+            # step's entry point in the root MLproject file.
+            mlflow.run(".", entry_point=step, parameters=params)
+            
+            print(f"✅ Step '{step}' finished.")
+
+    print("🎉 Pipeline execution complete.")
+    wandb.finish()
 
 
 # CLI interface for backward compatibility

@@ -1,0 +1,56 @@
+✅ Started W&B orchestrator run: orchestrator_20250620_191821
+✅ Set MLflow experiment to: 'MLOps-Group-Project-Experiment'
+▶️  Running step: 'data_load'...
+2025/06/20 19:18:24 INFO mlflow.utils.conda: Conda environment mlflow-b38cc610a566358f4ff450976fe6275733f34b85 already exists.
+2025/06/20 19:18:24 INFO mlflow.projects.utils: === Created directory /var/folders/8m/nc66qdpd59zc9q76n8rk5d9m0000gn/T/tmpufs3sxm4 for downloading remote URIs passed to arguments of type 'path' ===
+2025/06/20 19:18:24 INFO mlflow.projects.backend.local: === Running command 'source /Users/aviv/Applications/anaconda3/bin/../etc/profile.d/conda.sh && conda activate mlflow-b38cc610a566358f4ff450976fe6275733f34b85 1>&2 && python3 src/mlops/data_load/run.py' in run with ID '04c26484ee7f4bf3bc7c0a35fc63319e' ===
+2025/06/20 19:18:51 INFO mlflow.projects: === Run (ID '04c26484ee7f4bf3bc7c0a35fc63319e') succeeded ===
+✅ Step 'data_load' finished.
+▶️  Running step: 'data_validation'...
+2025/06/20 19:18:52 INFO mlflow.utils.conda: Conda environment mlflow-b38cc610a566358f4ff450976fe6275733f34b85 already exists.
+2025/06/20 19:18:52 INFO mlflow.projects.utils: === Created directory /var/folders/8m/nc66qdpd59zc9q76n8rk5d9m0000gn/T/tmph34split for downloading remote URIs passed to arguments of type 'path' ===
+2025/06/20 19:18:52 INFO mlflow.projects.backend.local: === Running command 'source /Users/aviv/Applications/anaconda3/bin/../etc/profile.d/conda.sh && conda activate mlflow-b38cc610a566358f4ff450976fe6275733f34b85 1>&2 && python3 src/mlops/data_validation/run.py --input-artifact '/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/raw/raw_data.csv'' in run with ID 'fdde50a84701424bae331087f55c8ba9' ===
+2025/06/20 19:18:57 INFO mlflow.projects: === Run (ID 'fdde50a84701424bae331087f55c8ba9') succeeded ===
+✅ Step 'data_validation' finished.
+▶️  Running step: 'features'...
+2025/06/20 19:18:58 INFO mlflow.utils.conda: Conda environment mlflow-b38cc610a566358f4ff450976fe6275733f34b85 already exists.
+2025/06/20 19:18:58 INFO mlflow.projects.utils: === Created directory /var/folders/8m/nc66qdpd59zc9q76n8rk5d9m0000gn/T/tmp1ylponn7 for downloading remote URIs passed to arguments of type 'path' ===
+2025/06/20 19:18:58 INFO mlflow.projects.backend.local: === Running command 'source /Users/aviv/Applications/anaconda3/bin/../etc/profile.d/conda.sh && conda activate mlflow-b38cc610a566358f4ff450976fe6275733f34b85 1>&2 && python3 src/mlops/features/run.py --input-artifact '/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/./data/processed/futures_data_processed_.csv'' in run with ID '340785c513ac49c3852418ed711d8af0' ===
+2025/06/20 19:19:04 INFO mlflow.projects: === Run (ID '340785c513ac49c3852418ed711d8af0') succeeded ===
+✅ Step 'features' finished.
+▶️  Running step: 'preprocess'...
+2025/06/20 19:19:05 INFO mlflow.utils.conda: Conda environment mlflow-b38cc610a566358f4ff450976fe6275733f34b85 already exists.
+2025/06/20 19:19:05 INFO mlflow.projects.utils: === Created directory /var/folders/8m/nc66qdpd59zc9q76n8rk5d9m0000gn/T/tmpjj9e0yac for downloading remote URIs passed to arguments of type 'path' ===
+2025/06/20 19:19:05 INFO mlflow.projects.backend.local: === Running command 'source /Users/aviv/Applications/anaconda3/bin/../etc/profile.d/conda.sh && conda activate mlflow-b38cc610a566358f4ff450976fe6275733f34b85 1>&2 && python3 src/mlops/preproccess/run.py --input-artifact '/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/processed/feature_engineered_data.csv'' in run with ID 'a0046abbca844e0b9968ba4ff9254ee4' ===
+2025/06/20 19:19:15 INFO mlflow.projects: === Run (ID 'a0046abbca844e0b9968ba4ff9254ee4') succeeded ===
+✅ Step 'preprocess' finished.
+▶️  Running step: 'models'...
+Error executing job with overrides: []
+Traceback (most recent call last):
+  File "/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/main.py", line 130, in main
+    mlflow.run(".", entry_point=step, parameters=params)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/mlflow/projects/__init__.py", line 357, in run
+    submitted_run_obj = _run(
+        uri=uri,
+    ...<12 lines>...
+        docker_auth=docker_auth,
+    )
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/mlflow/projects/__init__.py", line 110, in _run
+    submitted_run = backend.run(
+        uri,
+    ...<5 lines>...
+        experiment_id,
+    )
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/mlflow/projects/backend/local.py", line 80, in run
+    work_dir = fetch_and_validate_project(project_uri, version, entry_point, params)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/mlflow/projects/utils.py", line 138, in fetch_and_validate_project
+    if entry_point_obj := project.get_entry_point(entry_point):
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/mlflow/projects/_project_spec.py", line 244, in get_entry_point
+    raise ExecutionException(
+    ...<3 lines>...
+    )
+mlflow.exceptions.ExecutionException: Could not find models among entry points ['data_load', 'data_validation', 'features', 'preprocess', 'main'] or interpret models as a runnable script. Supported script file extensions: ['.py', '.sh']
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.

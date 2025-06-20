@@ -3,7 +3,14 @@ import yaml
 import json
 import os
 import logging
-from typing import Dict, Optional
+from typing import Dict, Optional, List, Tuple
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 # ───────────────────────────── setup logging ──────────────────────────────
 
@@ -367,77 +374,92 @@ def save_validation_report(
         raise
 
 
-def validate_data(df: pd.DataFrame, schema: Dict,
-                  logger: Optional[logging.Logger] = None,
-                  missing_strategy: str = 'drop',
-                  on_error: str = 'raise') -> pd.DataFrame:
+def validate_data(df: pd.DataFrame, config: Dict) -> Tuple[pd.DataFrame, Dict]:
+    """
+    Validates the input DataFrame based on a schema defined in the config.
 
-    # Setup logger if not provided
-    if logger is None:
-        logger = setup_logging()
+    Args:
+        df (pd.DataFrame): The DataFrame to validate.
+        config (Dict): The data validation configuration.
 
-    try:
-        # Input validation
-        if not isinstance(df, pd.DataFrame):
-            raise TypeError("Input must be a pandas DataFrame")
+    Returns:
+        Tuple[pd.DataFrame, Dict]: A tuple containing the validated (and possibly imputed)
+                                   DataFrame and a validation report dictionary.
+    """
+    report = {
+        "status": "pass",
+        "issues": {"errors": [], "warnings": []},
+        "column_details": {},
+        "missing_values_summary": None
+    }
+    
+    schema_config = config.get("schema", {})
+    expected_cols = {col['name']: col for col in schema_config.get('columns', [])}
+    df_cols = set(df.columns)
 
-        if df.empty:
-            logger.warning("Input DataFrame is empty")
-            return df
+    logger.info(f"Starting validation for DataFrame with shape {df.shape}")
+    logger.info(f"Validation: missing_strategy='{config.get('missing_values_strategy')}', on_error='{config.get('on_error')}'")
 
-        if not isinstance(schema, dict):
-            raise TypeError("Schema must be a dictionary")
+    # Check for missing and unexpected columns
+    for col_name in expected_cols:
+        if col_name not in df_cols:
+            msg = f"Missing expected column: '{col_name}'"
+            report["issues"]["errors"].append(msg)
+            report["status"] = "fail"
+            logger.error(msg)
+    
+    unexpected_cols = df_cols - set(expected_cols.keys())
+    if unexpected_cols:
+        msg = f"Found {len(unexpected_cols)} unexpected columns: {list(unexpected_cols)}"
+        report["issues"]["warnings"].append(msg)
+        logger.warning(f"Continuing despite unexpected columns")
+    
+    if report["status"] == "fail":
+        return df, report # Stop further validation if essential columns are missing
 
-        if not schema:
-            logger.warning("Schema is empty, no validation performed")
-            return df
+    # Validate schema for each column
+    logger.info(f"Validating schema for {len(expected_cols)} columns")
+    for name, params in expected_cols.items():
+        column_report = {"expected_type": params["dtype"], "status": "pass"}
+        
+        # Check type
+        if df[name].dtype.name != params["dtype"]:
+            msg = f"Column '{name}' has wrong type. Expected {params['dtype']}, found {df[name].dtype.name}"
+            report["issues"]["errors"].append(msg)
+            report["status"] = "fail"
+            column_report["status"] = "fail"
+            logger.error(msg)
+        
+        # Get sample values
+        sample_values = df[name].dropna().unique()[:5]
+        column_report["sample_values"] = [str(v) for v in sample_values] # Convert to string for JSON
+        
+        report["column_details"][name] = column_report
 
-        shape_msg = f"Starting validation for DataFrame with shape {df.shape}"
-        logger.info(shape_msg)
-        settings_msg = (f"Validation: missing_strategy='{missing_strategy}', "
-                        f"on_error='{on_error}'")
-        logger.info(settings_msg)
+    logger.info("Schema validation completed")
 
-        # Initialize validation report
-        report = {
-            'missing_columns': [],
-            'unexpected_columns': [],
-            'type_mismatches': {},
-            'missing_values': {},
-            'out_of_range': {}
-        }
+    # Handle missing values
+    missing_before = df.isnull().sum().sum()
+    if missing_before > 0:
+        missing_strategy = config.get("missing_values_strategy", "drop")
+        summary = {"strategy": missing_strategy, "missing_before": int(missing_before)}
+        
+        if missing_strategy == "impute":
+            df = df.fillna(method="ffill").fillna(method="bfill")
+            missing_after = df.isnull().sum().sum()
+            imputed_count = missing_before - missing_after
+            summary["total_imputed"] = int(imputed_count)
+            logger.info(f"Imputed {imputed_count} missing values using forward/backward fill")
+        elif missing_strategy == "drop":
+            rows_before = len(df)
+            df.dropna(inplace=True)
+            rows_after = len(df)
+            dropped_count = rows_before - rows_after
+            summary["rows_dropped"] = int(dropped_count)
+            logger.info(f"Dropped {dropped_count} rows with missing values")
+        
+        report["missing_values_summary"] = summary
 
-        # Run validation checks
-        check_unexpected_columns(df, schema, logger, on_error, report)
-        df_processed = check_schema_and_types(
-            df, schema, logger, on_error, report
-        )
-        check_missing_values(df_processed, schema, logger, report)
-
-        # Handle missing values
-        df_final = handle_missing_values(
-            df_processed, missing_strategy, logger
-        )
-
-        # Save validation report
-        save_validation_report(report, logger)
-
-        # Log summary
-        total_issues = (len(report['missing_columns']) +
-                        len(report['unexpected_columns']) +
-                        len(report['type_mismatches']))
-
-        if total_issues == 0:
-            success_msg = "✓ Success: Data validation completed with no issues"
-            logger.info(success_msg)
-        else:
-            issues_msg = (f"Data validation completed with {total_issues} "
-                          f"issues (see report for details)")
-            logger.info(issues_msg)
-
-        logger.info(f"Final DataFrame shape: {df_final.shape}")
-        return df_final
-
-    except Exception as e:
-        logger.error(f"Data validation failed: {e}")
-        raise
+    logger.info(f"Data validation completed with {len(report['issues']['errors'])} errors and {len(report['issues']['warnings'])} warnings.")
+    
+    return df, report
