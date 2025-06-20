@@ -1,5 +1,7 @@
 # MLOps Group Project
 
+**Live API Endpoint:** [https://mlops-group-project.onrender.com](https://mlops-group-project.onrender.com)
+
 [![check.yml](https://github.com/mrtngo/MLOps_Group_Project/actions/workflows/check.yml/badge.svg)](https://github.com/mrtngo/MLOps_Group_Project/actions/workflows/check.yml)
 [![publish.yml](https://github.com/mrtngo/MLOps_Group_Project/actions/workflows/publish.yml/badge.svg)](https://github.com/mrtngo/MLOps_Group_Project/actions/workflows/publish.yml)
 [![Documentation](https://img.shields.io/badge/documentation-available-brightgreen.svg)](https://mrtngo.github.io/MLOps_Group_Project/)
@@ -241,5 +243,3 @@ curl -X 'POST' \
 ## Testing
 
 Run the test suite:
-
-``

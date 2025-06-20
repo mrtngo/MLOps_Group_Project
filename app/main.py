@@ -1,10 +1,11 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from pydantic import BaseModel
 import uvicorn
 import joblib
 import pandas as pd
 import os
 import pickle
+import io
 
 # Define the input data model using Pydantic
 class PredictionInput(BaseModel):
@@ -53,6 +54,34 @@ app = FastAPI(
     version="0.1.0",
 )
 
+def perform_prediction(input_df: pd.DataFrame, preprocessor_dict: dict, reg_model, class_model):
+    """Helper function to perform preprocessing and prediction."""
+    scaler = preprocessor_dict['scaler']
+    selected_features_reg = preprocessor_dict['selected_features_reg']
+    selected_features_class = preprocessor_dict['selected_features_class']
+
+    # Ensure columns are in the correct order
+    input_df = input_df[preprocessor_dict['all_feature_cols']]
+
+    # Scale the features
+    scaled_features = scaler.transform(input_df)
+    scaled_df = pd.DataFrame(scaled_features, columns=input_df.columns, index=input_df.index)
+
+    # Select features for each model
+    X_reg = scaled_df[selected_features_reg]
+    X_class = scaled_df[selected_features_class]
+
+    # Make predictions
+    price_prediction = reg_model.predict(X_reg)
+    direction_prediction = class_model.predict(X_class)
+    direction_probability = class_model.predict_proba(X_class)[:, 1]
+
+    return {
+        "price_prediction": price_prediction.tolist(),
+        "direction_prediction": direction_prediction.tolist(),
+        "direction_probability": direction_probability.tolist()
+    }
+
 @app.on_event("startup")
 async def startup_event():
     """Ensure models and preprocessor are loaded at startup."""
@@ -78,43 +107,46 @@ def health_check():
 
 @app.post("/predict")
 def predict(input_data: PredictionInput):
-    """
-    Predicts the BTC price and direction based on input features.
-    """
+    """Endpoint for single predictions."""
     if not all([reg_model, class_model, preprocessor_pipeline]):
-        raise HTTPException(status_code=503, detail="Models or preprocessor are not loaded")
+        raise HTTPException(status_code=503, detail="Models or preprocessor not loaded")
 
     try:
-        # Extract the scaler and feature lists from the loaded pipeline
-        scaler = preprocessor_pipeline['scaler']
-        all_features = preprocessor_pipeline['all_feature_cols']
-        reg_features = preprocessor_pipeline['selected_features_reg']
-        class_features = preprocessor_pipeline['selected_features_class']
-
-        # Convert input data to a DataFrame and ensure correct column order
-        input_df = pd.DataFrame([input_data.dict()], columns=all_features)
+        # Convert Pydantic model to DataFrame
+        input_df = pd.DataFrame([input_data.dict()])
         
-        # Preprocess the data (e.g., scale it)
-        scaled_data = scaler.transform(input_df)
-        scaled_df = pd.DataFrame(scaled_data, columns=all_features)
-        
-        # Select features for each model
-        reg_input_df = scaled_df[reg_features]
-        class_input_df = scaled_df[class_features]
+        # Use the helper function for prediction
+        predictions = perform_prediction(input_df, preprocessor_pipeline, reg_model, class_model)
 
-        # Predict using the regression and classification models
-        price_prediction = reg_model.predict(reg_input_df)[0]
-        direction_prediction = class_model.predict(class_input_df)[0]
-        direction_probability = class_model.predict_proba(class_input_df)[0][1]
-    
+        # Since this is a single prediction, return the first element of the lists
+        return {
+            "price_prediction": predictions["price_prediction"][0],
+            "direction_prediction": predictions["direction_prediction"][0],
+            "direction_probability": predictions["direction_probability"][0]
+        }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Prediction error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-    return {
-        "predicted_btc_price": float(price_prediction),
-        "predicted_price_direction": int(direction_prediction),
-        "prediction_probability": float(direction_probability),
-    }
+@app.post("/predict_batch")
+async def predict_batch(file: UploadFile = File(...)):
+    """Endpoint for batch predictions from a CSV file."""
+    if not all([reg_model, class_model, preprocessor_pipeline]):
+        raise HTTPException(status_code=503, detail="Models or preprocessor not loaded")
+    
+    if not file.filename.endswith('.csv'):
+        raise HTTPException(status_code=400, detail="Invalid file type. Please upload a CSV.")
+
+    try:
+        # Read the uploaded file into a pandas DataFrame
+        contents = await file.read()
+        input_df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
+
+        # Use the helper function for prediction
+        predictions = perform_prediction(input_df, preprocessor_pipeline, reg_model, class_model)
+        
+        return predictions
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000) 

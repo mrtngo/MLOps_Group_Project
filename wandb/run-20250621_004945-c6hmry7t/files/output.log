@@ -1,0 +1,16 @@
+2025-06-21 00:49:46,314 - INFO - __main__ - Loading raw data from: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/raw/raw_data.csv
+2025-06-21 00:49:46,317 - INFO - __main__ - Validating data against the schema...
+2025-06-21 00:49:46,317 - INFO - src.mlops.data_validation.data_validation - Starting validation for DataFrame with shape (1500, 13)
+2025-06-21 00:49:46,318 - INFO - src.mlops.data_validation.data_validation - Validation: missing_strategy='impute', on_error='None'
+2025-06-21 00:49:46,318 - INFO - src.mlops.data_validation.data_validation - Validating schema for 13 columns
+2025-06-21 00:49:46,321 - INFO - src.mlops.data_validation.data_validation - Schema validation completed
+/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/data_validation/../../../src/mlops/data_validation/data_validation.py:448: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  df = df.fillna(method="ffill").fillna(method="bfill")
+2025-06-21 00:49:46,323 - INFO - src.mlops.data_validation.data_validation - Imputed 4860 missing values using forward/backward fill
+2025-06-21 00:49:46,323 - INFO - src.mlops.data_validation.data_validation - Data validation completed with 0 errors and 0 warnings.
+2025-06-21 00:49:46,323 - INFO - __main__ - Data validation completed. Shape after validation: (1500, 13)
+2025-06-21 00:49:46,327 - INFO - __main__ - Logged HTML validation report to W&B.
+2025-06-21 00:49:46,327 - INFO - __main__ - Generating and logging summary statistics and sample rows to W&B...
+2025-06-21 00:49:46,849 - INFO - __main__ - Successfully logged W&B Tables.
+2025-06-21 00:49:47,040 - INFO - __main__ - Logged validated data artifact to MLflow and W&B: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/data_validation/../../.././data/processed/futures_data_processed_.csv
+2025-06-21 00:49:47,040 - INFO - __main__ - --- Data Validation Step Completed Successfully ---
