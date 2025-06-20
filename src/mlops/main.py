@@ -27,7 +27,7 @@ def setup_logger():
     Configure logging using parameters from config.yaml
     """
     print("hello")
-    config = load_config("config.yaml")
+    config = load_config("conf/config.yaml")
     log_cfg = config.get("logging", {})
 
     log_level = getattr(
@@ -74,7 +74,7 @@ def run_full_pipeline(start_date, end_date):
 
         # 2. Load schema from config and validate
         logger.info("Step 2: Validating data...")
-        config = load_config("config.yaml")
+        config = load_config("conf/config.yaml")
         schema_list = config.get("data_validation", {}).get(
             "schema", {}
         ).get("columns", [])
@@ -229,7 +229,8 @@ def preprocess_data(df, feature_cols, y_class):
     This function is kept for backward compatibility but is now handled
     within the ModelTrainer class in models.py
     """
-    config = load_config("config.yaml")
+    config = load_config("conf/config.yaml")
+
     logger = logging.getLogger("Preprocessing")
     deprecation_msg = (
         "preprocess_data() is deprecated. "
@@ -263,7 +264,7 @@ def run_until_feature_engineering():
     df = fetch_data()
 
     # 2. Load schema from config and validate
-    config = load_config("config.yaml")
+    config = load_config("conf/config.yaml")
     schema_list = config.get("data_validation", {}).get(
         "schema", {}
     ).get("columns", [])

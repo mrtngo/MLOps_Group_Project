@@ -23,7 +23,7 @@ from mlops.preproccess.preproccessing import (
 from mlops.data_validation.data_validation import load_config
 
 logger = logging.getLogger(__name__)
-config = load_config("config.yaml")
+config = load_config("conf/config.yaml")
 
 
 class ModelTrainer:

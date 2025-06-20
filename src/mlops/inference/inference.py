@@ -10,7 +10,7 @@ from mlops.features.features import define_features_and_label
 from mlops.data_validation.data_validation import load_config
 
 logger = logging.getLogger(__name__)
-config = load_config("config.yaml")
+config = load_config("conf/config.yaml")
 
 
 class ModelInferencer:

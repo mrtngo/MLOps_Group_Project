@@ -1,0 +1,14 @@
+[2025-06-20 11:32:01,018][CryptoMLOps][INFO] - Started WandB run: crypto_orchestrator_20250620_113159
+2025-06-20 11:32:01 - INFO - CryptoMLOps - Started WandB run: crypto_orchestrator_20250620_113159
+[2025-06-20 11:32:01,019][CryptoMLOps][INFO] - Running crypto pipeline steps: ['data_load']
+2025-06-20 11:32:01 - INFO - CryptoMLOps - Running crypto pipeline steps: ['data_load']
+[2025-06-20 11:32:01,019][CryptoMLOps][INFO] - 🔄 Running your existing pipeline...
+2025-06-20 11:32:01 - INFO - CryptoMLOps - 🔄 Running your existing pipeline...
+[2025-06-20 11:32:01,023][mlops.data_load.data_load][ERROR] - Config file not found: config.yaml
+2025-06-20 11:32:01 - ERROR - mlops.data_load.data_load - Config file not found: config.yaml
+[2025-06-20 11:32:01,023][mlops.data_load.data_load][ERROR] - Failed to load config: [Errno 2] No such file or directory: 'config.yaml'
+2025-06-20 11:32:01 - ERROR - mlops.data_load.data_load - Failed to load config: [Errno 2] No such file or directory: 'config.yaml'
+[2025-06-20 11:32:02,972][mlops.data_validation.data_validation][ERROR] - Configuration file not found: config.yaml
+2025-06-20 11:32:02 - ERROR - mlops.data_validation.data_validation - Configuration file not found: config.yaml
+[2025-06-20 11:32:02,973][CryptoMLOps][ERROR] - ❌ Crypto pipeline failed: Configuration file not found: config.yaml
+2025-06-20 11:32:02 - ERROR - CryptoMLOps - ❌ Crypto pipeline failed: Configuration file not found: config.yaml

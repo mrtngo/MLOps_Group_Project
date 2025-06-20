@@ -15,7 +15,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 try:
-    config = load_config("config.yaml")
+    config = load_config("conf/config.yaml")
     params = config.get("preprocessing", {})
     data_split = config.get("data_split", {})
 except Exception as e:

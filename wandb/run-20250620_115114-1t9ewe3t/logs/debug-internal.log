@@ -1,0 +1,16 @@
+{"time":"2025-06-20T11:51:14.596637+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/master/ie/MBD2024/Term 3/mlops/MLOps_Group_Project/wandb/run-20250620_115114-1t9ewe3t/logs/debug-core.log"}
+{"time":"2025-06-20T11:51:14.932343+02:00","level":"INFO","msg":"stream: created new stream","id":"1t9ewe3t"}
+{"time":"2025-06-20T11:51:14.932384+02:00","level":"INFO","msg":"stream: started","id":"1t9ewe3t"}
+{"time":"2025-06-20T11:51:14.932384+02:00","level":"INFO","msg":"handler: started","stream_id":"1t9ewe3t"}
+{"time":"2025-06-20T11:51:14.932393+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"1t9ewe3t"}
+{"time":"2025-06-20T11:51:14.932426+02:00","level":"INFO","msg":"sender: started","stream_id":"1t9ewe3t"}
+{"time":"2025-06-20T11:51:15.277207+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T11:51:48.971882+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T11:51:48.972045+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T11:51:49.869399+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T11:51:49.975845+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading summary, console lines 139-319","runtime_seconds":0.105543084}],"total_operations":1}}
+{"time":"2025-06-20T11:51:50.09894+02:00","level":"INFO","msg":"stream: closing","id":"1t9ewe3t"}
+{"time":"2025-06-20T11:51:50.098976+02:00","level":"INFO","msg":"handler: closed","stream_id":"1t9ewe3t"}
+{"time":"2025-06-20T11:51:50.099001+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"1t9ewe3t"}
+{"time":"2025-06-20T11:51:50.099007+02:00","level":"INFO","msg":"sender: closed","stream_id":"1t9ewe3t"}
+{"time":"2025-06-20T11:51:50.099364+02:00","level":"INFO","msg":"stream: closed","id":"1t9ewe3t"}

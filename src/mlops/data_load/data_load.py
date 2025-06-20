@@ -54,7 +54,7 @@ def default_window(days: int = 365) -> tuple[int, int]:
 def load_symbols() -> list:
     """Load symbols from config with error handling."""
     try:
-        cfg = load_config("config.yaml")
+        cfg = load_config("conf/config.yaml")
         symbols = cfg.get("symbols", [])
         if not symbols:
             logger.warning("No symbols found in config")

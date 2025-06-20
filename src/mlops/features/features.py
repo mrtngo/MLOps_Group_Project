@@ -2,7 +2,7 @@ import pandas as pd
 from mlops.data_validation.data_validation import load_config
 from sklearn.ensemble import RandomForestRegressor
 
-config = load_config("config.yaml")
+config = load_config("conf/config.yaml")
 
 
 def define_features_and_label():
@@ -40,6 +40,7 @@ def create_price_direction_label(df, label_col):
     Returns:
         pandas DataFrame with price direction column added
     """
+    print(df.head())
     df = df.sort_values('timestamp').copy()
     df['prev_price'] = df[label_col].shift(1)
     df['price_direction'] = (df[label_col] > df['prev_price']).astype(int)
