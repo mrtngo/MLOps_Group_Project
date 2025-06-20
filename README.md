@@ -1,6 +1,7 @@
 # MLOps Group Project
 
 **Live API Endpoint:** [https://mlops-group-project.onrender.com](https://mlops-group-project.onrender.com)
+**W&B Project Workspace:** [View on W&B](https://wandb.ai/aviv275-ie-university/mlops-project/workspace?nw=nwuseraviv275)
 
 [![check.yml](https://github.com/mrtngo/MLOps_Group_Project/actions/workflows/check.yml/badge.svg)](https://github.com/mrtngo/MLOps_Group_Project/actions/workflows/check.yml)
 [![publish.yml](https://github.com/mrtngo/MLOps_Group_Project/actions/workflows/publish.yml/badge.svg)](https://github.com/mrtngo/MLOps_Group_Project/actions/workflows/publish.yml)
@@ -19,6 +20,10 @@ This project implements an end-to-end machine learning pipeline that:
 - Trains both regression (price prediction) and classification (direction prediction) models
 - Evaluates model performance with comprehensive metrics and visualizations
 - Provides inference capabilities for new data
+
+### Project Baseline
+
+This project was originally developed in a Jupyter Notebook. The initial commit can be considered the baseline state before its transformation into a production-ready MLOps pipeline. This serves as a checkpoint to compare the initial ad-hoc workflow against the final, automated system.
 
 ## Features
 
