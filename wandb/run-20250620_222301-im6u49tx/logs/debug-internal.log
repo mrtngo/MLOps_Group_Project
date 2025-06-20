@@ -1,0 +1,11 @@
+{"time":"2025-06-20T22:23:01.386546+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_222301-im6u49tx/logs/debug-core.log"}
+{"time":"2025-06-20T22:23:01.547706+02:00","level":"INFO","msg":"stream: created new stream","id":"im6u49tx"}
+{"time":"2025-06-20T22:23:01.54775+02:00","level":"INFO","msg":"stream: started","id":"im6u49tx"}
+{"time":"2025-06-20T22:23:01.547767+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"im6u49tx"}
+{"time":"2025-06-20T22:23:01.547787+02:00","level":"INFO","msg":"handler: started","stream_id":"im6u49tx"}
+{"time":"2025-06-20T22:23:01.547863+02:00","level":"INFO","msg":"sender: started","stream_id":"im6u49tx"}
+{"time":"2025-06-20T22:23:01.840448+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T22:23:04.151899+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T22:23:04.151996+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T22:23:04.408926+02:00","level":"INFO","msg":"stream: closing","id":"im6u49tx"}
+{"time":"2025-06-20T22:23:04.408961+02:00","level":"WARN","msg":"sender: received Exit record more than once, ignoring"}

@@ -1,0 +1,11 @@
+2025-06-20 22:37:52,750 - INFO - __main__ - Evaluating model from: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/models/logistic_regression.pkl
+2025-06-20 22:37:52,750 - INFO - __main__ - Using test data from: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/processed/training_data
+2025-06-20 22:37:52,751 - INFO - src.mlops.evaluation.evaluation - Model loaded successfully from /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/models/logistic_regression.pkl
+2025-06-20 22:37:52,758 - INFO - src.mlops.evaluation.evaluation - Classification metrics: {'accuracy': 0.5566666666666666, 'f1_score': 0.5626863883616542, 'roc_auc': np.float64(0.5509283196239718)}
+2025-06-20 22:37:52,992 - INFO - src.mlops.evaluation.evaluation - Confusion matrix saved to reports/evaluation/confusion_matrix.png
+2025-06-20 22:37:53,044 - INFO - src.mlops.evaluation.evaluation - ROC curve saved to reports/evaluation/roc_curve.png
+2025-06-20 22:37:53,045 - INFO - __main__ - Classification Evaluation Metrics: {'accuracy': 0.5566666666666666, 'f1_score': 0.5626863883616542, 'roc_auc': np.float64(0.5509283196239718)}
+2025-06-20 22:37:53,354 - INFO - __main__ - Logged confusion_matrix to MLflow and W&B.
+2025-06-20 22:37:53,363 - INFO - __main__ - Logged roc_curve to MLflow and W&B.
+2025-06-20 22:37:53,567 - INFO - __main__ - Logged sample predictions to W&B.
+2025-06-20 22:37:53,567 - INFO - __main__ - --- Model Evaluation Step Completed Successfully ---

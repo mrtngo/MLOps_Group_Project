@@ -1,0 +1,48 @@
+✅ Started W&B orchestrator run: orchestrator_20250620_223642
+✅ Set MLflow experiment to: 'MLOps-Group-Project-Experiment'
+DEBUG: steps_raw = ['features', 'preprocess', 'models'], type = <class 'omegaconf.listconfig.ListConfig'>
+DEBUG: active_steps = ['data_load', 'data_validation', 'features', 'preprocess', 'models', 'evaluation', 'inference']
+DEBUG: PIPELINE_STEPS = ['data_load', 'data_validation', 'features', 'preprocess', 'models', 'evaluation', 'inference']
+▶️  Running step: 'data_load'...
+2025/06/20 22:36:45 INFO mlflow.utils.conda: Conda environment mlflow-b38cc610a566358f4ff450976fe6275733f34b85 already exists.
+2025/06/20 22:36:45 INFO mlflow.projects.utils: === Created directory /var/folders/8m/nc66qdpd59zc9q76n8rk5d9m0000gn/T/tmptmy8u3bg for downloading remote URIs passed to arguments of type 'path' ===
+2025/06/20 22:36:45 INFO mlflow.projects.backend.local: === Running command 'source /Users/aviv/Applications/anaconda3/bin/../etc/profile.d/conda.sh && conda activate mlflow-b38cc610a566358f4ff450976fe6275733f34b85 1>&2 && python3 src/mlops/data_load/run.py' in run with ID '47849da401b34f30a9361189e9d8e623' ===
+2025/06/20 22:37:13 INFO mlflow.projects: === Run (ID '47849da401b34f30a9361189e9d8e623') succeeded ===
+✅ Step 'data_load' finished.
+▶️  Running step: 'data_validation'...
+2025/06/20 22:37:15 INFO mlflow.utils.conda: Conda environment mlflow-b38cc610a566358f4ff450976fe6275733f34b85 already exists.
+2025/06/20 22:37:15 INFO mlflow.projects.utils: === Created directory /var/folders/8m/nc66qdpd59zc9q76n8rk5d9m0000gn/T/tmpfn98vn58 for downloading remote URIs passed to arguments of type 'path' ===
+2025/06/20 22:37:15 INFO mlflow.projects.backend.local: === Running command 'source /Users/aviv/Applications/anaconda3/bin/../etc/profile.d/conda.sh && conda activate mlflow-b38cc610a566358f4ff450976fe6275733f34b85 1>&2 && python3 src/mlops/data_validation/run.py --input-artifact '/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/raw/raw_data.csv'' in run with ID 'acb4de24fe274496960a1b98ae84e5c7' ===
+2025/06/20 22:37:21 INFO mlflow.projects: === Run (ID 'acb4de24fe274496960a1b98ae84e5c7') succeeded ===
+✅ Step 'data_validation' finished.
+▶️  Running step: 'features'...
+2025/06/20 22:37:22 INFO mlflow.utils.conda: Conda environment mlflow-b38cc610a566358f4ff450976fe6275733f34b85 already exists.
+2025/06/20 22:37:22 INFO mlflow.projects.utils: === Created directory /var/folders/8m/nc66qdpd59zc9q76n8rk5d9m0000gn/T/tmp47zffij6 for downloading remote URIs passed to arguments of type 'path' ===
+2025/06/20 22:37:22 INFO mlflow.projects.backend.local: === Running command 'source /Users/aviv/Applications/anaconda3/bin/../etc/profile.d/conda.sh && conda activate mlflow-b38cc610a566358f4ff450976fe6275733f34b85 1>&2 && python3 src/mlops/features/run.py --input-artifact '/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/./data/processed/futures_data_processed_.csv'' in run with ID '889cc0ad42a04dfcbe3e554017cfc928' ===
+2025/06/20 22:37:30 INFO mlflow.projects: === Run (ID '889cc0ad42a04dfcbe3e554017cfc928') succeeded ===
+✅ Step 'features' finished.
+▶️  Running step: 'preprocess'...
+2025/06/20 22:37:31 INFO mlflow.utils.conda: Conda environment mlflow-b38cc610a566358f4ff450976fe6275733f34b85 already exists.
+2025/06/20 22:37:31 INFO mlflow.projects.utils: === Created directory /var/folders/8m/nc66qdpd59zc9q76n8rk5d9m0000gn/T/tmpdd82trp8 for downloading remote URIs passed to arguments of type 'path' ===
+2025/06/20 22:37:31 INFO mlflow.projects.backend.local: === Running command 'source /Users/aviv/Applications/anaconda3/bin/../etc/profile.d/conda.sh && conda activate mlflow-b38cc610a566358f4ff450976fe6275733f34b85 1>&2 && python3 src/mlops/preproccess/run.py --input-artifact '/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/processed/feature_engineered_data.csv'' in run with ID '528ad8865aca4a90b4660c4e7f979bbb' ===
+2025/06/20 22:37:39 INFO mlflow.projects: === Run (ID '528ad8865aca4a90b4660c4e7f979bbb') succeeded ===
+✅ Step 'preprocess' finished.
+▶️  Running step: 'models'...
+2025/06/20 22:37:40 INFO mlflow.utils.conda: Conda environment mlflow-b38cc610a566358f4ff450976fe6275733f34b85 already exists.
+2025/06/20 22:37:40 INFO mlflow.projects.utils: === Created directory /var/folders/8m/nc66qdpd59zc9q76n8rk5d9m0000gn/T/tmpry2dwd__ for downloading remote URIs passed to arguments of type 'path' ===
+2025/06/20 22:37:40 INFO mlflow.projects.backend.local: === Running command 'source /Users/aviv/Applications/anaconda3/bin/../etc/profile.d/conda.sh && conda activate mlflow-b38cc610a566358f4ff450976fe6275733f34b85 1>&2 && python3 src/mlops/models/run.py --input-artifact '/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/processed/training_data'' in run with ID '529fe18a1f7f4a2b90f2f78fd4f076eb' ===
+2025/06/20 22:37:47 INFO mlflow.projects: === Run (ID '529fe18a1f7f4a2b90f2f78fd4f076eb') succeeded ===
+✅ Step 'models' finished.
+▶️  Running step: 'evaluation'...
+2025/06/20 22:37:49 INFO mlflow.utils.conda: Conda environment mlflow-b38cc610a566358f4ff450976fe6275733f34b85 already exists.
+2025/06/20 22:37:49 INFO mlflow.projects.utils: === Created directory /var/folders/8m/nc66qdpd59zc9q76n8rk5d9m0000gn/T/tmp6f1j5gpy for downloading remote URIs passed to arguments of type 'path' ===
+2025/06/20 22:37:49 INFO mlflow.projects.backend.local: === Running command 'source /Users/aviv/Applications/anaconda3/bin/../etc/profile.d/conda.sh && conda activate mlflow-b38cc610a566358f4ff450976fe6275733f34b85 1>&2 && python3 src/mlops/evaluation/run.py --model-artifact '/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/models/logistic_regression.pkl' --test-data-path '/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/processed/training_data'' in run with ID 'a8d430d2fcf44f9fbede9c27c1a4034e' ===
+2025/06/20 22:37:56 INFO mlflow.projects: === Run (ID 'a8d430d2fcf44f9fbede9c27c1a4034e') succeeded ===
+✅ Step 'evaluation' finished.
+▶️  Running step: 'inference'...
+2025/06/20 22:37:57 INFO mlflow.utils.conda: Conda environment mlflow-b38cc610a566358f4ff450976fe6275733f34b85 already exists.
+2025/06/20 22:37:57 INFO mlflow.projects.utils: === Created directory /var/folders/8m/nc66qdpd59zc9q76n8rk5d9m0000gn/T/tmp2ass4zie for downloading remote URIs passed to arguments of type 'path' ===
+2025/06/20 22:37:57 INFO mlflow.projects.backend.local: === Running command 'source /Users/aviv/Applications/anaconda3/bin/../etc/profile.d/conda.sh && conda activate mlflow-b38cc610a566358f4ff450976fe6275733f34b85 1>&2 && python3 src/mlops/inference/run.py --model-artifact '/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/models/logistic_regression.pkl' --inference-data '/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/processed/training_data/X_test_class.csv'' in run with ID '7f03c4c390aa4ea8a377d4a272f426e7' ===
+2025/06/20 22:38:04 INFO mlflow.projects: === Run (ID '7f03c4c390aa4ea8a377d4a272f426e7') succeeded ===
+✅ Step 'inference' finished.
+🎉 Pipeline execution complete.

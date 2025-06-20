@@ -11,7 +11,7 @@ defaults:
 
 main:
   # list or string, depending on how main.py expects it
-  steps: ["data_load"]      # or "all" if that's your usual default
+  steps: "all"      # or specific steps like "features,preprocess,models"
   WANDB_PROJECT: mlops-project # whatever you call the project in Weights & Biases
   WANDB_ENTITY: aviv275-ie-university          # optional; omit if you use the default entity
 

@@ -93,10 +93,18 @@ def main(cfg: DictConfig):
 
     # Determine which steps to run
     steps_raw = cfg.main.steps
+    print(f"DEBUG: steps_raw = {steps_raw}, type = {type(steps_raw)}")
+    
     if isinstance(steps_raw, str) and steps_raw != "all":
          active_steps = [s.strip() for s in steps_raw.split(",")]
+    elif hasattr(steps_raw, '__iter__') and not isinstance(steps_raw, str):
+        # Handle both regular lists and OmegaConf ListConfig
+        active_steps = list(steps_raw)
     else:
         active_steps = PIPELINE_STEPS
+    
+    print(f"DEBUG: active_steps = {active_steps}")
+    print(f"DEBUG: PIPELINE_STEPS = {PIPELINE_STEPS}")
 
     # Get any Hydra command-line overrides
     hydra_override = cfg.main.get("hydra_options", "")
