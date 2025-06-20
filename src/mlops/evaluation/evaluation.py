@@ -20,13 +20,13 @@ from sklearn.metrics import (
     roc_curve
 )
 
-from mlops.features.features import (
+from src.mlops.features.features import (
     define_features_and_label,
     create_price_direction_label,
     prepare_features
 )
-from mlops.preproccess.preproccessing import split_data
-from mlops.data_validation.data_validation import load_config
+from src.mlops.preproccess.preproccessing import split_data
+from src.mlops.data_validation.data_validation import load_config
 
 logger = logging.getLogger(__name__)
 config = load_config("conf/config.yaml")

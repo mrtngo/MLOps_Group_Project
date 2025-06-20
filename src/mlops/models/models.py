@@ -9,18 +9,18 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import mean_squared_error, roc_auc_score
 
-from mlops.features.features import (
+from src.mlops.features.features import (
     define_features_and_label,
     create_price_direction_label,
     prepare_features,
     select_features
 )
-from mlops.preproccess.preproccessing import (
+from src.mlops.preproccess.preproccessing import (
     split_data,
     scale_features,
     smote_oversample
 )
-from mlops.data_validation.data_validation import load_config
+from src.mlops.data_validation.data_validation import load_config
 
 logger = logging.getLogger(__name__)
 config = load_config("conf/config.yaml")
