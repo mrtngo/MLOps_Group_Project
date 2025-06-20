@@ -4,6 +4,8 @@ import logging
 import argparse
 import sys
 import os
+import mlflow
+import wandb
 
 from mlops.data_load.data_load import fetch_data
 from mlops.data_validation.data_validation import load_config, validate_data
@@ -65,16 +67,57 @@ def run_full_pipeline(start_date, end_date):
     """
     logger = logging.getLogger("Pipeline")
     logger.info("Starting complete MLOps pipeline")
+    
+    config = load_config("conf/config.yaml")
+
+    # Set MLflow experiment
+    mlflow_config = config.get("mlflow_tracking", {})
+    experiment_name = mlflow_config.get("experiment_name", "MLOps-Group-Project-Experiment")
+    mlflow.set_experiment(experiment_name)
+    logger.info(f"MLflow experiment set to '{experiment_name}'")
+
+    # Initialize W&B Run for the entire pipeline
+    wandb_config = config.get("wandb", {})
+    wandb_run = wandb.init(
+        project=wandb_config.get("project", "mlops-project"),
+        entity=wandb_config.get("entity"),
+        name="pipeline-run",
+        job_type="pipeline"
+    )
 
     try:
         # 1. Load raw data
         logger.info("Step 1: Loading data...")
-        df = fetch_data(start_date=start_date, end_date=end_date)
-        logger.info(f"Raw data loaded | shape={df.shape}")
+        
+        with mlflow.start_run(run_name="data_load", nested=True) as mlrun:
+            logger.info("Initiating MLflow for data loading.")
+            
+            df = fetch_data(start_date=start_date, end_date=end_date)
+            logger.info(f"Raw data loaded | shape={df.shape}")
+
+            # Log parameters to MLflow and W&B
+            params_to_log = {
+                "start_date": start_date, 
+                "end_date": end_date,
+                "symbols": config.get("symbols", [])
+            }
+            mlflow.log_params(params_to_log)
+            wandb.config.update(params_to_log)
+
+            # Save and log artifact
+            raw_data_path = config.get("data_source", {}).get("raw_path", "data/raw/raw_data.csv")
+            os.makedirs(os.path.dirname(raw_data_path), exist_ok=True)
+            df.to_csv(raw_data_path, index=False)
+            mlflow.log_artifact(raw_data_path, "raw-data")
+            
+            # Log metrics and artifact to W&B
+            wandb.log({"raw_data_rows": df.shape[0], "raw_data_columns": df.shape[1]})
+            artifact = wandb.Artifact('raw-data', type='dataset', description="Raw data fetched from API")
+            artifact.add_file(raw_data_path)
+            wandb.log_artifact(artifact)
 
         # 2. Load schema from config and validate
         logger.info("Step 2: Validating data...")
-        config = load_config("conf/config.yaml")
         schema_list = config.get("data_validation", {}).get(
             "schema", {}
         ).get("columns", [])
@@ -143,82 +186,16 @@ def run_full_pipeline(start_date, end_date):
         logger.info("Complete MLOps pipeline finished successfully!")
         return df_with_direction, price_model, direction_model
 
-    except Exception as e:
-        logger.error(f"Pipeline failed: {e}")
-        raise
-
-
-def main():
-    """
-    Main entry point with command line argument support.
-    """
-
-    parser = argparse.ArgumentParser(description="MLOps pipeline orchestrator")
-    parser.add_argument(
-        "--stage",
-        default="all",
-        choices=["all", "infer"],
-        help="Pipeline stage to run (default: all)",
-    )
-    parser.add_argument(
-        "--output-csv",
-        default="data/processed/output.csv",
-        help="Output CSV file for inference stage",
-    )
-    parser.add_argument(
-        "--config",
-        default="config.yaml",
-        help="Path to YAML configuration file (default: config.yaml)",
-    )
-    parser.add_argument(
-        "--start-date",
-        default="2023-01-01",
-        help="Start date for fetching the date",
-    )
-    parser.add_argument(
-        "--end-date",
-        default="2023-12-31",
-        help="End date for fetching the date",
-    )
-
-    args = parser.parse_args()
-    setup_logger()
-    logger = logging.getLogger("Main")
-    logger.info(f"Pipeline started | stage={args.stage}")
-
-    try:
-        config = load_config(args.config)
-        if args.stage == "all":
-            run_full_pipeline(args.start_date, args.end_date)
-
-        elif args.stage == "infer":
-            # Inference
-            if not args.output_csv:
-                logger.error("Inference stage requires --output-csv")
-                sys.exit(1)
-
-            logger.info("=== Model Inference ===")
-
-            # Fetch and validate input data
-            input_df = fetch_data(
-                start_date=args.start_date, end_date=args.end_date
-            )
-            logger.info(f"Loaded input data | shape={input_df.shape}")
-
-            # Optional: validate inference input against schema
-            schema_list = config.get("data_validation", {}).get(
-                "schema", {}
-            ).get("columns", [])
-            schema = {col["name"]: col for col in schema_list}
-
-            # Run inference
-            run_inference(input_df, args.config, args.output_csv)
-            output_msg = f"Inference completed | output saved to {args.output_csv}"
-            logger.info(output_msg)
-
     except Exception as exc:
         logger.exception("Pipeline failed: %s", exc)
+        if wandb_run:
+            wandb.log({"pipeline_status": "failed", "error": str(exc)})
         sys.exit(1)
+    
+    finally:
+        if wandb_run:
+            wandb.finish()
+
 
     logger.info("Pipeline completed successfully")
 
@@ -285,5 +262,7 @@ def run_until_feature_engineering():
     return X, y_reg, y_class, df
 
 
-if __name__ == "__main__":
-    main()
+def main():
+    """
+    Main entry point with command line argument support.
+    """

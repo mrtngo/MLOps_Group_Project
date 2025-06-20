@@ -1,6 +1,9 @@
 import pandas as pd
-from mlops.data_validation.data_validation import load_config
+from src.mlops.data_validation.data_validation import load_config
 from sklearn.ensemble import RandomForestRegressor
+from typing import Tuple, List
+import yaml
+import logging
 
 config = load_config("conf/config.yaml")
 
@@ -77,41 +80,34 @@ def prepare_features(df, feature_cols, label_col):
     return X, y_reg, y_class
 
 
-def select_features(df: pd.DataFrame, feature_cols: list):
+def select_features(df: pd.DataFrame, feature_cols: list[str], target_col: str) -> list[str]:
     """
-    Performs RandomForest‐based feature selection, keeping the top_n most
-    important columns. Returns a list of selected column names.
+    Selects features based on correlation with the target variable.
+
+    Args:
+        df: DataFrame containing features and the target.
+        feature_cols: List of potential feature columns.
+        target_col: The name of the target column.
+
+    Returns:
+        List of selected feature names.
     """
+    logger = logging.getLogger("FeatureSelection")
+    selection_config = config.get("feature_selection", {})
+    correlation_threshold = selection_config.get("correlation_threshold", 0.05)
 
-    # Prepare the training set for importance:
-    X = df[feature_cols].copy()
-    y = df[config.get("target")]  # This is the regression label by default
+    if target_col not in df.columns:
+        raise KeyError(f"Target column '{target_col}' not found in DataFrame for feature selection.")
 
-    # Instantiate and fit the RandomForest
-    feature_selection_config = config.get("feature_engineering", {}).get(
-        'feature_selection', {}
-    )
-    params_config = feature_selection_config.get('params', {})
-    n_estimators = params_config.get("n_estimators")
-    random_state = params_config.get("random_state")
+    # Calculate correlations
+    correlations = df[feature_cols + [target_col]].corr()[target_col].abs()
 
-    print(f"n_estimators {n_estimators}, random_state {random_state}")
-    rf = RandomForestRegressor(
-        n_estimators=n_estimators, random_state=random_state
-    )
+    # Select features with correlation above the threshold
+    selected = correlations[correlations > correlation_threshold].index.tolist()
+    selected.remove(target_col)  # Remove the target itself
 
-    rf.fit(X, y)
-
-    # Rank features by importance
-    imp = rf.feature_importances_
-    ranked = sorted(zip(feature_cols, imp), key=lambda x: x[1], reverse=True)
-
-    # Keep only the top_n names
-    top_n = feature_selection_config.get('top_n')
-    selected_cols = [col for col, _ in ranked[:top_n]]
-    select_msg = f"[select_features] top_{top_n} selected: {selected_cols}"
-    print(select_msg)
-    return selected_cols
+    logger.info(f"Selected {len(selected)} features based on correlation > {correlation_threshold} with '{target_col}'")
+    return selected
 
 
 def get_training_and_testing_data(df: pd.DataFrame = None):

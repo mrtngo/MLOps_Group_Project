@@ -1,0 +1,12 @@
+2025-06-20 15:08:49,994 - __main__ - INFO - Loading processed data from: data/processed/training_data
+2025-06-20 15:08:50,006 - __main__ - INFO - Training Linear Regression model...
+2025-06-20 15:08:50,010 - src.mlops.models.models - INFO - Linear Regression Training RMSE: 1449.6868
+2025-06-20 15:08:50,011 - src.mlops.models.models - INFO - Model saved to models/linear_regression.pkl
+2025-06-20 15:08:50,012 - __main__ - INFO - Regression training RMSE: 1449.686788337935
+2025-06-20 15:08:50,013 - __main__ - INFO - Training Logistic Regression model...
+2025-06-20 15:08:50,018 - src.mlops.models.models - INFO - Logistic Regression Training ROC AUC: 0.5644
+2025-06-20 15:08:50,019 - src.mlops.models.models - INFO - Model saved to models/logistic_regression.pkl
+2025-06-20 15:08:50,020 - __main__ - INFO - Classification training ROC AUC: 0.5643675889328063
+2025-06-20 15:08:50,020 - __main__ - INFO - Logging hyperparameters, metrics, and model artifacts...
+2025-06-20 15:08:50,676 - __main__ - INFO - All training details logged successfully.
+2025-06-20 15:08:50,677 - __main__ - INFO - --- Model Training Step Completed Successfully ---

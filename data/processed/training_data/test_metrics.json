@@ -1,0 +1,6 @@
+{
+  "test_reg_rmse": 1587.1746430700257,
+  "test_class_roc_auc": 0.42435897435897435,
+  "test_class_accuracy": 0.427536231884058,
+  "test_class_f1": 0.4697986577181208
+}

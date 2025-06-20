@@ -1,0 +1,12 @@
+2025-06-20 15:09:47,947 - __main__ - INFO - Loading new data for inference from: data/raw/test.csv
+2025-06-20 15:09:47,954 - __main__ - INFO - Initializing ModelInferencer and generating predictions...
+2025-06-20 15:09:47,955 - src.mlops.inference.inference - INFO - Model loaded from models/linear_regression.pkl
+2025-06-20 15:09:47,956 - src.mlops.inference.inference - INFO - Model loaded from models/logistic_regression.pkl
+2025-06-20 15:09:47,956 - src.mlops.inference.inference - INFO - Both models loaded successfully for inference
+2025-06-20 15:09:47,956 - src.mlops.inference.inference - INFO - Preprocessing pipeline loaded from models/preprocessing_pipeline.pkl
+2025-06-20 15:09:47,957 - __main__ - ERROR - Inference step failed
+Traceback (most recent call last):
+  File "/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/inference/run.py", line 62, in run_inference
+    df_predictions = inferencer.predict(df_input)
+                     ^^^^^^^^^^^^^^^^^^
+AttributeError: 'ModelInferencer' object has no attribute 'predict'

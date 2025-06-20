@@ -1,0 +1,17 @@
+2025-06-20 14:38:00,659 - __main__ - INFO - Loading validated data from: ./data/processed/futures_data_processed_.csv
+[define_features_and_label] Features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[define_features_and_label] Label: BTCUSDT_price
+                   timestamp  ETHUSDT_price  ...  SOLUSDT_funding_rate  BTCUSDT_funding_rate
+0  2023-01-01 00:00:00+00:00        1195.06  ...             -0.000925              0.000100
+1  2023-01-01 16:00:00+00:00        1200.34  ...             -0.000974              0.000007
+2  2023-01-02 00:00:00+00:00        1213.09  ...             -0.001056             -0.000015
+3  2023-01-03 16:00:00+00:00        1214.55  ...             -0.008201              0.000033
+4  2023-01-04 00:00:00+00:00        1252.00  ...             -0.003499              0.000065
+
+[5 rows x 13 columns]
+[create_price_direction_label] Created price direction shape=(689, 15)
+2025-06-20 14:38:00,681 - __main__ - INFO - Feature engineering complete.
+2025-06-20 14:38:00,681 - __main__ - INFO - Generating and logging feature distribution plots to W&B...
+2025-06-20 14:38:02,337 - __main__ - INFO - Visualizations logged.
+2025-06-20 14:38:02,609 - __main__ - INFO - Logged feature-engineered data artifact to: data/processed/feature_engineered_data.csv
+2025-06-20 14:38:02,613 - __main__ - INFO - --- Feature Engineering Step Completed Successfully ---
