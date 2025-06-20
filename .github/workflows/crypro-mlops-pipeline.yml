@@ -139,12 +139,14 @@ jobs:
     steps:
       - name: Create deployment summary
         run: |
-          echo "## 🚀 Crypto MLOps Pipeline Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Status:** ${{ needs.crypto-pipeline.result == 'success' && '✅ SUCCESS' || '❌ FAILURE' }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📊 Job Results" >> $GITHUB_STEP_SUMMARY
-          echo "- Quality Checks: ${{ needs.quality-checks.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Crypto Pipeline: ${{ needs.crypto-pipeline.result }}" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## 🚀 Crypto MLOps Pipeline Summary"
+            echo ""
+            echo "**Status:** ${{ needs.crypto-pipeline.result == 'success' && '✅ SUCCESS' || '❌ FAILURE' }}"
+            echo "**Commit:** ${{ github.sha }}"
+            echo "**Branch:** ${{ github.ref_name }}"
+            echo ""
+            echo "### 📊 Job Results"
+            echo "- Quality Checks: ${{ needs.quality-checks.result }}"
+            echo "- Crypto Pipeline: ${{ needs.crypto-pipeline.result }}"
+          } >> "$GITHUB_STEP_SUMMARY"
