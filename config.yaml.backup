@@ -1,11 +1,4 @@
 # This file is used to set up the parameters for data loading, logging, preprocessing, etc.
-# Add this at the very top of your existing config.yaml
-hydra:
-  enabled: true
-  main_config: "conf/config.yaml"
-
-# Keep all your existing configuration below...
-
 
 data_source:
   raw_path_futures: "https://fapi.binance.com/fapi/v1/fundingRate"

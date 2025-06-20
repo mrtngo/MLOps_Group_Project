@@ -1,0 +1,9 @@
+# @package preprocessing
+scaling:
+  method: "standard"
+sampling:
+  method: "smote"
+  params:
+    sampling_strategy: "auto"
+    random_state: 42
+  threshold_ratio: 1.5
