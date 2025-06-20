@@ -40,15 +40,15 @@ jobs:
           pip install -r requirements-dev.txt
 
       - name: Run code formatting check
-        run: black --check src tests || echo "Install black: pip install black"
+        run: black --check src tests
 
       - name: Run linting
-        run: flake8 src tests --max-line-length=100 || echo "Install flake8: pip install flake8"
+        run: flake8 src tests --max-line-length=100
 
       - name: Run unit tests
         env:
           PYTHONPATH: ${{ github.workspace }}/src
-        run: pytest tests/ -v --tb=short || echo "No tests found or pytest not installed"
+        run: pytest tests/ -v --tb=short
 
   # Crypto Pipeline
   crypto-pipeline:
