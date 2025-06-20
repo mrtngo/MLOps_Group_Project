@@ -1,6 +1,0 @@
-# @package data_source
-raw_path_futures: "https://fapi.binance.com/fapi/v1/fundingRate"
-raw_path_spot: "https://api.binance.com/api/v3/klines"
-processed_path: "./data/processed/crypto_processed_data.csv"
-start_date: "2023-01-01"
-end_date: "2023-12-31"

@@ -1,7 +1,0 @@
-# @package model
-_target_: sklearn.linear_model.LinearRegression
-fit_intercept: true
-copy_X: true
-positive: false
-save_path: "models/linear_regression.pkl"
-type: "regression"
