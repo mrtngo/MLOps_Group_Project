@@ -1,15 +1,15 @@
 import logging
-import pandas as pd
+from typing import Dict, List, Tuple
+
 import numpy as np
-from sklearn.preprocessing import StandardScaler
+import pandas as pd
 from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
-from typing import Tuple, List, Dict
+from sklearn.preprocessing import StandardScaler
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s"
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -33,16 +33,15 @@ def split_data(X, y, config: Dict):
         X, y, test_size=test_size, random_state=random_state
     )
     shape_msg = (
-        f"Data split completed - Train: {X_train.shape}, "
-        f"Test: {X_test.shape}"
+        f"Data split completed - Train: {X_train.shape}, " f"Test: {X_test.shape}"
     )
     logger.info(shape_msg)
     return X_train, X_test, y_train, y_test
 
 
-def scale_features(df: pd.DataFrame,
-                   selected_cols: List[str]) -> Tuple[
-                       np.ndarray, np.ndarray, StandardScaler]:
+def scale_features(
+    df: pd.DataFrame, selected_cols: List[str]
+) -> Tuple[np.ndarray, np.ndarray, StandardScaler]:
     """
     Scales the selected features using StandardScaler.
 
@@ -77,8 +76,9 @@ def scale_features(df: pd.DataFrame,
         raise
 
 
-def scale_test_data(X_test: pd.DataFrame, scaler: StandardScaler,
-                    selected_cols: List[str]) -> np.ndarray:
+def scale_test_data(
+    X_test: pd.DataFrame, scaler: StandardScaler, selected_cols: List[str]
+) -> np.ndarray:
     """
     Scale test data using a pre-fitted scaler.
 
@@ -113,15 +113,14 @@ def smote_oversample(X, y, config: Dict) -> Tuple[np.ndarray, np.ndarray]:
     """
     try:
         # Handle both pandas Series and numpy arrays
-        if hasattr(y, 'value_counts'):
+        if hasattr(y, "value_counts"):
             class_counts = y.value_counts().to_dict()
         else:
             unique, counts = np.unique(y, return_counts=True)
             class_counts = dict(zip(unique, counts))
 
         if len(class_counts) < 2:
-            warning_msg = (
-                "Only one class found in target. SMOTE not applicable.")
+            warning_msg = "Only one class found in target. SMOTE not applicable."
             logger.warning(warning_msg)
             return X, y
 
@@ -129,7 +128,7 @@ def smote_oversample(X, y, config: Dict) -> Tuple[np.ndarray, np.ndarray]:
         if min_val == 0:
             logger.warning("One class has zero samples. SMOTE not applicable.")
             return X, y
-            
+
         maj = max(class_counts, key=class_counts.get)
         min_ = min(class_counts, key=class_counts.get)
         ratio = class_counts[maj] / class_counts[min_]
@@ -137,25 +136,23 @@ def smote_oversample(X, y, config: Dict) -> Tuple[np.ndarray, np.ndarray]:
         logger.info(f"Class distribution: {class_counts}")
 
         # Get threshold from config
-        threshold = config.get("preprocessing", {}).get(
-            "sampling", {}
-        ).get("threshold_ratio", 1.5)
+        threshold = (
+            config.get("preprocessing", {})
+            .get("sampling", {})
+            .get("threshold_ratio", 1.5)
+        )
 
         if ratio > threshold:
             logger.info("Applying SMOTE oversampling...")
 
             # Get SMOTE parameters from config
-            sampling_params = config.get("preprocessing", {}).get(
-                "sampling", {}
-            ).get("params", {})
-            sampling_strategy = sampling_params.get(
-                "sampling_strategy", "auto")
+            sampling_params = (
+                config.get("preprocessing", {}).get("sampling", {}).get("params", {})
+            )
+            sampling_strategy = sampling_params.get("sampling_strategy", "auto")
             random_state = sampling_params.get("random_state", 42)
 
-            sm = SMOTE(
-                sampling_strategy=sampling_strategy,
-                random_state=random_state
-            )
+            sm = SMOTE(sampling_strategy=sampling_strategy, random_state=random_state)
             X_res, y_res = sm.fit_resample(X, y)
 
             logger.info(f"SMOTE apply successful. New shape: {X_res.shape}")
@@ -176,11 +173,14 @@ def smote_oversample(X, y, config: Dict) -> Tuple[np.ndarray, np.ndarray]:
         raise
 
 
-def preprocess_pipeline(X_train: pd.DataFrame, X_test: pd.DataFrame,
-                        y_train, feature_cols: List[str], config: Dict,
-                        apply_smote: bool = False) -> Tuple[
-                            np.ndarray, np.ndarray, np.ndarray, np.ndarray,
-                            StandardScaler]:
+def preprocess_pipeline(
+    X_train: pd.DataFrame,
+    X_test: pd.DataFrame,
+    y_train,
+    feature_cols: List[str],
+    config: Dict,
+    apply_smote: bool = False,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, StandardScaler]:
     """
     Complete preprocessing pipeline: scaling and optional SMOTE.
 
@@ -220,6 +220,5 @@ def preprocess_pipeline(X_train: pd.DataFrame, X_test: pd.DataFrame,
 
 
 if __name__ == "__main__":
-    info_msg = (
-        "preproccessing.py - Use functions by importing them in other modules")
+    info_msg = "preproccessing.py - Use functions by importing them in other modules"
     logger.info(info_msg)

@@ -1,32 +1,32 @@
 """Model evaluation module."""
 
-import os
-import pickle
 import json
 import logging
-from typing import Tuple, Dict, Any
+import os
+import pickle
+from typing import Any, Dict, Tuple
 
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import seaborn as sns
 from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    confusion_matrix,
+    f1_score,
     mean_squared_error,
     roc_auc_score,
-    confusion_matrix,
-    classification_report,
-    accuracy_score,
-    f1_score,
-    roc_curve
+    roc_curve,
 )
 
+from src.mlops.data_validation.data_validation import load_config
 from src.mlops.features.features import (
-    define_features_and_label,
     create_price_direction_label,
-    prepare_features
+    define_features_and_label,
+    prepare_features,
 )
 from src.mlops.preproccess.preproccessing import split_data
-from src.mlops.data_validation.data_validation import load_config
 
 logger = logging.getLogger(__name__)
 config = load_config("conf/config.yaml")
@@ -54,7 +54,7 @@ class ModelEvaluator:
     def _load_model(self) -> Any:
         """Load the model from the specified path."""
         try:
-            with open(self.model_path, 'rb') as f:
+            with open(self.model_path, "rb") as f:
                 model = pickle.load(f)
             logger.info(f"Model loaded successfully from {self.model_path}")
             return model
@@ -64,15 +64,17 @@ class ModelEvaluator:
         except Exception as e:
             logger.error(f"Error loading model: {e}")
             raise
-            
+
     def _load_test_data(self, file_name: str) -> Tuple[pd.DataFrame, pd.Series]:
         """Loads a specific test dataset (X, y) from the test data directory."""
         X_path = os.path.join(self.test_data_dir, f"X_{file_name}.csv")
         y_path = os.path.join(self.test_data_dir, f"y_{file_name}.csv")
-        
+
         if not os.path.exists(X_path) or not os.path.exists(y_path):
-            raise FileNotFoundError(f"Test data files for '{file_name}' not found in {self.test_data_dir}")
-            
+            raise FileNotFoundError(
+                f"Test data files for '{file_name}' not found in {self.test_data_dir}"
+            )
+
         X_test = pd.read_csv(X_path)
         y_test = pd.read_csv(y_path).squeeze()
         return X_test, y_test
@@ -101,14 +103,22 @@ class ModelEvaluator:
 
         try:
             X_test, y_test = self._load_test_data("test_class")
-            
+
             predictions = self.model.predict(X_test)
-            probabilities = self.model.predict_proba(X_test)[:, 1] if hasattr(self.model, 'predict_proba') else None
-            
+            probabilities = (
+                self.model.predict_proba(X_test)[:, 1]
+                if hasattr(self.model, "predict_proba")
+                else None
+            )
+
             # --- Calculate Metrics ---
             accuracy = accuracy_score(y_test, predictions)
-            f1 = f1_score(y_test, predictions, average='weighted')
-            roc_auc = roc_auc_score(y_test, probabilities) if probabilities is not None else 'N/A'
+            f1 = f1_score(y_test, predictions, average="weighted")
+            roc_auc = (
+                roc_auc_score(y_test, probabilities)
+                if probabilities is not None
+                else "N/A"
+            )
             metrics = {"accuracy": accuracy, "f1_score": f1, "roc_auc": roc_auc}
             logger.info(f"Classification metrics: {metrics}")
 
@@ -130,25 +140,34 @@ class ModelEvaluator:
             sample_df["predicted_direction"] = predictions[:20]
             if probabilities is not None:
                 sample_df["prediction_probability"] = probabilities[:20]
-            
+
             return metrics, plots, sample_df
 
         except FileNotFoundError as e:
             logger.warning(f"Skipping classification evaluation: {e}")
             return metrics, plots, sample_df
         except Exception as e:
-            logger.error(f"An error occurred during classification evaluation: {e}", exc_info=True)
+            logger.error(
+                f"An error occurred during classification evaluation: {e}",
+                exc_info=True,
+            )
             return metrics, plots, sample_df
 
     def _plot_confusion_matrix(self, y_true, y_pred, save_path):
         """Generates and saves a confusion matrix plot."""
         cm = confusion_matrix(y_true, y_pred)
         plt.figure(figsize=(8, 6))
-        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
-                    xticklabels=['Down', 'Up'], yticklabels=['Down', 'Up'])
-        plt.xlabel('Predicted Label')
-        plt.ylabel('True Label')
-        plt.title('Confusion Matrix')
+        sns.heatmap(
+            cm,
+            annot=True,
+            fmt="d",
+            cmap="Blues",
+            xticklabels=["Down", "Up"],
+            yticklabels=["Down", "Up"],
+        )
+        plt.xlabel("Predicted Label")
+        plt.ylabel("True Label")
+        plt.title("Confusion Matrix")
         plt.savefig(save_path)
         plt.close()
         logger.info(f"Confusion matrix saved to {save_path}")
@@ -158,11 +177,17 @@ class ModelEvaluator:
         fpr, tpr, _ = roc_curve(y_true, y_probs)
         roc_auc = roc_auc_score(y_true, y_probs)
         plt.figure(figsize=(8, 6))
-        plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:0.2f})')
-        plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('Receiver Operating Characteristic (ROC) Curve')
+        plt.plot(
+            fpr,
+            tpr,
+            color="darkorange",
+            lw=2,
+            label=f"ROC curve (area = {roc_auc:0.2f})",
+        )
+        plt.plot([0, 1], [0, 1], color="navy", lw=2, linestyle="--")
+        plt.xlabel("False Positive Rate")
+        plt.ylabel("True Positive Rate")
+        plt.title("Receiver Operating Characteristic (ROC) Curve")
         plt.legend(loc="lower right")
         plt.savefig(save_path)
         plt.close()
@@ -181,7 +206,7 @@ class ModelEvaluator:
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model file not found: {model_path}")
 
-        with open(model_path, 'rb') as f:
+        with open(model_path, "rb") as f:
             model = pickle.load(f)
 
         logger.info(f"Model loaded from {model_path}")
@@ -208,8 +233,9 @@ class ModelEvaluator:
 
         return price_model, direction_model
 
-    def prepare_test_data(self, df: pd.DataFrame) -> Tuple[
-            pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+    def prepare_test_data(
+        self, df: pd.DataFrame
+    ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
         """
         Prepare test data with same preprocessing as training.
 
@@ -232,20 +258,19 @@ class ModelEvaluator:
         _, X_test_class, _, y_test_class = split_data(X, y_classification)
 
         if self.preprocessing_pipeline is None:
-            logger.warning(
-                "No preprocessing pipeline found. Using raw features.")
+            logger.warning("No preprocessing pipeline found. Using raw features.")
             return X_test, X_test_class, y_test_reg, y_test_class
 
         # Apply scaling
-        scaler = self.preprocessing_pipeline['scaler']
+        scaler = self.preprocessing_pipeline["scaler"]
         X_test_scaled = scaler.transform(X_test)
         X_test_class_scaled = scaler.transform(X_test_class)
 
         # Apply feature selection
         pipeline = self.preprocessing_pipeline
-        selected_features_reg = pipeline['selected_features_reg']
-        selected_features_class = pipeline['selected_features_class']
-        all_feature_cols = self.preprocessing_pipeline['all_feature_cols']
+        selected_features_reg = pipeline["selected_features_reg"]
+        selected_features_class = pipeline["selected_features_class"]
+        all_feature_cols = self.preprocessing_pipeline["all_feature_cols"]
 
         # Get feature indices
         feature_indices_reg = [
@@ -258,15 +283,17 @@ class ModelEvaluator:
         X_test_reg_final = X_test_scaled[:, feature_indices_reg]
         X_test_class_final = X_test_class_scaled[:, feature_indices_class]
 
-        shape_msg = (f"Test data prepared - Reg: {X_test_reg_final.shape}, "
-                     f"Class: {X_test_class_final.shape}")
+        shape_msg = (
+            f"Test data prepared - Reg: {X_test_reg_final.shape}, "
+            f"Class: {X_test_class_final.shape}"
+        )
         logger.info(shape_msg)
 
         return X_test_reg_final, X_test_class_final, y_test_reg, y_test_class
 
-    def evaluate_regression_model(self, model: Any, X_test: np.ndarray,
-                                  y_test: pd.Series,
-                                  df: pd.DataFrame) -> Dict[str, float]:
+    def evaluate_regression_model(
+        self, model: Any, X_test: np.ndarray, y_test: pd.Series, df: pd.DataFrame
+    ) -> Dict[str, float]:
         """
         Evaluate regression model and generate visualizations.
 
@@ -281,7 +308,7 @@ class ModelEvaluator:
         """
         predictions = model.predict(X_test)
         mse = mean_squared_error(y_test, predictions)
-        rmse = mse ** 0.5  # Calculate RMSE manually for compatibility
+        rmse = mse**0.5  # Calculate RMSE manually for compatibility
 
         logger.info(f"Linear Regression Test RMSE: {rmse:.4f}")
 
@@ -291,8 +318,9 @@ class ModelEvaluator:
         metrics = {"RMSE": rmse}
         return metrics
 
-    def evaluate_classification_model(self, model: Any, X_test: np.ndarray,
-                                      y_test: pd.Series) -> Dict[str, Any]:
+    def evaluate_classification_model(
+        self, model: Any, X_test: np.ndarray, y_test: pd.Series
+    ) -> Dict[str, Any]:
         """
         Evaluate classification model and generate visualizations.
 
@@ -307,7 +335,8 @@ class ModelEvaluator:
         predictions = model.predict(X_test)
         probabilities = (
             model.predict_proba(X_test)[:, 1]
-            if hasattr(model, 'predict_proba') else None
+            if hasattr(model, "predict_proba")
+            else None
         )
 
         # Calculate metrics
@@ -322,8 +351,10 @@ class ModelEvaluator:
         except ValueError:
             # Handle case where only one class is present
             roc_auc = 0.5
-            warning_msg = ("ROC AUC could not be calculated - "
-                           "only one class present in test set")
+            warning_msg = (
+                "ROC AUC could not be calculated - "
+                "only one class present in test set"
+            )
             logger.warning(warning_msg)
 
         logger.info(f"Logistic Regression Test Accuracy: {accuracy:.4f}")
@@ -334,21 +365,19 @@ class ModelEvaluator:
         self.plot_confusion_matrix(y_test, predictions)
 
         # Generate classification report
-        class_report = classification_report(
-            y_test, predictions, output_dict=True)
+        class_report = classification_report(y_test, predictions, output_dict=True)
 
         metrics = {
             "Accuracy": accuracy,
             "F1 Score": f1,
             "ROC AUC": roc_auc,
             "Confusion Matrix": confusion_matrix(y_test, predictions).tolist(),
-            "Classification Report": class_report
+            "Classification Report": class_report,
         }
 
         return metrics
 
-    def plot_confusion_matrix(self, y_test: pd.Series,
-                              predictions: np.ndarray) -> None:
+    def plot_confusion_matrix(self, y_test: pd.Series, predictions: np.ndarray) -> None:
         """
         Plot and save confusion matrix.
 
@@ -359,20 +388,30 @@ class ModelEvaluator:
         cm = confusion_matrix(y_test, predictions)
 
         plt.figure(figsize=(8, 6))
-        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
-                    xticklabels=['Down', 'Up'], yticklabels=['Down', 'Up'])
+        sns.heatmap(
+            cm,
+            annot=True,
+            fmt="d",
+            cmap="Blues",
+            xticklabels=["Down", "Up"],
+            yticklabels=["Down", "Up"],
+        )
         plt.title("Confusion Matrix - Price Direction Prediction")
         plt.xlabel("Predicted Direction")
         plt.ylabel("Actual Direction")
         plt.tight_layout()
-        plt.savefig("plots/confusion_matrix.png", dpi=300, bbox_inches='tight')
+        plt.savefig("plots/confusion_matrix.png", dpi=300, bbox_inches="tight")
         plt.close()
 
         logger.info("Confusion matrix saved to plots/confusion_matrix.png")
 
-    def plot_regression_predictions(self, df: pd.DataFrame, y_true: pd.Series,
-                                    y_pred: np.ndarray,
-                                    timestamp_col: str = "timestamp") -> None:
+    def plot_regression_predictions(
+        self,
+        df: pd.DataFrame,
+        y_true: pd.Series,
+        y_pred: np.ndarray,
+        timestamp_col: str = "timestamp",
+    ) -> None:
         """
         Plot actual vs predicted prices over time.
 
@@ -386,23 +425,32 @@ class ModelEvaluator:
         # Note: This assumes the test set corresponds to the last portion
         if timestamp_col in df.columns:
             # Get timestamps for the test set (last y_true.shape[0] entries)
-            timestamps = df[timestamp_col].iloc[-len(y_true):].values
+            timestamps = df[timestamp_col].iloc[-len(y_true) :].values
         else:
             # Create dummy timestamps if timestamp column not available
             timestamps = range(len(y_true))
 
-        df_plot = pd.DataFrame({
-            timestamp_col: timestamps,
-            "actual": y_true.values,
-            "predicted": y_pred
-        })
+        df_plot = pd.DataFrame(
+            {timestamp_col: timestamps, "actual": y_true.values, "predicted": y_pred}
+        )
 
         plt.figure(figsize=(15, 8))
-        plt.plot(df_plot[timestamp_col], df_plot["actual"],
-                 label="Actual BTC Price", marker='o', markersize=3, alpha=0.7)
-        plt.plot(df_plot[timestamp_col], df_plot["predicted"],
-                 label="Predicted BTC Price", marker='x',
-                 markersize=3, alpha=0.7)
+        plt.plot(
+            df_plot[timestamp_col],
+            df_plot["actual"],
+            label="Actual BTC Price",
+            marker="o",
+            markersize=3,
+            alpha=0.7,
+        )
+        plt.plot(
+            df_plot[timestamp_col],
+            df_plot["predicted"],
+            label="Predicted BTC Price",
+            marker="x",
+            markersize=3,
+            alpha=0.7,
+        )
         plt.xlabel("Timestamp")
         plt.ylabel("BTC Price (USDT)")
         plt.title("Actual vs Predicted BTC Prices Over Time")
@@ -411,15 +459,16 @@ class ModelEvaluator:
         plt.xticks(rotation=45)
         plt.tight_layout()
         save_path = "plots/price_prediction_plot.png"
-        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        plt.savefig(save_path, dpi=300, bbox_inches="tight")
         plt.close()
 
-        logger.info(
-            "Price prediction plot saved to plots/price_prediction_plot.png"
-            )
+        logger.info("Price prediction plot saved to plots/price_prediction_plot.png")
 
-    def save_metrics_report(self, regression_metrics: Dict[str, float],
-                            classification_metrics: Dict[str, Any]) -> None:
+    def save_metrics_report(
+        self,
+        regression_metrics: Dict[str, float],
+        classification_metrics: Dict[str, Any],
+    ) -> None:
         """
         Save evaluation metrics to JSON file.
 
@@ -429,7 +478,7 @@ class ModelEvaluator:
         """
         metrics_report = {
             "linear_regression": regression_metrics,
-            "logistic_regression": classification_metrics
+            "logistic_regression": classification_metrics,
         }
 
         artifacts_config = self.config.get("artifacts", {})
@@ -437,13 +486,14 @@ class ModelEvaluator:
             "metrics_path", "reports/evaluation_metrics.json"
         )
 
-        with open(metrics_path, 'w') as f:
+        with open(metrics_path, "w") as f:
             json.dump(metrics_report, f, indent=2, default=str)
 
         logger.info(f"Metrics report saved to {metrics_path}")
 
-    def evaluate_all_models(self, df: pd.DataFrame) -> Tuple[
-            Dict[str, float], Dict[str, Any]]:
+    def evaluate_all_models(
+        self, df: pd.DataFrame
+    ) -> Tuple[Dict[str, float], Dict[str, Any]]:
         """
         Evaluate both models and generate all reports.
 
@@ -457,9 +507,7 @@ class ModelEvaluator:
         price_model, direction_model = self.load_both_models()
 
         # Prepare test data with preprocessing
-        X_test_reg, X_test_class, y_test_reg, y_test_class = (
-            self.prepare_test_data(df)
-        )
+        X_test_reg, X_test_class, y_test_reg, y_test_class = self.prepare_test_data(df)
 
         # Evaluate regression model
         logger.info("Evaluating regression model...")
@@ -479,8 +527,7 @@ class ModelEvaluator:
         return regression_metrics, classification_metrics
 
 
-def evaluate_models(df: pd.DataFrame = None) -> Tuple[
-        Dict[str, float], Dict[str, Any]]:
+def evaluate_models(df: pd.DataFrame = None) -> Tuple[Dict[str, float], Dict[str, Any]]:
     """
     Main function to evaluate both models.
 
@@ -500,8 +547,7 @@ def evaluate_models(df: pd.DataFrame = None) -> Tuple[
             df = pd.read_csv(processed_path)
             logger.info(f"Loaded processed data from {processed_path}")
         else:
-            raise FileNotFoundError(
-                f"Processed data not found at {processed_path}")
+            raise FileNotFoundError(f"Processed data not found at {processed_path}")
 
     evaluator = ModelEvaluator()
     return evaluator.evaluate_all_models(df)

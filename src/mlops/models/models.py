@@ -1,26 +1,26 @@
 """Model training module."""
 
+import logging
 import os
 import pickle
-import logging
-from typing import Tuple, Any
+from typing import Any, Tuple
 
 import pandas as pd
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import mean_squared_error, roc_auc_score
 
+from src.mlops.data_validation.data_validation import load_config
 from src.mlops.features.features import (
-    define_features_and_label,
     create_price_direction_label,
+    define_features_and_label,
     prepare_features,
-    select_features
+    select_features,
 )
 from src.mlops.preproccess.preproccessing import (
-    split_data,
     scale_features,
-    smote_oversample
+    smote_oversample,
+    split_data,
 )
-from src.mlops.data_validation.data_validation import load_config
 
 logger = logging.getLogger(__name__)
 config = load_config("conf/config.yaml")
@@ -47,9 +47,9 @@ class ModelTrainer:
         )
         os.makedirs(os.path.dirname(pipeline_path), exist_ok=True)
 
-    def prepare_data(self, df: pd.DataFrame) -> Tuple[
-            pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, pd.Series,
-            pd.Series]:
+    def prepare_data(
+        self, df: pd.DataFrame
+    ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, pd.Series, pd.Series]:
         """
         Prepare features and targets with train/test splits, scaling,
         and feature selection.
@@ -73,9 +73,7 @@ class ModelTrainer:
         )
 
         # Split data for regression and classification
-        X_train_reg, X_test_reg, y_train_reg, y_test_reg = split_data(
-            X, y_regression
-        )
+        X_train_reg, X_test_reg, y_train_reg, y_test_reg = split_data(X, y_regression)
         X_train_class, X_test_class, y_train_class, y_test_class = split_data(
             X, y_classification
         )
@@ -91,20 +89,18 @@ class ModelTrainer:
         # Feature selection - create DataFrames for feature selection
         df_reg_train = pd.DataFrame(X_train_reg_scaled, columns=feature_cols)
         df_reg_train[self.config.get("target")] = y_train_reg.values
-        df_reg_train['price_direction'] = y_train_class.values
+        df_reg_train["price_direction"] = y_train_class.values
 
-        df_class_train = pd.DataFrame(
-            X_train_class_scaled, columns=feature_cols
-        )
+        df_class_train = pd.DataFrame(X_train_class_scaled, columns=feature_cols)
         df_class_train[self.config.get("target")] = y_train_reg.values
-        df_class_train['price_direction'] = y_train_class.values
+        df_class_train["price_direction"] = y_train_class.values
 
         # Select features for each model
         self.selected_features_reg = select_features(
             df_reg_train, feature_cols, label_col
         )
         self.selected_features_class = select_features(
-            df_class_train, feature_cols, 'price_direction'
+            df_class_train, feature_cols, "price_direction"
         )
 
         # Apply feature selection
@@ -147,7 +143,7 @@ class ModelTrainer:
             y_train_reg,
             y_train_class_balanced,
             y_test_reg,
-            y_test_class
+            y_test_class,
         )
 
     def _save_preprocessing_pipeline(self) -> None:
@@ -158,19 +154,20 @@ class ModelTrainer:
         )
 
         preprocessing_pipeline = {
-            'scaler': self.scaler,
-            'selected_features_reg': self.selected_features_reg,
-            'selected_features_class': self.selected_features_class,
-            'all_feature_cols': self.feature_cols
+            "scaler": self.scaler,
+            "selected_features_reg": self.selected_features_reg,
+            "selected_features_class": self.selected_features_class,
+            "all_feature_cols": self.feature_cols,
         }
 
-        with open(pipeline_path, 'wb') as f:
+        with open(pipeline_path, "wb") as f:
             pickle.dump(preprocessing_pipeline, f)
 
         logger.info(f"Preprocessing pipeline saved to {pipeline_path}")
 
-    def train_linear_regression(self, X: pd.DataFrame,
-                                y: pd.Series) -> LinearRegression:
+    def train_linear_regression(
+        self, X: pd.DataFrame, y: pd.Series
+    ) -> LinearRegression:
         """
         Train linear regression model for price prediction.
 
@@ -190,7 +187,7 @@ class ModelTrainer:
         # Calculate training RMSE for logging
         predictions = model.predict(X)
         mse = mean_squared_error(y, predictions)
-        rmse = mse ** 0.5  # Calculate RMSE manually for compatibility
+        rmse = mse**0.5  # Calculate RMSE manually for compatibility
         logger.info(f"Linear Regression Training RMSE: {rmse:.4f}")
 
         # Save model
@@ -199,8 +196,9 @@ class ModelTrainer:
 
         return model
 
-    def train_logistic_regression(self, X: pd.DataFrame,
-                                  y: pd.Series) -> LogisticRegression:
+    def train_logistic_regression(
+        self, X: pd.DataFrame, y: pd.Series
+    ) -> LogisticRegression:
         """
         Train logistic regression model for direction prediction.
 
@@ -215,8 +213,8 @@ class ModelTrainer:
         params = log_config.get("params", {})
 
         # Fix penalty parameter if it's incorrectly specified in config
-        if 'penalty' in params and params['penalty'] == '12':
-            params['penalty'] = 'l2'
+        if "penalty" in params and params["penalty"] == "12":
+            params["penalty"] = "l2"
             logger.warning("Fixed penalty parameter from '12' to 'l2'")
 
         model = LogisticRegression(**params)
@@ -235,9 +233,7 @@ class ModelTrainer:
             logger.warning(warning_msg)
 
         # Save model
-        save_path = log_config.get(
-            "save_path", "models/logistic_regression.pkl"
-        )
+        save_path = log_config.get("save_path", "models/logistic_regression.pkl")
         self._save_model(model, save_path)
 
         return model
@@ -250,12 +246,13 @@ class ModelTrainer:
             model: Trained model to save
             save_path: Path where to save the model
         """
-        with open(save_path, 'wb') as f:
+        with open(save_path, "wb") as f:
             pickle.dump(model, f)
         logger.info(f"Model saved to {save_path}")
 
-    def train_all_models(self, df: pd.DataFrame) -> Tuple[
-            LinearRegression, LogisticRegression]:
+    def train_all_models(
+        self, df: pd.DataFrame
+    ) -> Tuple[LinearRegression, LogisticRegression]:
         """
         Train both regression and classification models.
 
@@ -267,16 +264,20 @@ class ModelTrainer:
         """
         # Prepare data with preprocessing
         data_prep = self.prepare_data(df)
-        (X_train_reg, X_train_class, y_train_reg,
-         y_train_class, y_test_reg, y_test_class) = data_prep
+        (
+            X_train_reg,
+            X_train_class,
+            y_train_reg,
+            y_train_class,
+            y_test_reg,
+            y_test_class,
+        ) = data_prep
 
         logger.info("Training Linear Regression model...")
         price_model = self.train_linear_regression(X_train_reg, y_train_reg)
 
         logger.info("Training Logistic Regression model...")
-        direction_model = self.train_logistic_regression(
-            X_train_class, y_train_class
-        )
+        direction_model = self.train_logistic_regression(X_train_class, y_train_class)
 
         return price_model, direction_model
 
@@ -296,8 +297,7 @@ def get_training_and_testing_data():
     return None, None
 
 
-def train_model(df: pd.DataFrame) -> Tuple[
-        LinearRegression, LogisticRegression]:
+def train_model(df: pd.DataFrame) -> Tuple[LinearRegression, LogisticRegression]:
     """
     Main function to train both models.
 

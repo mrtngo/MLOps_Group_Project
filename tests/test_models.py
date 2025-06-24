@@ -1,8 +1,10 @@
-import pandas as pd
+from unittest.mock import MagicMock, patch
+
 import numpy as np
-from unittest.mock import patch, MagicMock
+import pandas as pd
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.preprocessing import StandardScaler
+
 from mlops.models.models import ModelTrainer
 
 
@@ -15,31 +17,39 @@ from mlops.models.models import ModelTrainer
 @patch("mlops.models.models.create_price_direction_label")
 @patch("mlops.models.models.define_features_and_label")
 def test_prepare_data(
-    mock_define, mock_create_label, mock_prepare_feat, mock_split, mock_scale,
-    mock_select, mock_smote, mock_config
+    mock_define,
+    mock_create_label,
+    mock_prepare_feat,
+    mock_split,
+    mock_scale,
+    mock_select,
+    mock_smote,
+    mock_config,
 ):
     mock_config.return_value = {
         "model": {},
         "target": "price",
-        "artifacts": {"preprocessing_pipeline": "models/test_pipeline.pkl"}
+        "artifacts": {"preprocessing_pipeline": "models/test_pipeline.pkl"},
     }
 
     mock_define.return_value = (["f1", "f2"], "price")
-    mock_create_label.return_value = pd.DataFrame({
-        "f1": [1], "f2": [2], "price": [10], "price_direction": [1]
-    })
+    mock_create_label.return_value = pd.DataFrame(
+        {"f1": [1], "f2": [2], "price": [10], "price_direction": [1]}
+    )
     mock_prepare_feat.return_value = (
-        np.array([[1, 2]]), pd.Series([10]), pd.Series([1])
+        np.array([[1, 2]]),
+        pd.Series([10]),
+        pd.Series([1]),
     )
     mock_split.return_value = (
-        np.array([[1, 2]]), np.array([[3, 4]]),
-        pd.Series([10]), pd.Series([20])
+        np.array([[1, 2]]),
+        np.array([[3, 4]]),
+        pd.Series([10]),
+        pd.Series([20]),
     )
 
     scaler = StandardScaler().fit([[1, 2], [3, 4]])
-    mock_scale.return_value = (
-        np.array([[1.1, 2.2]]), np.array([[1.3, 2.5]]), scaler
-    )
+    mock_scale.return_value = (np.array([[1.1, 2.2]]), np.array([[1.3, 2.5]]), scaler)
 
     mock_select.side_effect = lambda df, f: f
     mock_smote.return_value = (np.array([[9, 9]]), pd.Series([1]))
@@ -57,14 +67,14 @@ def test_train_logistic_regression_runs(mock_config, tmp_path):
     mock_config.return_value = {
         "model": {},
         "artifacts": {"preprocessing_pipeline": "models/pipe.pkl"},
-        "target": "price"
+        "target": "price",
     }
 
     trainer = ModelTrainer()
     trainer.model_config = {
         "logistic_regression": {
             "params": {},
-            "save_path": str(tmp_path / "logistic.pkl")
+            "save_path": str(tmp_path / "logistic.pkl"),
         }
     }
 
@@ -81,14 +91,14 @@ def test_train_linear_regression_runs(mock_config, tmp_path):
     mock_config.return_value = {
         "model": {},
         "artifacts": {"preprocessing_pipeline": str(tmp_path / "pipe.pkl")},
-        "target": "price"
+        "target": "price",
     }
 
     trainer = ModelTrainer()
     trainer.model_config = {
         "linear_regression": {
             "params": {"fit_intercept": True},
-            "save_path": str(tmp_path / "linear.pkl")
+            "save_path": str(tmp_path / "linear.pkl"),
         }
     }
 
@@ -109,7 +119,7 @@ def test_save_model_creates_file(mock_config, tmp_path):
     mock_config.return_value = {
         "model": {},
         "artifacts": {"preprocessing_pipeline": str(tmp_path / "pipe.pkl")},
-        "target": "price"
+        "target": "price",
     }
 
     trainer = ModelTrainer()
@@ -131,13 +141,16 @@ def test_train_all_models_success(mock_config, mock_log, mock_lin, mock_prep):
             "logistic_regression": {"save_path": "models/tmp_log.pkl"},
         },
         "target": "price",
-        "artifacts": {"preprocessing_pipeline": "models/tmp_pipeline.pkl"}
+        "artifacts": {"preprocessing_pipeline": "models/tmp_pipeline.pkl"},
     }
 
     mock_prep.return_value = (
-        np.array([[1, 2]]), np.array([[1, 2]]),
-        pd.Series([10]), pd.Series([1]),
-        pd.Series([10]), pd.Series([1])
+        np.array([[1, 2]]),
+        np.array([[1, 2]]),
+        pd.Series([10]),
+        pd.Series([1]),
+        pd.Series([10]),
+        pd.Series([1]),
     )
 
     trainer = ModelTrainer()

@@ -1,35 +1,35 @@
-import pytest
-import numpy as np
-import pandas as pd
 import json
 import pickle
 from unittest import mock
 
-from mlops.evaluation.evaluation import (
-    ModelEvaluator,
-    generate_report
-)
+import numpy as np
+import pandas as pd
+import pytest
+
+from mlops.evaluation.evaluation import ModelEvaluator, generate_report
 
 
 @pytest.fixture
 def dummy_dataframe():
     """Fixture for a dummy DataFrame that includes all features expected
     by define_features_and_label"""
-    return pd.DataFrame({
-        "timestamp": pd.date_range(start="2024-01-01", periods=10),
-        "BTCUSDT_price": np.linspace(100, 110, 10),
-        "ETHUSDT_price": np.linspace(50, 60, 10),
-        "BNBUSDT_price": np.linspace(30, 35, 10),
-        "XRPUSDT_price": np.linspace(0.3, 0.35, 10),
-        "ADAUSDT_price": np.linspace(0.2, 0.25, 10),
-        "SOLUSDT_price": np.linspace(20, 22, 10),
-        "ETHUSDT_funding_rate": np.random.uniform(0.01, 0.03, 10),
-        "BNBUSDT_funding_rate": np.random.uniform(0.01, 0.03, 10),
-        "XRPUSDT_funding_rate": np.random.uniform(0.01, 0.03, 10),
-        "ADAUSDT_funding_rate": np.random.uniform(0.01, 0.03, 10),
-        "SOLUSDT_funding_rate": np.random.uniform(0.01, 0.03, 10),
-        "BTCUSDT_funding_rate": np.random.uniform(0.01, 0.03, 10)
-    })
+    return pd.DataFrame(
+        {
+            "timestamp": pd.date_range(start="2024-01-01", periods=10),
+            "BTCUSDT_price": np.linspace(100, 110, 10),
+            "ETHUSDT_price": np.linspace(50, 60, 10),
+            "BNBUSDT_price": np.linspace(30, 35, 10),
+            "XRPUSDT_price": np.linspace(0.3, 0.35, 10),
+            "ADAUSDT_price": np.linspace(0.2, 0.25, 10),
+            "SOLUSDT_price": np.linspace(20, 22, 10),
+            "ETHUSDT_funding_rate": np.random.uniform(0.01, 0.03, 10),
+            "BNBUSDT_funding_rate": np.random.uniform(0.01, 0.03, 10),
+            "XRPUSDT_funding_rate": np.random.uniform(0.01, 0.03, 10),
+            "ADAUSDT_funding_rate": np.random.uniform(0.01, 0.03, 10),
+            "SOLUSDT_funding_rate": np.random.uniform(0.01, 0.03, 10),
+            "BTCUSDT_funding_rate": np.random.uniform(0.01, 0.03, 10),
+        }
+    )
 
 
 @pytest.fixture
@@ -51,10 +51,12 @@ def test_plot_confusion_matrix(evaluator):
 
 def test_plot_regression_predictions(evaluator):
     """Test that the regression prediction plot is generated and saved."""
-    df = pd.DataFrame({
-        "timestamp": pd.date_range("2024-01-01", periods=4),
-        "BTCUSDT_price": [100, 101, 102, 103]
-    })
+    df = pd.DataFrame(
+        {
+            "timestamp": pd.date_range("2024-01-01", periods=4),
+            "BTCUSDT_price": [100, 101, 102, 103],
+        }
+    )
     y_true = pd.Series([100, 101, 102, 103])
     y_pred = np.array([100.5, 100.8, 102.2, 102.7])
 
@@ -68,9 +70,7 @@ def test_plot_regression_predictions(evaluator):
 def test_save_metrics_report(tmp_path, evaluator):
     """Test saving regression and classification metrics to a JSON file."""
     regression_metrics = {"RMSE": 1.23}
-    classification_metrics = {
-        "Accuracy": 0.9, "F1 Score": 0.89, "ROC AUC": 0.88
-    }
+    classification_metrics = {"Accuracy": 0.9, "F1 Score": 0.89, "ROC AUC": 0.88}
 
     metrics_path = tmp_path / "metrics.json"
     evaluator.config["artifacts"]["metrics_path"] = str(metrics_path)
@@ -86,9 +86,7 @@ def test_save_metrics_report(tmp_path, evaluator):
 
 def test_generate_report_calls_evaluate_models():
     """Ensure that generate_report calls evaluate_models as expected."""
-    with mock.patch(
-        "mlops.evaluation.evaluation.evaluate_models"
-    ) as mock_eval:
+    with mock.patch("mlops.evaluation.evaluation.evaluate_models") as mock_eval:
         generate_report({"some": "config"})
         mock_eval.assert_called_once()
 
@@ -124,7 +122,7 @@ def test_load_both_models(tmp_path, evaluator):
 
     evaluator.config["model"] = {
         "linear_regression": {"save_path": str(linear_path)},
-        "logistic_regression": {"save_path": str(logistic_path)}
+        "logistic_regression": {"save_path": str(logistic_path)},
     }
 
     price_model, direction_model = evaluator.load_both_models()
@@ -145,10 +143,17 @@ def test_prepare_test_data_with_pipeline(evaluator, dummy_dataframe):
     from sklearn.preprocessing import StandardScaler
 
     features = [
-        "ETHUSDT_price", "BNBUSDT_price", "XRPUSDT_price", "ADAUSDT_price",
-        "SOLUSDT_price", "ETHUSDT_funding_rate", "BNBUSDT_funding_rate",
-        "XRPUSDT_funding_rate", "ADAUSDT_funding_rate", "SOLUSDT_funding_rate",
-        "BTCUSDT_funding_rate"
+        "ETHUSDT_price",
+        "BNBUSDT_price",
+        "XRPUSDT_price",
+        "ADAUSDT_price",
+        "SOLUSDT_price",
+        "ETHUSDT_funding_rate",
+        "BNBUSDT_funding_rate",
+        "XRPUSDT_funding_rate",
+        "ADAUSDT_funding_rate",
+        "SOLUSDT_funding_rate",
+        "BTCUSDT_funding_rate",
     ]
 
     scaler = StandardScaler()
@@ -158,7 +163,7 @@ def test_prepare_test_data_with_pipeline(evaluator, dummy_dataframe):
         "scaler": scaler,
         "selected_features_reg": features,
         "selected_features_class": features,
-        "all_feature_cols": features
+        "all_feature_cols": features,
     }
 
     Xr, Xc, yr, yc = evaluator.prepare_test_data(dummy_dataframe)

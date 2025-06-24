@@ -1,27 +1,24 @@
 # src/mlops/main.py
 
-import logging
 import argparse
-import sys
+import logging
 import os
-import mlflow
-import wandb
+import sys
 
+import mlflow
+
+import wandb
 from mlops.data_load.data_load import fetch_data
 from mlops.data_validation.data_validation import load_config, validate_data
+from mlops.evaluation.evaluation import evaluate_models
 from mlops.features.features import (
-    define_features_and_label,
     create_price_direction_label,
+    define_features_and_label,
     prepare_features,
 )
-from mlops.preproccess.preproccessing import (
-    scale_features,
-    smote_oversample,
-)
-
-from mlops.models.models import train_model
-from mlops.evaluation.evaluation import evaluate_models
 from mlops.inference.inference import run_inference
+from mlops.models.models import train_model
+from mlops.preproccess.preproccessing import scale_features, smote_oversample
 
 
 def setup_logger():
@@ -32,9 +29,7 @@ def setup_logger():
     config = load_config("conf/config.yaml")
     log_cfg = config.get("logging", {})
 
-    log_level = getattr(
-        logging, log_cfg.get("level", "INFO").upper(), logging.INFO
-    )
+    log_level = getattr(logging, log_cfg.get("level", "INFO").upper(), logging.INFO)
     log_format = log_cfg.get(
         "format", "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
     )
@@ -50,7 +45,7 @@ def setup_logger():
         format=log_format,
         datefmt=date_format,
         filename=log_file,
-        filemode="a"
+        filemode="a",
     )
 
     # Also print to console
@@ -67,12 +62,14 @@ def run_full_pipeline(start_date, end_date):
     """
     logger = logging.getLogger("Pipeline")
     logger.info("Starting complete MLOps pipeline")
-    
+
     config = load_config("conf/config.yaml")
 
     # Set MLflow experiment
     mlflow_config = config.get("mlflow_tracking", {})
-    experiment_name = mlflow_config.get("experiment_name", "MLOps-Group-Project-Experiment")
+    experiment_name = mlflow_config.get(
+        "experiment_name", "MLOps-Group-Project-Experiment"
+    )
     mlflow.set_experiment(experiment_name)
     logger.info(f"MLflow experiment set to '{experiment_name}'")
 
@@ -82,53 +79,55 @@ def run_full_pipeline(start_date, end_date):
         project=wandb_config.get("project", "mlops-project"),
         entity=wandb_config.get("entity"),
         name="pipeline-run",
-        job_type="pipeline"
+        job_type="pipeline",
     )
 
     try:
         # 1. Load raw data
         logger.info("Step 1: Loading data...")
-        
+
         with mlflow.start_run(run_name="data_load", nested=True) as mlrun:
             logger.info("Initiating MLflow for data loading.")
-            
+
             df = fetch_data(start_date=start_date, end_date=end_date)
             logger.info(f"Raw data loaded | shape={df.shape}")
 
             # Log parameters to MLflow and W&B
             params_to_log = {
-                "start_date": start_date, 
+                "start_date": start_date,
                 "end_date": end_date,
-                "symbols": config.get("symbols", [])
+                "symbols": config.get("symbols", []),
             }
             mlflow.log_params(params_to_log)
             wandb.config.update(params_to_log)
 
             # Save and log artifact
-            raw_data_path = config.get("data_source", {}).get("raw_path", "data/raw/raw_data.csv")
+            raw_data_path = config.get("data_source", {}).get(
+                "raw_path", "data/raw/raw_data.csv"
+            )
             os.makedirs(os.path.dirname(raw_data_path), exist_ok=True)
             df.to_csv(raw_data_path, index=False)
             mlflow.log_artifact(raw_data_path, "raw-data")
-            
+
             # Log metrics and artifact to W&B
             wandb.log({"raw_data_rows": df.shape[0], "raw_data_columns": df.shape[1]})
-            artifact = wandb.Artifact('raw-data', type='dataset', description="Raw data fetched from API")
+            artifact = wandb.Artifact(
+                "raw-data", type="dataset", description="Raw data fetched from API"
+            )
             artifact.add_file(raw_data_path)
             wandb.log_artifact(artifact)
 
         # 2. Load schema from config and validate
         logger.info("Step 2: Validating data...")
-        schema_list = config.get("data_validation", {}).get(
-            "schema", {}
-        ).get("columns", [])
+        schema_list = (
+            config.get("data_validation", {}).get("schema", {}).get("columns", [])
+        )
         schema = {col["name"]: col for col in schema_list}
         missing_strategy = config.get("data_validation", {}).get(
             "missing_values_strategy", "drop"
         )
 
-        df_validated = validate_data(
-            df, schema, logger, missing_strategy, "warn"
-        )
+        df_validated = validate_data(df, schema, logger, missing_strategy, "warn")
         logger.info(f"Data validation completed | shape={df_validated.shape}")
 
         # Save processed data
@@ -142,9 +141,7 @@ def run_full_pipeline(start_date, end_date):
         # 3. Feature engineering and preprocessing
         logger.info("Step 3: Feature engineering and preprocessing...")
         feature_cols, label_col = define_features_and_label()
-        df_with_direction = create_price_direction_label(
-            df_validated, label_col
-        )
+        df_with_direction = create_price_direction_label(df_validated, label_col)
         logger.info("Price direction labels created")
 
         # 4. Model training
@@ -154,29 +151,27 @@ def run_full_pipeline(start_date, end_date):
 
         # 5. Model evaluation
         logger.info("Step 5: Evaluating models...")
-        regression_metrics, classification_metrics = evaluate_models(
-            df_with_direction
-        )
+        regression_metrics, classification_metrics = evaluate_models(df_with_direction)
         logger.info("Model evaluation completed successfully")
 
         # Print summary metrics
         logger.info("=" * 50)
         logger.info("FINAL RESULTS SUMMARY")
         logger.info("=" * 50)
-        rmse_value = regression_metrics.get('RMSE', 'N/A')
-        if rmse_value != 'N/A':
+        rmse_value = regression_metrics.get("RMSE", "N/A")
+        if rmse_value != "N/A":
             logger.info(f"Linear Regression RMSE: {rmse_value:.4f}")
         else:
             logger.info("Linear Regression RMSE: N/A")
 
-        accuracy_value = classification_metrics.get('Accuracy', 'N/A')
-        if accuracy_value != 'N/A':
+        accuracy_value = classification_metrics.get("Accuracy", "N/A")
+        if accuracy_value != "N/A":
             logger.info(f"Logistic Regression Accuracy: {accuracy_value:.4f}")
         else:
             logger.info("Logistic Regression Accuracy: N/A")
 
-        roc_auc_value = classification_metrics.get('ROC AUC', 'N/A')
-        if roc_auc_value != 'N/A':
+        roc_auc_value = classification_metrics.get("ROC AUC", "N/A")
+        if roc_auc_value != "N/A":
             logger.info(f"Logistic Regression ROC AUC: {roc_auc_value:.4f}")
         else:
             logger.info("Logistic Regression ROC AUC: N/A")
@@ -191,11 +186,10 @@ def run_full_pipeline(start_date, end_date):
         if wandb_run:
             wandb.log({"pipeline_status": "failed", "error": str(exc)})
         sys.exit(1)
-    
+
     finally:
         if wandb_run:
             wandb.finish()
-
 
     logger.info("Pipeline completed successfully")
 
@@ -242,15 +236,11 @@ def run_until_feature_engineering():
 
     # 2. Load schema from config and validate
     config = load_config("conf/config.yaml")
-    schema_list = config.get("data_validation", {}).get(
-        "schema", {}
-    ).get("columns", [])
+    schema_list = config.get("data_validation", {}).get("schema", {}).get("columns", [])
     schema = {col["name"]: col for col in schema_list}
 
     logger.info("Validating data...")
-    df = validate_data(
-        df, schema, logger, missing_strategy="drop", on_error="warn"
-    )
+    df = validate_data(df, schema, logger, missing_strategy="drop", on_error="warn")
 
     # 3. Feature engineering
     logger.info("Creating features and labels...")

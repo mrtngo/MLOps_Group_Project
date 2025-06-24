@@ -1,10 +1,15 @@
-import pytest
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
+
 import pandas as pd
+import pytest
 from pandas.testing import assert_frame_equal
 
 from mlops.data_load.data_load import (
-    load_config, date_to_ms, default_window, load_symbols, fetch_data
+    date_to_ms,
+    default_window,
+    fetch_data,
+    load_config,
+    load_symbols,
 )
 
 

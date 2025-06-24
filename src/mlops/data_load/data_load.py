@@ -1,18 +1,19 @@
-import requests
-import time
-import yaml
-import pandas as pd
 import logging
-from typing import Dict, List, Optional, Tuple
-import mlflow
-import wandb
 import os
+import time
+from typing import Dict, List, Optional, Tuple
+
+import mlflow
+import pandas as pd
+import requests
+import yaml
+
+import wandb
 
 # ───────────────────────────── setup logging ──────────────────────────────
 
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -74,7 +75,7 @@ def fetch_binance_klines(
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
     interval: str = "8h",
-    days: int = 365
+    days: int = 365,
 ):
     try:
         url = config["data_source"]["raw_path_spot"]
@@ -94,7 +95,7 @@ def fetch_binance_klines(
             "interval": interval,
             "startTime": start_ms,
             "endTime": end_ms,
-            "limit": 1000
+            "limit": 1000,
         }
 
         rows = []
@@ -115,7 +116,7 @@ def fetch_binance_klines(
                     break
 
                 rows.extend(batch)
-                params["startTime"] = batch[-1][0] + 1   # next candle
+                params["startTime"] = batch[-1][0] + 1  # next candle
 
                 if request_count % 10 == 0:
                     msg = f"[{symbol}] Fetched {len(rows)} records so far"
@@ -137,14 +138,11 @@ def fetch_binance_klines(
         logger.info(f"[{symbol}] Successfully fetched {len(rows)} klines")
 
         df = pd.DataFrame(
-            rows,
-            columns=config.get("data_load", {}).get("column_names", [])
+            rows, columns=config.get("data_load", {}).get("column_names", [])
         )
         df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms", utc=True)
         df["close"] = df["close"].astype(float)
-        return df[["timestamp", "close"]].rename(
-            columns={"close": f"{symbol}_price"}
-        )
+        return df[["timestamp", "close"]].rename(columns={"close": f"{symbol}_price"})
 
     except KeyError as e:
         logger.error(f"Missing config key: {e}")
@@ -159,7 +157,7 @@ def fetch_binance_funding_rate(
     config: Dict,
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
-    days: int = 365
+    days: int = 365,
 ):
     try:
         url = config["data_source"]["raw_path_futures"]
@@ -175,7 +173,7 @@ def fetch_binance_funding_rate(
             "symbol": symbol,
             "startTime": start_ms,
             "endTime": end_ms,
-            "limit": 1000
+            "limit": 1000,
         }
 
         rows = []
@@ -221,9 +219,7 @@ def fetch_binance_funding_rate(
         logger.info(msg)
 
         df = pd.DataFrame(rows)
-        df["timestamp"] = pd.to_datetime(
-            df["fundingTime"], unit="ms", utc=True
-        )
+        df["timestamp"] = pd.to_datetime(df["fundingTime"], unit="ms", utc=True)
         df["fundingRate"] = df["fundingRate"].astype(float)
         return df[["timestamp", "fundingRate"]].rename(
             columns={"fundingRate": f"{symbol}_funding_rate"}
@@ -237,15 +233,16 @@ def fetch_binance_funding_rate(
         raise
 
 
-def fetch_data(config: Dict, start_date: Optional[str] = None,
-               end_date: Optional[str] = None):
+def fetch_data(
+    config: Dict, start_date: Optional[str] = None, end_date: Optional[str] = None
+):
     try:
         print(f"start date {start_date}")
         logger.info("Starting data fetch process")
-        
+
         # Load symbols from config
         symbols, _ = load_symbols(config)
-        
+
         price_dfs, funding_dfs = [], []
         failed_symbols = []
 

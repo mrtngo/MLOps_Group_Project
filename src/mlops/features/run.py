@@ -4,21 +4,24 @@ import os
 import sys
 
 # Add the project root to the Python path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
+import matplotlib.pyplot as plt
 import mlflow
 import pandas as pd
-import wandb
-import matplotlib.pyplot as plt
 import seaborn as sns
+
+import wandb
 from src.mlops.data_validation.data_validation import load_config
 from src.mlops.features.features import (
+    create_price_direction_label,
     define_features_and_label,
-    create_price_direction_label
 )
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -34,14 +37,16 @@ def run_feature_engineering(input_artifact: str):
 
     # Find the project root directory (where conf/config.yaml is located)
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.join(current_dir, '..', '..', '..')
-    config_path = os.path.join(project_root, 'conf', 'config.yaml')
-    
+    project_root = os.path.join(current_dir, "..", "..", "..")
+    config_path = os.path.join(project_root, "conf", "config.yaml")
+
     config = load_config(config_path)
 
     # Set MLflow experiment
     mlflow_config = config.get("mlflow_tracking", {})
-    experiment_name = mlflow_config.get("experiment_name", "MLOps-Group-Project-Experiment")
+    experiment_name = mlflow_config.get(
+        "experiment_name", "MLOps-Group-Project-Experiment"
+    )
     mlflow.set_experiment(experiment_name)
     logger.info(f"MLflow experiment set to '{experiment_name}'")
 
@@ -51,7 +56,7 @@ def run_feature_engineering(input_artifact: str):
         project=wandb_config.get("project", "mlops-project"),
         entity=wandb_config.get("entity"),
         name="feature_engineering-standalone",
-        job_type="feature-engineering"
+        job_type="feature-engineering",
     )
 
     try:
@@ -79,8 +84,8 @@ def run_feature_engineering(input_artifact: str):
             for i, feature in enumerate(feature_cols):
                 if feature in df_with_features.columns:
                     sns.histplot(df_with_features[feature], kde=True, ax=axes[i])
-                    axes[i].set_title(f'Distribution of {feature}')
-            
+                    axes[i].set_title(f"Distribution of {feature}")
+
             for i in range(num_features, len(axes)):
                 fig.delaxes(axes[i])
 
@@ -90,18 +95,20 @@ def run_feature_engineering(input_artifact: str):
             logger.info("Visualizations logged.")
 
             # --- 4. Log Output Artifact ---
-            output_path = config.get("artifacts", {}).get("feature_engineered_path", "data/processed/feature_engineered_data.csv")
+            output_path = config.get("artifacts", {}).get(
+                "feature_engineered_path", "data/processed/feature_engineered_data.csv"
+            )
             # Use absolute path for saving data
             output_path = os.path.join(project_root, output_path)
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
             df_with_features.to_csv(output_path, index=False)
-            
+
             mlflow.log_artifact(output_path, "feature-engineered-data")
-            
+
             artifact = wandb.Artifact(
                 name="feature-engineered-data",
                 type="dataset",
-                description="Dataset after adding engineered features."
+                description="Dataset after adding engineered features.",
             )
             artifact.add_file(output_path)
             wandb.log_artifact(artifact)
@@ -120,22 +127,26 @@ def run_feature_engineering(input_artifact: str):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run the feature engineering pipeline step.")
+    parser = argparse.ArgumentParser(
+        description="Run the feature engineering pipeline step."
+    )
     # Find the project root directory and load config
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.join(current_dir, '..', '..', '..')
-    config_path = os.path.join(project_root, 'conf', 'config.yaml')
+    project_root = os.path.join(current_dir, "..", "..", "..")
+    config_path = os.path.join(project_root, "conf", "config.yaml")
     config = load_config(config_path)
-    
-    default_input = config.get("data_source", {}).get("processed_path", "data/processed/validated_data.csv")
+
+    default_input = config.get("data_source", {}).get(
+        "processed_path", "data/processed/validated_data.csv"
+    )
     # Use absolute path for default input
     default_input = os.path.join(project_root, default_input)
-    
+
     parser.add_argument(
-        "--input-artifact", 
+        "--input-artifact",
         default=default_input,
-        help="Path to the validated data CSV file."
+        help="Path to the validated data CSV file.",
     )
     args = parser.parse_args()
 
-    run_feature_engineering(args.input_artifact) 
+    run_feature_engineering(args.input_artifact)

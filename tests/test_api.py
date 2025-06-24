@@ -1,8 +1,10 @@
-from fastapi.testclient import TestClient
-from app.main import app  # Import your FastAPI app
 import pytest
+from fastapi.testclient import TestClient
+
+from app.main import app  # Import your FastAPI app
 
 client = TestClient(app)
+
 
 def test_health_check():
     """Test the /health endpoint."""
@@ -10,11 +12,13 @@ def test_health_check():
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
+
 def test_read_root():
     """Test the root / endpoint."""
     response = client.get("/")
     assert response.status_code == 200
     assert "message" in response.json()
+
 
 def test_predict_endpoint():
     """Test the /predict endpoint with sample data."""
@@ -29,16 +33,16 @@ def test_predict_endpoint():
         "BNBUSDT_funding_rate": 0.0001,
         "XRPUSDT_funding_rate": 0.0001,
         "ADAUSDT_funding_rate": 0.0001,
-        "SOLUSDT_funding_rate": 0.0001
+        "SOLUSDT_funding_rate": 0.0001,
     }
-    
+
     response = client.post("/predict", json=sample_data)
     assert response.status_code == 200
-    
+
     prediction = response.json()
     assert "predicted_btc_price" in prediction
     assert "predicted_price_direction" in prediction
     assert "prediction_probability" in prediction
     assert isinstance(prediction["predicted_btc_price"], float)
     assert isinstance(prediction["predicted_price_direction"], int)
-    assert isinstance(prediction["prediction_probability"], float) 
+    assert isinstance(prediction["prediction_probability"], float)

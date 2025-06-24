@@ -1,16 +1,18 @@
 # main.py - New MLflow orchestrator for crypto prediction
-import mlflow
-import tempfile
-import os
-import hydra
-from omegaconf import DictConfig
-from dotenv import load_dotenv
-from datetime import datetime
-import wandb
 import logging
+import os
 import sys
+import tempfile
+from datetime import datetime
 from pathlib import Path
+
+import hydra
+import mlflow
 import pandas as pd
+from dotenv import load_dotenv
+from omegaconf import DictConfig
+
+import wandb
 
 # Set up project paths
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -53,7 +55,7 @@ def setup_logging(config: DictConfig) -> None:
         format=log_format,
         datefmt=date_format,
         filename=log_file,
-        filemode="a"
+        filemode="a",
     )
 
     # Also log to console
@@ -87,22 +89,24 @@ def main(cfg: DictConfig):
 
     # Set the MLflow experiment for the orchestrator
     mlflow_config = cfg.get("mlflow_tracking", {})
-    experiment_name = mlflow_config.get("experiment_name", "MLOps-Group-Project-Experiment")
+    experiment_name = mlflow_config.get(
+        "experiment_name", "MLOps-Group-Project-Experiment"
+    )
     mlflow.set_experiment(experiment_name)
     print(f"✅ Set MLflow experiment to: '{experiment_name}'")
 
     # Determine which steps to run
     steps_raw = cfg.main.steps
     print(f"DEBUG: steps_raw = {steps_raw}, type = {type(steps_raw)}")
-    
+
     if isinstance(steps_raw, str) and steps_raw != "all":
-         active_steps = [s.strip() for s in steps_raw.split(",")]
-    elif hasattr(steps_raw, '__iter__') and not isinstance(steps_raw, str):
+        active_steps = [s.strip() for s in steps_raw.split(",")]
+    elif hasattr(steps_raw, "__iter__") and not isinstance(steps_raw, str):
         # Handle both regular lists and OmegaConf ListConfig
         active_steps = list(steps_raw)
     else:
         active_steps = PIPELINE_STEPS
-    
+
     print(f"DEBUG: active_steps = {active_steps}")
     print(f"DEBUG: PIPELINE_STEPS = {PIPELINE_STEPS}")
 
@@ -112,14 +116,28 @@ def main(cfg: DictConfig):
     with tempfile.TemporaryDirectory() as tmpdir:
         # Define artifact paths to pass between steps
         artifacts = {
-            "raw_data": os.path.join(hydra.utils.get_original_cwd(), cfg.data_source.raw_path),
-            "validated_data": os.path.join(hydra.utils.get_original_cwd(), cfg.data_source.processed_path),
-            "feature_engineered_data": os.path.join(hydra.utils.get_original_cwd(), "data/processed/feature_engineered_data.csv"),
-            "processed_data_path": os.path.join(hydra.utils.get_original_cwd(), "data/processed/training_data"),
-            "model_path": os.path.join(hydra.utils.get_original_cwd(), "models/logistic_regression.pkl"),
-            "test_data_path_class": os.path.join(hydra.utils.get_original_cwd(), "data/processed/training_data/X_test_class.csv")
+            "raw_data": os.path.join(
+                hydra.utils.get_original_cwd(), cfg.data_source.raw_path
+            ),
+            "validated_data": os.path.join(
+                hydra.utils.get_original_cwd(), cfg.data_source.processed_path
+            ),
+            "feature_engineered_data": os.path.join(
+                hydra.utils.get_original_cwd(),
+                "data/processed/feature_engineered_data.csv",
+            ),
+            "processed_data_path": os.path.join(
+                hydra.utils.get_original_cwd(), "data/processed/training_data"
+            ),
+            "model_path": os.path.join(
+                hydra.utils.get_original_cwd(), "models/logistic_regression.pkl"
+            ),
+            "test_data_path_class": os.path.join(
+                hydra.utils.get_original_cwd(),
+                "data/processed/training_data/X_test_class.csv",
+            ),
         }
-        
+
         for step in active_steps:
             if step not in PIPELINE_STEPS:
                 logging.warning(f"Skipping unknown step: {step}")
@@ -147,7 +165,7 @@ def main(cfg: DictConfig):
             # MLflow will now use the conda.yaml file specified in each
             # step's entry point in the root MLproject file.
             mlflow.run(".", entry_point=step, parameters=params)
-            
+
             print(f"✅ Step '{step}' finished.")
 
     print("🎉 Pipeline execution complete.")
@@ -158,16 +176,20 @@ def main(cfg: DictConfig):
 def cli_main():
     """CLI interface for backward compatibility with original main.py."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Crypto MLOps Pipeline")
-    parser.add_argument("--stage", choices=["all", "training", "evaluation", "inference"], 
-                       default="all", help="Pipeline stage")
+    parser.add_argument(
+        "--stage",
+        choices=["all", "training", "evaluation", "inference"],
+        default="all",
+        help="Pipeline stage",
+    )
     parser.add_argument("--start-date", help="Start date (YYYY-MM-DD)")
     parser.add_argument("--end-date", help="End date (YYYY-MM-DD)")
     parser.add_argument("--output-csv", help="Output file for inference")
-    
+
     args = parser.parse_args()
-    
+
     # Map CLI args to Hydra overrides
     overrides = []
     if args.start_date:
@@ -175,17 +197,19 @@ def cli_main():
     if args.end_date:
         overrides.append(f"data_source.end_date={args.end_date}")
     if args.stage == "training":
-        overrides.append("main.steps=data_load,data_validation,feature_engineering,model")
+        overrides.append(
+            "main.steps=data_load,data_validation,feature_engineering,model"
+        )
     elif args.stage == "evaluation":
         overrides.append("main.steps=evaluation")
     elif args.stage == "inference":
         overrides.append("main.steps=inference")
         if args.output_csv:
             overrides.append(f"inference.output_csv={args.output_csv}")
-    
+
     # Add overrides to sys.argv for Hydra
     sys.argv = ["main.py"] + overrides
-    
+
     # Run main with Hydra
     main()
 
