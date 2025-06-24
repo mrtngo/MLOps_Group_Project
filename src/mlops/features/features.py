@@ -1,3 +1,5 @@
+"""Feature engineering and preparation utilities for ML tasks."""
+
 import logging
 from typing import Dict, List, Tuple
 

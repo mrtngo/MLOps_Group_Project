@@ -1,3 +1,5 @@
+"""Main pipeline orchestration and CLI entry point for the MLOps project."""
+
 # src/mlops/main.py
 
 import argparse

@@ -1,3 +1,5 @@
+"""Preprocessing utilities for scaling, splitting, and SMOTE for ML tasks."""
+
 import logging
 from typing import Dict, List, Tuple
 

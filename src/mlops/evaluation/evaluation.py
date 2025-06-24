@@ -1,4 +1,4 @@
-"""Model evaluation module."""
+"""Model evaluation utilities for regression and classification tasks."""
 
 import json
 import logging

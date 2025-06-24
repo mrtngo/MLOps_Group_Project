@@ -1,4 +1,4 @@
-"""Model training module."""
+"""Model training and saving utilities for regression and classification tasks."""
 
 import logging
 import os

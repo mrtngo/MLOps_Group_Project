@@ -1,4 +1,4 @@
-"""Scripts of the project."""
+"""Project script entry points and utilities."""
 
 # %% IMPORTS
 
