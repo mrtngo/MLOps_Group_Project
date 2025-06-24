@@ -26,13 +26,13 @@ def load_config(path: str) -> Dict:
     try:
         with open(path) as f:
             config = yaml.safe_load(f)
-            logger.info(f"Config loaded from {path}")
+            logger.info("Config loaded from %s", path)
             return config
     except FileNotFoundError:
-        logger.error(f"Config file not found: {path}")
+        logger.error("Config file not found: %s", path)
         raise
     except yaml.YAMLError as e:
-        logger.error(f"Error parsing YAML config: {e}")
+        logger.error("Error parsing YAML config: %s", e)
         raise
 
 
@@ -43,7 +43,7 @@ def date_to_ms(date_str: str) -> int:
     try:
         return int(pd.Timestamp(date_str, tz="UTC").timestamp() * 1000)
     except Exception as e:
-        logger.error(f"Error converting date '{date_str}' to ms: {e}")
+        logger.error("Error converting date '%s' to ms: %s", date_str, e)
         raise
 
 
@@ -53,7 +53,7 @@ def default_window(days: int = 365) -> tuple[int, int]:
     """
     end_ms = int(time.time() * 1000)
     start_ms = end_ms - days * 86_400_000
-    logger.debug(f"Default window: {days} days ({start_ms} to {end_ms})")
+    logger.debug("Default window: %d days (%d to %d)", days, start_ms, end_ms)
     return start_ms, end_ms
 
 
@@ -64,10 +64,10 @@ def load_symbols(config: Dict) -> Tuple[List[str], Dict]:
         if not symbols:
             logger.warning("No symbols found in config")
         else:
-            logger.info(f"Loaded {len(symbols)} symbols: {symbols}")
+            logger.info("Loaded %d symbols: %s", len(symbols), symbols)
         return symbols, config
     except Exception as e:
-        logger.error(f"Failed to load config: {e}")
+        logger.error("Failed to load config: %s", e)
         return [], {}
 
 
@@ -81,16 +81,16 @@ def fetch_binance_klines(
 ):
     try:
         url = config["data_source"]["raw_path_spot"]
-        logger.info(f"Fetching klines for {symbol} (interval: {interval})")
+        logger.info("Fetching klines for %s (interval: %s)", symbol, interval)
 
         if start_date and end_date:
             start_ms = date_to_ms(start_date)
             # include the full end-day by adding 1 day − 1 ms
             end_ms = date_to_ms(end_date) + 86_400_000 - 1
-            logger.info(f"Date range: {start_date} to {end_date}")
+            logger.info("Date range: %s to %s", start_date, end_date)
         else:
             start_ms, end_ms = default_window(days)
-            logger.info(f"Using default window: {days} days")
+            logger.info("Using default window: %d days", days)
 
         params = {
             "symbol": symbol,
@@ -109,35 +109,35 @@ def fetch_binance_klines(
                 r = requests.get(url, params=params, timeout=10)
 
                 if r.status_code != 200:
-                    logger.error(f"[{symbol}] HTTP {r.status_code}: {r.text}")
+                    logger.error("[%s] HTTP %d: %s", symbol, r.status_code, r.text)
                     break
 
                 batch = r.json()
                 if not batch:
-                    logger.info(f"[{symbol}] No more data available")
+                    logger.info("[%s] No more data available", symbol)
                     break
 
                 rows.extend(batch)
                 params["startTime"] = batch[-1][0] + 1  # next candle
 
                 if request_count % 10 == 0:
-                    msg = f"[{symbol}] Fetched {len(rows)} records so far"
-                    logger.debug(msg)
+                    msg = "[%s] Fetched %d records so far" % (symbol, len(rows))
+                    logger.debug("%s", msg)
 
                 time.sleep(0.4)  # anti-429
 
             except requests.RequestException as e:
-                logger.error(f"[{symbol}] Request failed: {e}")
+                logger.error("[%s] Request failed: %s", symbol, e)
                 break
             except Exception as e:
-                logger.error(f"[{symbol}] Unexpected error during fetch: {e}")
+                logger.error("[%s] Unexpected error during fetch: %s", symbol, e)
                 break
 
         if not rows:
-            logger.warning(f"[{symbol}] No data fetched")
+            logger.warning("[%s] No data fetched", symbol)
             return pd.DataFrame(columns=["timestamp", f"{symbol}_price"])
 
-        logger.info(f"[{symbol}] Successfully fetched {len(rows)} klines")
+        logger.info("[%s] Successfully fetched %d klines", symbol, len(rows))
 
         df = pd.DataFrame(
             rows, columns=config.get("data_load", {}).get("column_names", [])
@@ -147,10 +147,10 @@ def fetch_binance_klines(
         return df[["timestamp", "close"]].rename(columns={"close": f"{symbol}_price"})
 
     except KeyError as e:
-        logger.error(f"Missing config key: {e}")
+        logger.error("Missing config key: %s", e)
         raise
     except Exception as e:
-        logger.error(f"Error fetching klines for {symbol}: {e}")
+        logger.error("Error fetching klines for %s: %s", symbol, e)
         raise
 
 
@@ -163,7 +163,7 @@ def fetch_binance_funding_rate(
 ):
     try:
         url = config["data_source"]["raw_path_futures"]
-        logger.info(f"Fetching funding rates for {symbol}")
+        logger.info("Fetching funding rates for %s", symbol)
 
         if start_date and end_date:
             start_ms = date_to_ms(start_date)

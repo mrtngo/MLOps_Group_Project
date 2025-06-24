@@ -56,13 +56,13 @@ class ModelEvaluator:
         try:
             with open(self.model_path, "rb") as f:
                 model = pickle.load(f)
-            logger.info(f"Model loaded successfully from {self.model_path}")
+            logger.info("Model loaded successfully from %s", self.model_path)
             return model
         except FileNotFoundError:
-            logger.error(f"Model file not found at: {self.model_path}")
+            logger.error("Model file not found at: %s", self.model_path)
             raise
         except Exception as e:
-            logger.error(f"Error loading model: {e}")
+            logger.error("Error loading model: %s", e)
             raise
 
     def _load_test_data(self, file_name: str) -> Tuple[pd.DataFrame, pd.Series]:
@@ -86,13 +86,13 @@ class ModelEvaluator:
             predictions = self.model.predict(X_test)
             rmse = np.sqrt(mean_squared_error(y_test, predictions))
             metrics = {"rmse": rmse}
-            logger.info(f"Regression evaluation complete. RMSE: {rmse}")
+            logger.info("Regression evaluation complete. RMSE: %s", rmse)
             return metrics
         except FileNotFoundError as e:
-            logger.warning(f"Skipping regression evaluation: {e}")
+            logger.warning("Skipping regression evaluation: %s", e)
             return {}
         except Exception as e:
-            logger.error(f"An error occurred during regression evaluation: {e}")
+            logger.error("An error occurred during regression evaluation: %s", e)
             return {}
 
     def evaluate_classification(self) -> Tuple[Dict, Dict, pd.DataFrame]:
@@ -120,7 +120,7 @@ class ModelEvaluator:
                 else "N/A"
             )
             metrics = {"accuracy": accuracy, "f1_score": f1, "roc_auc": roc_auc}
-            logger.info(f"Classification metrics: {metrics}")
+            logger.info("Classification metrics: %s", metrics)
 
             # --- Create Plots ---
             # Confusion Matrix
@@ -144,13 +144,10 @@ class ModelEvaluator:
             return metrics, plots, sample_df
 
         except FileNotFoundError as e:
-            logger.warning(f"Skipping classification evaluation: {e}")
+            logger.warning("Skipping classification evaluation: %s", e)
             return metrics, plots, sample_df
         except Exception as e:
-            logger.error(
-                f"An error occurred during classification evaluation: {e}",
-                exc_info=True,
-            )
+            logger.error("An error occurred during classification evaluation: %s", e, exc_info=True)
             return metrics, plots, sample_df
 
     def _plot_confusion_matrix(self, y_true, y_pred, save_path):
@@ -170,7 +167,7 @@ class ModelEvaluator:
         plt.title("Confusion Matrix")
         plt.savefig(save_path)
         plt.close()
-        logger.info(f"Confusion matrix saved to {save_path}")
+        logger.info("Confusion matrix saved to %s", save_path)
 
     def _plot_roc_curve(self, y_true, y_probs, save_path):
         """Generates and saves an ROC curve plot."""
@@ -191,7 +188,7 @@ class ModelEvaluator:
         plt.legend(loc="lower right")
         plt.savefig(save_path)
         plt.close()
-        logger.info(f"ROC curve saved to {save_path}")
+        logger.info("ROC curve saved to %s", save_path)
 
     def load_model(self, model_path: str) -> Any:
         """
@@ -209,7 +206,7 @@ class ModelEvaluator:
         with open(model_path, "rb") as f:
             model = pickle.load(f)
 
-        logger.info(f"Model loaded from {model_path}")
+        logger.info("Model loaded from %s", model_path)
         return model
 
     def load_both_models(self) -> Tuple[Any, Any]:
@@ -284,8 +281,7 @@ class ModelEvaluator:
         X_test_class_final = X_test_class_scaled[:, feature_indices_class]
 
         shape_msg = (
-            f"Test data prepared - Reg: {X_test_reg_final.shape}, "
-            f"Class: {X_test_class_final.shape}"
+            "Test data prepared - Reg: %s, Class: %s" % (X_test_reg_final.shape, X_test_class_final.shape)
         )
         logger.info(shape_msg)
 
@@ -310,7 +306,7 @@ class ModelEvaluator:
         mse = mean_squared_error(y_test, predictions)
         rmse = mse**0.5  # Calculate RMSE manually for compatibility
 
-        logger.info(f"Linear Regression Test RMSE: {rmse:.4f}")
+        logger.info("Linear Regression Test RMSE: %.4f", rmse)
 
         # Create actual vs predicted plot
         self.plot_regression_predictions(df, y_test, predictions)
@@ -357,9 +353,9 @@ class ModelEvaluator:
             )
             logger.warning(warning_msg)
 
-        logger.info(f"Logistic Regression Test Accuracy: {accuracy:.4f}")
-        logger.info(f"Logistic Regression Test F1 Score: {f1:.4f}")
-        logger.info(f"Logistic Regression Test ROC AUC: {roc_auc:.4f}")
+        logger.info("Logistic Regression Test Accuracy: %.4f", accuracy)
+        logger.info("Logistic Regression Test F1 Score: %.4f", f1)
+        logger.info("Logistic Regression Test ROC AUC: %.4f", roc_auc)
 
         # Generate confusion matrix plot
         self.plot_confusion_matrix(y_test, predictions)
@@ -489,7 +485,7 @@ class ModelEvaluator:
         with open(metrics_path, "w") as f:
             json.dump(metrics_report, f, indent=2, default=str)
 
-        logger.info(f"Metrics report saved to {metrics_path}")
+        logger.info("Metrics report saved to %s", metrics_path)
 
     def evaluate_all_models(
         self, df: pd.DataFrame
@@ -545,7 +541,7 @@ def evaluate_models(df: pd.DataFrame = None) -> Tuple[Dict[str, float], Dict[str
         )
         if os.path.exists(processed_path):
             df = pd.read_csv(processed_path)
-            logger.info(f"Loaded processed data from {processed_path}")
+            logger.info("Loaded processed data from %s", processed_path)
         else:
             raise FileNotFoundError(f"Processed data not found at {processed_path}")
 

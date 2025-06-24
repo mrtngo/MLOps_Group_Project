@@ -129,13 +129,12 @@ class ModelTrainer:
         # Save preprocessing pipeline
         self._save_preprocessing_pipeline()
 
-        logger.info(f"Regression features: {self.selected_features_reg}")
-        logger.info(f"Classification features: {self.selected_features_class}")
+        logger.info("Regression features: %s", self.selected_features_reg)
+        logger.info("Classification features: %s", self.selected_features_class)
         shape_msg = (
-            f"Final training shapes - Reg: {X_train_reg_selected.shape}, "
-            f"Class: {X_train_class_balanced.shape}"
+            "Final training shapes - Reg: %s, Class: %s" % (X_train_reg_selected.shape, X_train_class_balanced.shape)
         )
-        logger.info(shape_msg)
+        logger.info("%s", shape_msg)
 
         return (
             X_train_reg_selected,
@@ -163,7 +162,7 @@ class ModelTrainer:
         with open(pipeline_path, "wb") as f:
             pickle.dump(preprocessing_pipeline, f)
 
-        logger.info(f"Preprocessing pipeline saved to {pipeline_path}")
+        logger.info("Preprocessing pipeline saved to %s", pipeline_path)
 
     def train_linear_regression(
         self, X: pd.DataFrame, y: pd.Series
@@ -188,7 +187,7 @@ class ModelTrainer:
         predictions = model.predict(X)
         mse = mean_squared_error(y, predictions)
         rmse = mse**0.5  # Calculate RMSE manually for compatibility
-        logger.info(f"Linear Regression Training RMSE: {rmse:.4f}")
+        logger.info("Linear Regression Training RMSE: %.4f", rmse)
 
         # Save model
         save_path = lr_config.get("save_path", "models/linear_regression.pkl")
@@ -224,13 +223,13 @@ class ModelTrainer:
         predictions = model.predict(X)
         try:
             roc_auc = roc_auc_score(y, predictions)
-            logger.info(f"Logistic Regression Training ROC AUC: {roc_auc:.4f}")
+            logger.info("Logistic Regression Training ROC AUC: %.4f", roc_auc)
         except ValueError:
             warning_msg = (
                 "Could not calculate ROC AUC - "
                 "possibly only one class in training data"
             )
-            logger.warning(warning_msg)
+            logger.warning("%s", warning_msg)
 
         # Save model
         save_path = log_config.get("save_path", "models/logistic_regression.pkl")
@@ -248,7 +247,7 @@ class ModelTrainer:
         """
         with open(save_path, "wb") as f:
             pickle.dump(model, f)
-        logger.info(f"Model saved to {save_path}")
+        logger.info("Model saved to %s", save_path)
 
     def train_all_models(
         self, df: pd.DataFrame
@@ -293,7 +292,7 @@ def get_training_and_testing_data():
     # This should load your actual train/test splits
     # For now, returning None to maintain compatibility
     warning_msg = "get_training_and_testing_data() is not fully implemented."
-    logger.warning(warning_msg)
+    logger.warning("%s", warning_msg)
     return None, None
 
 
@@ -317,4 +316,4 @@ def train_model(df: pd.DataFrame) -> Tuple[LinearRegression, LogisticRegression]
 if __name__ == "__main__":
     # For standalone execution
     warning_msg = "Standalone execution requires a DataFrame input"
-    logger.warning(warning_msg)
+    logger.warning("%s", warning_msg)

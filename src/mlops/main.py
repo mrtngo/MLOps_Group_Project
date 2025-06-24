@@ -73,7 +73,7 @@ def run_full_pipeline(start_date, end_date):
         "experiment_name", "MLOps-Group-Project-Experiment"
     )
     mlflow.set_experiment(experiment_name)
-    logger.info(f"MLflow experiment set to '{experiment_name}'")
+    logger.info("MLflow experiment set to '%s'", experiment_name)
 
     # Initialize W&B Run for the entire pipeline
     wandb_config = config.get("wandb", {})
@@ -92,7 +92,7 @@ def run_full_pipeline(start_date, end_date):
             logger.info("Initiating MLflow for data loading.")
 
             df = fetch_data(start_date=start_date, end_date=end_date)
-            logger.info(f"Raw data loaded | shape={df.shape}")
+            logger.info("Raw data loaded | shape=%s", df.shape)
 
             # Log parameters to MLflow and W&B
             params_to_log = {
@@ -130,7 +130,7 @@ def run_full_pipeline(start_date, end_date):
         )
 
         df_validated = validate_data(df, schema, logger, missing_strategy, "warn")
-        logger.info(f"Data validation completed | shape={df_validated.shape}")
+        logger.info("Data validation completed | shape=%s", df_validated.shape)
 
         # Save processed data
         processed_path = config.get("data_source", {}).get(
@@ -138,7 +138,7 @@ def run_full_pipeline(start_date, end_date):
         )
         os.makedirs(os.path.dirname(processed_path), exist_ok=True)
         df_validated.to_csv(processed_path, index=False)
-        logger.info(f"Processed data saved to {processed_path}")
+        logger.info("Processed data saved to %s", processed_path)
 
         # 3. Feature engineering and preprocessing
         logger.info("Step 3: Feature engineering and preprocessing...")
@@ -162,19 +162,19 @@ def run_full_pipeline(start_date, end_date):
         logger.info("=" * 50)
         rmse_value = regression_metrics.get("RMSE", "N/A")
         if rmse_value != "N/A":
-            logger.info(f"Linear Regression RMSE: {rmse_value:.4f}")
+            logger.info("Linear Regression RMSE: %.4f", rmse_value)
         else:
             logger.info("Linear Regression RMSE: N/A")
 
         accuracy_value = classification_metrics.get("Accuracy", "N/A")
         if accuracy_value != "N/A":
-            logger.info(f"Logistic Regression Accuracy: {accuracy_value:.4f}")
+            logger.info("Logistic Regression Accuracy: %.4f", accuracy_value)
         else:
             logger.info("Logistic Regression Accuracy: N/A")
 
         roc_auc_value = classification_metrics.get("ROC AUC", "N/A")
         if roc_auc_value != "N/A":
-            logger.info(f"Logistic Regression ROC AUC: {roc_auc_value:.4f}")
+            logger.info("Logistic Regression ROC AUC: %.4f", roc_auc_value)
         else:
             logger.info("Logistic Regression ROC AUC: N/A")
 
