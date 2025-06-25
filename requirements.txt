@@ -16,3 +16,4 @@ python-dotenv
 mlflow-skinny 
 black
 httpx
+python-multipart>=0.0.6
