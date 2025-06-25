@@ -29,10 +29,10 @@ config = load_config("conf/config.yaml")
 class ModelTrainer:
     """
     Handle model training for both regression and classification tasks.
-    
+
     This class manages the complete model training pipeline including
     data preparation, feature scaling, model training, and artifact saving.
-    
+
     Attributes:
         config: Configuration dictionary
         model_config: Model-specific configuration
@@ -64,10 +64,10 @@ class ModelTrainer:
     ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, pd.Series, pd.Series]:
         """
         Prepare features and targets with train/test splits, scaling, and feature selection.
-        
+
         Args:
             df: Training DataFrame with raw data
-            
+
         Returns:
             tuple: (X_train_reg, X_train_class, y_train_reg, y_train_class,
                    y_test_reg, y_test_class) - Processed training and test data
@@ -142,8 +142,9 @@ class ModelTrainer:
 
         logger.info("Regression features: %s", self.selected_features_reg)
         logger.info("Classification features: %s", self.selected_features_class)
-        shape_msg = (
-            "Final training shapes - Reg: %s, Class: %s" % (X_train_reg_selected.shape, X_train_class_balanced.shape)
+        shape_msg = "Final training shapes - Reg: %s, Class: %s" % (
+            X_train_reg_selected.shape,
+            X_train_class_balanced.shape,
         )
         logger.info("%s", shape_msg)
 
@@ -180,11 +181,11 @@ class ModelTrainer:
     ) -> LinearRegression:
         """
         Train linear regression model for price prediction.
-        
+
         Args:
             X: Feature matrix for training
             y: Target values for regression
-            
+
         Returns:
             LinearRegression: Trained linear regression model
         """
@@ -211,11 +212,11 @@ class ModelTrainer:
     ) -> LogisticRegression:
         """
         Train logistic regression model for direction prediction.
-        
+
         Args:
             X: Feature matrix for training
             y: Target values for classification
-            
+
         Returns:
             LogisticRegression: Trained logistic regression model
         """

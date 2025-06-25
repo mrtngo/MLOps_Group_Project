@@ -13,10 +13,10 @@ from src.mlops.data_validation.data_validation import load_config
 def define_features_and_label(config: Dict):
     """
     Define feature columns and target label for ML tasks.
-    
+
     Args:
         config: Configuration dictionary containing symbols
-        
+
     Returns:
         tuple: (feature_cols, label_col) - Lists of feature names and target name
     """
@@ -37,11 +37,11 @@ def define_features_and_label(config: Dict):
 def create_price_direction_label(df, label_col):
     """
     Create binary price direction column based on price changes.
-    
+
     Args:
         df: Input DataFrame with price data
         label_col: Name of the price column
-        
+
     Returns:
         pd.DataFrame: DataFrame with added price direction column
     """
@@ -60,12 +60,12 @@ def create_price_direction_label(df, label_col):
 def prepare_features(df, feature_cols, label_col):
     """
     Prepare feature matrix and target variables for machine learning.
-    
+
     Args:
         df: Input DataFrame with features and labels
         feature_cols: List of feature column names
         label_col: Name of the target column
-        
+
     Returns:
         tuple: (X, y_reg, y_class) - Features and regression/classification targets
     """

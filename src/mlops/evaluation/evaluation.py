@@ -35,10 +35,10 @@ config = load_config("conf/config.yaml")
 class ModelEvaluator:
     """
     Handle model evaluation for both regression and classification tasks.
-    
+
     This class provides comprehensive model evaluation including metrics
     calculation, visualization generation, and report creation.
-    
+
     Attributes:
         model_path: Path to the trained model
         test_data_dir: Directory containing test data
@@ -94,7 +94,7 @@ class ModelEvaluator:
     def evaluate_regression(self) -> Dict[str, float]:
         """
         Evaluate regression model performance.
-        
+
         Returns:
             dict: Dictionary containing regression metrics (RMSE, etc.)
         """
@@ -115,7 +115,7 @@ class ModelEvaluator:
     def evaluate_classification(self) -> Tuple[Dict, Dict, pd.DataFrame]:
         """
         Evaluate classification model performance.
-        
+
         Returns:
             tuple: (metrics_dict, plots_dict, sample_predictions_df)
         """
@@ -169,7 +169,11 @@ class ModelEvaluator:
             logger.warning("Skipping classification evaluation: %s", e)
             return metrics, plots, sample_df
         except Exception as e:
-            logger.error("An error occurred during classification evaluation: %s", e, exc_info=True)
+            logger.error(
+                "An error occurred during classification evaluation: %s",
+                e,
+                exc_info=True,
+            )
             return metrics, plots, sample_df
 
     def _plot_confusion_matrix(self, y_true, y_pred, save_path):
@@ -302,8 +306,9 @@ class ModelEvaluator:
         X_test_reg_final = X_test_scaled[:, feature_indices_reg]
         X_test_class_final = X_test_class_scaled[:, feature_indices_class]
 
-        shape_msg = (
-            "Test data prepared - Reg: %s, Class: %s" % (X_test_reg_final.shape, X_test_class_final.shape)
+        shape_msg = "Test data prepared - Reg: %s, Class: %s" % (
+            X_test_reg_final.shape,
+            X_test_class_final.shape,
         )
         logger.info(shape_msg)
 

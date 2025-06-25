@@ -1,6 +1,7 @@
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import pandas as pd
 import pytest
 
@@ -32,7 +33,9 @@ def test_define_features_and_label_from_config(monkeypatch):
     """
     mock_symbols = ["BTCUSDT", "ETHUSDT", "BNBUSDT"]
     mock_config = {"symbols": mock_symbols}
-    monkeypatch.setattr("mlops.data_validation.data_validation.load_config", lambda x=None: mock_config)
+    monkeypatch.setattr(
+        "mlops.data_validation.data_validation.load_config", lambda x=None: mock_config
+    )
     expected_features = [
         f"{symbol}_price" for symbol in mock_symbols if symbol != "BTCUSDT"
     ] + [f"{symbol}_funding_rate" for symbol in mock_symbols]

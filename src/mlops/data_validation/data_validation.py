@@ -70,7 +70,10 @@ def check_unexpected_columns(
 
         if unexpected_cols:
             report["unexpected_columns"] = list(unexpected_cols)
-            msg = "Found %d unexpected columns: %s" % (len(unexpected_cols), sorted(unexpected_cols))
+            msg = "Found %d unexpected columns: %s" % (
+                len(unexpected_cols),
+                sorted(unexpected_cols),
+            )
             logger.info("%s", msg)
 
             if on_error == "raise":
@@ -130,16 +133,26 @@ def check_value_ranges(
                         ),
                     }
 
-                    msg = "Column '%s' has %d values out of range [%s, %s]" % (col, len(out_of_range), min_val, max_val)
+                    msg = "Column '%s' has %d values out of range [%s, %s]" % (
+                        col,
+                        len(out_of_range),
+                        min_val,
+                        max_val,
+                    )
                     logger.info("%s", msg)
 
                     col_error = props.get("on_error", on_error)
                     if col_error == "raise":
-                        error_msg = "Raising error for out-of-range values in column '%s'" % col
+                        error_msg = (
+                            "Raising error for out-of-range values in column '%s'" % col
+                        )
                         logger.error("%s", error_msg)
                         raise ValueError(msg)
                     else:
-                        warn_msg = "Continuing despite out-of-range values in column '%s'" % col
+                        warn_msg = (
+                            "Continuing despite out-of-range values in column '%s'"
+                            % col
+                        )
                         logger.warning("%s", warn_msg)
                 else:
                     range_msg = "All values in col '%s' are within range" % col
@@ -173,7 +186,9 @@ def check_schema_and_types(
                         logger.warning("%s", msg)
 
                         if col_error == "raise":
-                            error_msg = "Raising error for missing required column '%s'" % col
+                            error_msg = (
+                                "Raising error for missing required column '%s'" % col
+                            )
                             logger.error("%s", error_msg)
                             raise ValueError(msg)
                     else:
@@ -185,13 +200,19 @@ def check_schema_and_types(
                 expected_type = props.get("dtype")
                 if expected_type:
                     actual_type = str(df_copy[col].dtype)
-                    debug_msg = "Column '%s': expected %s, actual %s" % (col, expected_type, actual_type)
+                    debug_msg = "Column '%s': expected %s, actual %s" % (
+                        col,
+                        expected_type,
+                        actual_type,
+                    )
                     logger.debug("%s", debug_msg)
 
                     if expected_type == "datetime64[ns]":
                         try:
                             df_copy[col] = pd.to_datetime(df_copy[col])
-                            success_msg = "Successfully converted column '%s' to datetime" % col
+                            success_msg = (
+                                "Successfully converted column '%s' to datetime" % col
+                            )
                             logger.debug("%s", success_msg)
                         except Exception as e:
                             report["type_mismatches"][col] = {
@@ -199,11 +220,17 @@ def check_schema_and_types(
                                 "actual": actual_type,
                                 "error": str(e),
                             }
-                            msg = "Failed to convert column '%s' to datetime: %s" % (col, e)
+                            msg = "Failed to convert column '%s' to datetime: %s" % (
+                                col,
+                                e,
+                            )
                             logger.warning("%s", msg)
 
                             if col_error == "raise":
-                                error_msg = "Raising error for datetime conversion failure in column '%s'" % col
+                                error_msg = (
+                                    "Raising error for datetime conversion failure in column '%s'"
+                                    % col
+                                )
                                 logger.error("%s", error_msg)
                                 raise
 
@@ -212,7 +239,9 @@ def check_schema_and_types(
                     ) and not pd.api.types.is_float_dtype(df_copy[col]):
                         try:
                             df_copy[col] = pd.to_numeric(df_copy[col], errors="coerce")
-                            success_msg = "Successfully converted column '%s' to float" % col
+                            success_msg = (
+                                "Successfully converted column '%s' to float" % col
+                            )
                             logger.debug("%s", success_msg)
                         except Exception as e:
                             report["type_mismatches"][col] = {
@@ -220,11 +249,17 @@ def check_schema_and_types(
                                 "actual": actual_type,
                                 "error": str(e),
                             }
-                            msg = "Failed to convert column '%s' to float: %s" % (col, e)
+                            msg = "Failed to convert column '%s' to float: %s" % (
+                                col,
+                                e,
+                            )
                             logger.warning("%s", msg)
 
                             if col_error == "raise":
-                                error_msg = "Raising error for float conversion failure in column '%s'" % col
+                                error_msg = (
+                                    "Raising error for float conversion failure in column '%s'"
+                                    % col
+                                )
                                 logger.error("%s", error_msg)
                                 raise
 
@@ -259,11 +294,18 @@ def check_missing_values(
                     if missing_count > 0:
                         report["missing_values"][col] = int(missing_count)
                         missing_pct = (missing_count / len(df)) * 100
-                        msg = "Column '%s': %d missing values (%.1f%%)" % (col, missing_count, missing_pct)
+                        msg = "Column '%s': %d missing values (%.1f%%)" % (
+                            col,
+                            missing_count,
+                            missing_pct,
+                        )
                         logger.info("%s", msg)
                         total_missing += missing_count
                 except Exception as e:
-                    error_msg = "Error checking missing values for column '%s': %s" % (col, e)
+                    error_msg = "Error checking missing values for column '%s': %s" % (
+                        col,
+                        e,
+                    )
                     logger.error("%s", error_msg)
                     continue
 
@@ -287,7 +329,10 @@ def handle_missing_values(
 
         if strategy == "drop":
             result_df = df.dropna()
-            msg = "Dropped rows with missing values: %d -> %d rows" % (original_shape[0], result_df.shape[0])
+            msg = "Dropped rows with missing values: %d -> %d rows" % (
+                original_shape[0],
+                result_df.shape[0],
+            )
             logger.info("%s", msg)
 
         elif strategy == "impute":
@@ -295,7 +340,9 @@ def handle_missing_values(
             # Forward fill, then backward fill
             result_df = result_df.ffill().bfill()
             imputed_count = df.isnull().sum().sum() - result_df.isnull().sum().sum()
-            msg = "Imputed %d missing values using forward/backward fill" % imputed_count
+            msg = (
+                "Imputed %d missing values using forward/backward fill" % imputed_count
+            )
             logger.info("%s", msg)
 
         elif strategy == "keep":
@@ -303,14 +350,20 @@ def handle_missing_values(
             logger.info("Keeping all missing values as-is")
 
         else:
-            warn_msg = "Unknown missing_values_strategy: '%s'. Keeping data unchanged." % strategy
+            warn_msg = (
+                "Unknown missing_values_strategy: '%s'. Keeping data unchanged."
+                % strategy
+            )
             logger.warning("%s", warn_msg)
             result_df = df.copy()
 
         return result_df
 
     except Exception as e:
-        error_msg = "Error handling missing values with strategy '%s': %s" % (strategy, e)
+        error_msg = "Error handling missing values with strategy '%s': %s" % (
+            strategy,
+            e,
+        )
         logger.error("%s", error_msg)
         raise
 
@@ -386,8 +439,8 @@ def validate_data(df: pd.DataFrame, config: Dict) -> Tuple[pd.DataFrame, Dict]:
     logger.info("Starting validation for DataFrame with shape %s", df.shape)
     logger.info(
         "Validation: missing_strategy='%s', on_error='%s'",
-        config.get('missing_values_strategy'),
-        config.get('on_error')
+        config.get("missing_values_strategy"),
+        config.get("on_error"),
     )
 
     # Check for missing and unexpected columns
@@ -400,7 +453,10 @@ def validate_data(df: pd.DataFrame, config: Dict) -> Tuple[pd.DataFrame, Dict]:
 
     unexpected_cols = df_cols - set(expected_cols.keys())
     if unexpected_cols:
-        msg = "Found %d unexpected columns: %s" % (len(unexpected_cols), list(unexpected_cols))
+        msg = "Found %d unexpected columns: %s" % (
+            len(unexpected_cols),
+            list(unexpected_cols),
+        )
         report["issues"]["warnings"].append(msg)
         logger.warning("%s", msg)
 
@@ -414,7 +470,11 @@ def validate_data(df: pd.DataFrame, config: Dict) -> Tuple[pd.DataFrame, Dict]:
 
         # Check type
         if df[name].dtype.name != params["dtype"]:
-            msg = "Column '%s' has wrong type. Expected %s, found %s" % (name, params['dtype'], df[name].dtype.name)
+            msg = "Column '%s' has wrong type. Expected %s, found %s" % (
+                name,
+                params["dtype"],
+                df[name].dtype.name,
+            )
             report["issues"]["errors"].append(msg)
             report["status"] = "fail"
             column_report["status"] = "fail"
@@ -441,7 +501,9 @@ def validate_data(df: pd.DataFrame, config: Dict) -> Tuple[pd.DataFrame, Dict]:
             missing_after = df.isnull().sum().sum()
             imputed_count = missing_before - missing_after
             summary["total_imputed"] = int(imputed_count)
-            logger.info("Imputed %d missing values using forward/backward fill", imputed_count)
+            logger.info(
+                "Imputed %d missing values using forward/backward fill", imputed_count
+            )
         elif missing_strategy == "drop":
             rows_before = len(df)
             df.dropna(inplace=True)
@@ -454,8 +516,8 @@ def validate_data(df: pd.DataFrame, config: Dict) -> Tuple[pd.DataFrame, Dict]:
 
     logger.info(
         "Data validation completed with %d errors and %d warnings.",
-        len(report['issues']['errors']),
-        len(report['issues']['warnings'])
+        len(report["issues"]["errors"]),
+        len(report["issues"]["warnings"]),
     )
 
     return df, report

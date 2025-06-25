@@ -1,6 +1,7 @@
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import json
 import pickle
@@ -42,7 +43,11 @@ def evaluator():
     dummy_model_path = "models/linear_regression.pkl"
     dummy_test_data_dir = "data/processed/"
     dummy_config = {"artifacts": {"metrics_path": "models/metrics.json"}, "model": {}}
-    return ModelEvaluator(model_path=dummy_model_path, test_data_dir=dummy_test_data_dir, config=dummy_config)
+    return ModelEvaluator(
+        model_path=dummy_model_path,
+        test_data_dir=dummy_test_data_dir,
+        config=dummy_config,
+    )
 
 
 def test_plot_confusion_matrix(evaluator):
