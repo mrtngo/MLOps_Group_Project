@@ -154,7 +154,7 @@ def smote_oversample(X, y, config: Dict) -> Tuple[np.ndarray, np.ndarray]:
             sm = SMOTE(sampling_strategy=sampling_strategy, random_state=random_state)
             X_res, y_res = sm.fit_resample(X, y)
 
-            logger.info("SMOTE apply successful. New shape: %s", X_res.shape)ful. New shape: {X_res.shape}")
+            logger.info(f"SMOTE apply successful. New shape: {X_res.shape}")
             new_dist = dict(zip(*np.unique(y_res, return_counts=True)))
             logger.info(f"New class distribution: {new_dist}")
         else:

@@ -181,3 +181,45 @@ def test_evaluate_classification_no_predict_proba(monkeypatch, tmp_path):
     metrics, plots, sample_df = evaluator.evaluate_classification()
     assert "accuracy" in metrics
     assert "f1_score" in metrics
+
+
+def test_load_test_data_missing_files(tmp_path):
+    evaluator = ModelEvaluator("models/linear_regression.pkl", str(tmp_path), config={})
+    with pytest.raises(FileNotFoundError):
+        evaluator._load_test_data("not_exist")
+
+
+def test_evaluate_regression_predict_error(monkeypatch, tmp_path):
+    class DummyModel:
+        def predict(self, X):
+            raise Exception("fail")
+    evaluator = ModelEvaluator("models/linear_regression.pkl", str(tmp_path), config={})
+    evaluator.model = DummyModel()
+    result = evaluator.evaluate_regression()
+    assert result == {}
+
+
+def test_evaluate_classification_predict_proba_error(monkeypatch, tmp_path):
+    class DummyModel:
+        def predict(self, X):
+            return np.zeros(len(X))
+        def predict_proba(self, X):
+            raise Exception("fail")
+    evaluator = ModelEvaluator("models/logistic_regression.pkl", str(tmp_path), config={})
+    evaluator.model = DummyModel()
+    # Create dummy test data files
+    X = pd.DataFrame({"a": [1, 2]})
+    y = pd.Series([0, 1])
+    X.to_csv(os.path.join(tmp_path, "X_test_class.csv"), index=False)
+    y.to_csv(os.path.join(tmp_path, "y_test_class.csv"), index=False)
+    metrics, plots, sample_df = evaluator.evaluate_classification()
+    assert metrics == {}
+    assert plots == {}
+    assert sample_df.empty
+
+
+def test_save_metrics_report_oserror(tmp_path):
+    evaluator = ModelEvaluator("models/linear_regression.pkl", str(tmp_path), config={})
+    with mock.patch("builtins.open", side_effect=OSError("fail")):
+        with pytest.raises(OSError):
+            evaluator.save_metrics_report({}, {})

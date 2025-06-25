@@ -1,5 +1,6 @@
 import json
 from mlops.utils.logger import setup_logger
+import logging
 
 import os
 from typing import Dict, List, Optional, Tuple
@@ -124,10 +125,10 @@ def check_value_ranges(
                         "min_allowed": min_val,
                         "max_allowed": max_val,
                         "actual_min": (
-                            float(df[col].min()) if not df[col].empty else None
+                            float(df[col].min()) if df[col].size != 0 else None
                         ),
                         "actual_max": (
-                            float(df[col].max()) if not df[col].empty else None
+                            float(df[col].max()) if df[col].size != 0 else None
                         ),
                     }
 

@@ -6,6 +6,7 @@ from typing import Dict, List, Tuple
 import pandas as pd
 import yaml
 from sklearn.ensemble import RandomForestRegressor
+import logging
 
 from src.mlops.data_validation.data_validation import load_config
 
