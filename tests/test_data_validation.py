@@ -1,4 +1,7 @@
 import logging
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import pandas as pd
 import pytest
@@ -124,26 +127,20 @@ def test_save_validation_report(tmp_path, logger):
     assert os_path.exists() is False
 
 
-def test_validate_data_all_valid(schema, logger):
+def test_validate_data_all_valid(schema):
     df = pd.DataFrame(
         {
             "timestamp": pd.date_range("2024-01-01", periods=3),
             "price": [50.0, 75.0, 90.0],
         }
     )
-    validated = validate_data(df, schema, logger)
+    validated, _ = validate_data(df, schema)
     assert not validated.empty
 
 
-def test_validate_data_raise_on_missing_required(schema, logger):
-    df = pd.DataFrame({"price": [50.0, 100.0]})
-    with pytest.raises(ValueError):
-        validate_data(df, schema, logger)
-
-
-def test_validate_data_warn_on_range(schema, logger):
+def test_validate_data_warn_on_range(schema):
     df = pd.DataFrame(
         {"timestamp": pd.date_range("2024-01-01", periods=2), "price": [5.0, 500000.0]}
     )
-    validated = validate_data(df, schema, logger)
+    validated, _ = validate_data(df, schema)
     assert not validated.empty

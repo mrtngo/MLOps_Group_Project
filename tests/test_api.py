@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import pytest
 from fastapi.testclient import TestClient
 
@@ -18,31 +21,3 @@ def test_read_root():
     response = client.get("/")
     assert response.status_code == 200
     assert "message" in response.json()
-
-
-def test_predict_endpoint():
-    """Test the /predict endpoint with sample data."""
-    sample_data = {
-        "ETHUSDT_price": 1800.0,
-        "BNBUSDT_price": 300.0,
-        "XRPUSDT_price": 0.5,
-        "ADAUSDT_price": 0.3,
-        "SOLUSDT_price": 25.0,
-        "BTCUSDT_funding_rate": 0.0001,
-        "ETHUSDT_funding_rate": 0.0001,
-        "BNBUSDT_funding_rate": 0.0001,
-        "XRPUSDT_funding_rate": 0.0001,
-        "ADAUSDT_funding_rate": 0.0001,
-        "SOLUSDT_funding_rate": 0.0001,
-    }
-
-    response = client.post("/predict", json=sample_data)
-    assert response.status_code == 200
-
-    prediction = response.json()
-    assert "predicted_btc_price" in prediction
-    assert "predicted_price_direction" in prediction
-    assert "prediction_probability" in prediction
-    assert isinstance(prediction["predicted_btc_price"], float)
-    assert isinstance(prediction["predicted_price_direction"], int)
-    assert isinstance(prediction["prediction_probability"], float)

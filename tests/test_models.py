@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from unittest.mock import MagicMock, patch
 
 import numpy as np
@@ -51,7 +55,7 @@ def test_prepare_data(
     scaler = StandardScaler().fit([[1, 2], [3, 4]])
     mock_scale.return_value = (np.array([[1.1, 2.2]]), np.array([[1.3, 2.5]]), scaler)
 
-    mock_select.side_effect = lambda df, f: f
+    mock_select.side_effect = lambda df, f, target=None: f
     mock_smote.return_value = (np.array([[9, 9]]), pd.Series([1]))
 
     trainer = ModelTrainer()

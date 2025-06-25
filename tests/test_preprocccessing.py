@@ -54,8 +54,8 @@ def test_scale_test_data(sample_df):
 def test_split_data(sample_df):
     X = sample_df[["feat1", "feat2"]]
     y = sample_df["feat3"]
-    X_train, X_test, y_train, y_test = split_data(X, y)
-
+    dummy_config = {}
+    X_train, X_test, y_train, y_test = split_data(X, y, config=dummy_config)
     assert len(X_train) + len(X_test) == len(X)
     assert len(y_train) + len(y_test) == len(y)
     assert X_train.shape[1] == X.shape[1]
@@ -64,11 +64,10 @@ def test_split_data(sample_df):
 def test_smote_oversample_applies():
     X = np.random.rand(30, 2)
     y = [0] * 24 + [1] * 6
-    X_res, y_res = smote_oversample(X, y)
-
+    dummy_config = {}
+    X_res, y_res = smote_oversample(X, y, config=dummy_config)
     assert len(X_res) > len(X)
     assert len(X_res) == len(y_res)
-
     unique, counts = np.unique(y_res, return_counts=True)
     assert set(unique) == {0, 1}
     assert abs(counts[0] - counts[1]) <= 1
@@ -77,8 +76,8 @@ def test_smote_oversample_applies():
 def test_smote_oversample_skips():
     X = np.random.rand(20, 2)
     y = [0] * 10 + [1] * 10
-    X_res, y_res = smote_oversample(X, y)
-
+    dummy_config = {}
+    X_res, y_res = smote_oversample(X, y, config=dummy_config)
     assert len(X_res) == len(X)
     assert np.allclose(X, X_res)
     assert np.array_equal(y, y_res)
@@ -88,14 +87,11 @@ def test_preprocess_pipeline(sample_df):
     feature_cols = ["feat1", "feat2"]
     X = sample_df[feature_cols]
     y = [0] * 80 + [1] * 20
-
-    X_train, X_test, y_train, y_test = split_data(X, y)
-
+    X_train, X_test, y_train, y_test = split_data(X, y, config={})
     pipeline_result = preprocess_pipeline(
-        X_train, X_test, y_train, feature_cols, apply_smote=True
+        X_train, X_test, y_train, feature_cols, apply_smote=True, config={}
     )
     X_train_prep, X_test_prep, y_train_prep, y_train_orig, scaler = pipeline_result
-
     assert X_train_prep.shape[1] == len(feature_cols)
     assert X_test_prep.shape == X_test.shape
     assert len(y_train_prep) == len(X_train_prep)

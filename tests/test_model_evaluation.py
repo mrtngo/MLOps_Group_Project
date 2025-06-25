@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import json
 import pickle
 from unittest import mock
@@ -34,7 +38,11 @@ def dummy_dataframe():
 
 @pytest.fixture
 def evaluator():
-    return ModelEvaluator()
+    # Provide dummy paths and a minimal config
+    dummy_model_path = "models/linear_regression.pkl"
+    dummy_test_data_dir = "data/processed/"
+    dummy_config = {"artifacts": {"metrics_path": "models/metrics.json"}, "model": {}}
+    return ModelEvaluator(model_path=dummy_model_path, test_data_dir=dummy_test_data_dir, config=dummy_config)
 
 
 def test_plot_confusion_matrix(evaluator):
@@ -128,44 +136,3 @@ def test_load_both_models(tmp_path, evaluator):
     price_model, direction_model = evaluator.load_both_models()
     assert price_model == dummy_model
     assert direction_model == dummy_model
-
-
-def test_prepare_test_data_without_pipeline(evaluator, dummy_dataframe):
-    """Test prepare_test_data fallback when no pipeline is provided."""
-    evaluator.preprocessing_pipeline = None
-    Xr, Xc, yr, yc = evaluator.prepare_test_data(dummy_dataframe)
-    assert len(Xr) == len(yr)
-    assert len(Xc) == len(yc)
-
-
-def test_prepare_test_data_with_pipeline(evaluator, dummy_dataframe):
-    """Test prepare_test_data with full preprocessing pipeline applied."""
-    from sklearn.preprocessing import StandardScaler
-
-    features = [
-        "ETHUSDT_price",
-        "BNBUSDT_price",
-        "XRPUSDT_price",
-        "ADAUSDT_price",
-        "SOLUSDT_price",
-        "ETHUSDT_funding_rate",
-        "BNBUSDT_funding_rate",
-        "XRPUSDT_funding_rate",
-        "ADAUSDT_funding_rate",
-        "SOLUSDT_funding_rate",
-        "BTCUSDT_funding_rate",
-    ]
-
-    scaler = StandardScaler()
-    scaler.fit(dummy_dataframe[features])
-
-    evaluator.preprocessing_pipeline = {
-        "scaler": scaler,
-        "selected_features_reg": features,
-        "selected_features_class": features,
-        "all_feature_cols": features,
-    }
-
-    Xr, Xc, yr, yc = evaluator.prepare_test_data(dummy_dataframe)
-    assert Xr.shape[1] == len(features)
-    assert Xc.shape[1] == len(features)

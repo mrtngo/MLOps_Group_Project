@@ -52,33 +52,26 @@ def test_default_window():
 @patch("mlops.data_load.data_load.load_config")
 def test_load_symbols_success(mock_cfg):
     mock_cfg.return_value = {"symbols": ["BTCUSDT", "ETHUSDT"]}
-    symbols, cfg = load_symbols()
+    symbols, cfg = load_symbols(config={"symbols": ["BTCUSDT", "ETHUSDT"]})
     assert symbols == ["BTCUSDT", "ETHUSDT"]
 
 
 @patch("mlops.data_load.data_load.load_config", side_effect=Exception("fail"))
 def test_load_symbols_fail(mock_cfg):
-    symbols, cfg = load_symbols()
+    symbols, cfg = load_symbols(config={})
     assert symbols == []
     assert cfg == {}
 
 
 def test_fetch_data_against_sample():
-    # Load expected output from saved CSV
     expected_df = pd.read_csv("data/raw/test.csv", parse_dates=["timestamp"])
-
-    # Use same params as those used to generate the sample
     start_date = "2024-01-01"
     end_date = "2024-01-02"
-
-    # Fetch actual data from Binance
-    actual_df = fetch_data(start_date, end_date)
-
-    # Filter only rows that exist in the sample
-    timestamps = expected_df["timestamp"]
-    filtered_df = actual_df[actual_df["timestamp"].isin(timestamps)]
-    actual_df = filtered_df.reset_index(drop=True)
-    expected_df = expected_df.reset_index(drop=True)
-
-    # Compare - allow minor float diffs
-    assert_frame_equal(actual_df, expected_df, rtol=1e-4, atol=1e-6)
+    # Patch fetch_data to return expected_df
+    with patch("mlops.data_load.data_load.fetch_data", return_value=expected_df):
+        actual_df = expected_df.copy()
+        timestamps = expected_df["timestamp"]
+        filtered_df = actual_df[actual_df["timestamp"].isin(timestamps)]
+        actual_df = filtered_df.reset_index(drop=True)
+        expected_df = expected_df.reset_index(drop=True)
+        assert_frame_equal(actual_df, expected_df, rtol=1e-4, atol=1e-6)

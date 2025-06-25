@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import pandas as pd
 import pytest
 
@@ -21,24 +24,19 @@ def sample_df():
     return pd.DataFrame(data)
 
 
-def test_define_features_and_label_from_config():
+def test_define_features_and_label_from_config(monkeypatch):
     """
     Test that the define_features_and_label function returns:
-    - The correct feature columns based on the config.yaml symbols list.
+    - The correct feature columns based on a mocked config symbols list.
     - The expected label column name ("BTCUSDT_price").
-
-    This test ensures that the function reads symbols from the config and
-    derives the correct feature and label names accordingly.
     """
-    config = load_config("config.yaml")
-    symbols = config.get("symbols", [])
-
+    mock_symbols = ["BTCUSDT", "ETHUSDT", "BNBUSDT"]
+    mock_config = {"symbols": mock_symbols}
+    monkeypatch.setattr("mlops.data_validation.data_validation.load_config", lambda x=None: mock_config)
     expected_features = [
-        f"{symbol}_price" for symbol in symbols if symbol != "BTCUSDT"
-    ] + [f"{symbol}_funding_rate" for symbol in symbols]
-
-    feature_cols, label_col = define_features_and_label()
-
+        f"{symbol}_price" for symbol in mock_symbols if symbol != "BTCUSDT"
+    ] + [f"{symbol}_funding_rate" for symbol in mock_symbols]
+    feature_cols, label_col = define_features_and_label(mock_config)
     assert set(feature_cols) == set(expected_features)
     assert label_col == "BTCUSDT_price"
 

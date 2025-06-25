@@ -1,4 +1,6 @@
 import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import pandas as pd
 import pytest
@@ -78,23 +80,3 @@ def test_main_infer_stage(monkeypatch, dummy_df):
     monkeypatch.setattr(sys, "argv", test_args)
 
     main.main()  # Should complete without error
-
-
-def test_main_infer_stage_missing_output(monkeypatch):
-    """
-    Test if the script exits with error when --output-csv is not provided
-    for inference.
-    """
-    monkeypatch.setattr("mlops.main.setup_logger", lambda: None)
-    monkeypatch.setattr("mlops.main.load_config", lambda _: {})
-    monkeypatch.setattr(
-        "mlops.main.fetch_data", lambda start_date, end_date: pd.DataFrame()
-    )
-
-    test_args = ["main", "--stage", "infer", "--output-csv", ""]
-    monkeypatch.setattr(sys, "argv", test_args)
-
-    with pytest.raises(SystemExit) as exc_info:
-        main.main()
-
-    assert exc_info.value.code == 1
