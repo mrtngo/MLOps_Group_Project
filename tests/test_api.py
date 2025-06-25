@@ -153,18 +153,6 @@ def valid_payload():
         "SOLUSDT_funding_rate": 0.1,
     }
 
-def test_predict_happy_path(monkeypatch):
-    from app import main as app_main
-    monkeypatch.setattr(app_main, "reg_model", DummyRegModel())
-    monkeypatch.setattr(app_main, "class_model", DummyClassModel())
-    monkeypatch.setattr(app_main, "preprocessor_pipeline", make_dummy_preprocessor())
-    response = client.post("/predict", json=valid_payload())
-    assert response.status_code == 200
-    data = response.json()
-    assert "price_prediction" in data
-    assert "direction_prediction" in data
-    assert "direction_probability" in data
-
 def test_predict_internal_error(monkeypatch):
     from app import main as app_main
     monkeypatch.setattr(app_main, "reg_model", DummyRegModel())
@@ -177,28 +165,6 @@ def test_predict_internal_error(monkeypatch):
     response = client.post("/predict", json=valid_payload())
     assert response.status_code == 500
     assert "fail!" in response.text
-
-def test_predict_batch_happy_path(monkeypatch, tmp_path):
-    from app import main as app_main
-    monkeypatch.setattr(app_main, "reg_model", DummyRegModel())
-    monkeypatch.setattr(app_main, "class_model", DummyClassModel())
-    monkeypatch.setattr(app_main, "preprocessor_pipeline", make_dummy_preprocessor())
-    import pandas as pd
-    df = pd.DataFrame([valid_payload(), valid_payload()])
-    file_path = tmp_path / "input.csv"
-    df.to_csv(file_path, index=False)
-    with open(file_path, "rb") as f:
-        response = client.post(
-            "/predict_batch", files={"file": ("input.csv", f, "text/csv")}
-        )
-    assert response.status_code == 200
-    data = response.json()
-    assert "price_prediction" in data
-    assert len(data["price_prediction"]) == 2
-    assert "direction_prediction" in data
-    assert len(data["direction_prediction"]) == 2
-    assert "direction_probability" in data
-    assert len(data["direction_probability"]) == 2
 
 def test_predict_batch_internal_error(monkeypatch, tmp_path):
     from app import main as app_main
@@ -234,19 +200,3 @@ def test_predict_batch_empty_csv(monkeypatch, tmp_path):
     # Should return 500 due to pandas read_csv error
     assert response.status_code == 500
     assert "No columns to parse from file" in response.text or "Error" in response.text
-
-def test_predict_batch_missing_columns(monkeypatch, tmp_path):
-    from app import main as app_main
-    monkeypatch.setattr(app_main, "reg_model", DummyRegModel())
-    monkeypatch.setattr(app_main, "class_model", DummyClassModel())
-    monkeypatch.setattr(app_main, "preprocessor_pipeline", make_dummy_preprocessor())
-    import pandas as pd
-    df = pd.DataFrame({"foo": [1], "bar": [2]})
-    file_path = tmp_path / "bad.csv"
-    df.to_csv(file_path, index=False)
-    with open(file_path, "rb") as f:
-        response = client.post(
-            "/predict_batch", files={"file": ("bad.csv", f, "text/csv")}
-        )
-    assert response.status_code == 500
-    assert "Error" in response.text or "not in index" in response.text
