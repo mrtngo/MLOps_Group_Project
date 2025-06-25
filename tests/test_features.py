@@ -136,3 +136,149 @@ def test_get_training_and_testing_data_missing_file():
     config = {"data_source": {"processed_path": "not_a_real_file.csv"}}
     train, test = get_training_and_testing_data(config)
     assert train is None and test is None
+
+
+
+
+"""
+Enhanced unit‑test suite for `mlops.features.features`.
+
+These tests aim to raise line‑ and branch‑coverage by exercising:
+ • Correlation‑based feature selection (both positive and negative correlations &
+   varying thresholds).
+ • Chronological train/test split logic with configurable `test_size`.
+ • Price‑direction label creation for rising, falling and flat sequences.
+ • Feature / target alignment after preparation.
+ • Edge‑cases such as empty‑symbol configuration in `define_features_and_label`.
+
+Run with:  `pytest -q tests/test_features_additional.py`
+"""
+
+import os
+import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import pytest
+
+# Make sure project root is importable
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from mlops.features.features import (
+    create_price_direction_label,
+    define_features_and_label,
+    prepare_features,
+    select_features,
+    get_training_and_testing_data,
+)
+
+
+# ---------------------------------------------------------------------------
+# Helper fixtures
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope="module")
+def toy_price_df() -> pd.DataFrame:
+    """Generate a 10‑row price DataFrame with mixed movements."""
+    rng = pd.date_range("2024-01-01", periods=10, freq="H")
+    prices = pd.Series([100, 101, 99, 99, 102, 102, 103, 102, 101, 101])
+    df = pd.DataFrame({
+        "timestamp": rng,
+        "BTCUSDT_price": prices,
+        "ETHUSDT_price": prices * 0.05 + np.random.normal(0, 0.01, size=10),
+        "BTCUSDT_funding_rate": np.random.uniform(-0.001, 0.001, size=10),
+        "ETHUSDT_funding_rate": np.random.uniform(-0.001, 0.001, size=10),
+    })
+    return df
+
+
+@pytest.fixture(scope="module")
+def simple_config():
+    return {
+        "symbols": ["BTCUSDT", "ETHUSDT"],
+        "feature_engineering": {"feature_selection": {"correlation_threshold": 0.05}},
+        "data_split": {"test_size": 0.3},
+    }
+
+
+# ---------------------------------------------------------------------------
+# Tests for feature‑selection logic
+# ---------------------------------------------------------------------------
+
+def test_select_features_above_threshold(toy_price_df, simple_config):
+    """Features with |corr| > threshold should be kept."""
+    df = toy_price_df.copy()
+
+    target = "BTCUSDT_price"
+    # Exclude the target itself from candidate feature columns
+    feature_cols = [c for c in df.columns if c.endswith("_price") and c != target]
+
+    selected = select_features(df, feature_cols, target, simple_config)
+
+    # ETHUSDT_price is highly correlated and should be retained
+    assert "ETHUSDT_price" in selected
+    # The target was never in `feature_cols`, so it should not appear in `selected`
+    assert target not in selected
+
+
+
+def test_select_features_below_threshold(toy_price_df, simple_config):
+    """Lower the threshold so funding‑rate columns are now included."""
+    cfg = simple_config.copy()
+    cfg["feature_engineering"]["feature_selection"]["correlation_threshold"] = 0.0
+    feature_cols = [c for c in toy_price_df.columns if c.endswith("rate")]
+    selected = select_features(toy_price_df, feature_cols, "BTCUSDT_price", cfg)
+    assert set(selected) == set(feature_cols)  # everything passes when threshold=0
+
+
+# ---------------------------------------------------------------------------
+# Tests for price‑direction label creation
+# ---------------------------------------------------------------------------
+
+def test_create_price_direction_label_values(toy_price_df):
+    labeled = create_price_direction_label(toy_price_df, "BTCUSDT_price")
+    # First row should be dropped (prev_price NaN), length = len(df) - 1
+    assert len(labeled) == len(toy_price_df) - 1
+    # Check explicit expected direction pattern
+    expected = [1, 0, 0, 1, 0, 1, 0, 0, 0]
+    assert labeled["price_direction"].tolist() == expected
+
+
+# ---------------------------------------------------------------------------
+# Tests for feature preparation and alignment
+# ---------------------------------------------------------------------------
+
+def test_prepare_features_alignment(toy_price_df):
+    labeled = create_price_direction_label(toy_price_df, "BTCUSDT_price")
+    X, y_reg, y_class = prepare_features(
+        labeled,
+        [c for c in labeled.columns if c.endswith("_price")],
+        "BTCUSDT_price",
+    )
+    # Shapes
+    assert len(X) == len(y_reg) == len(y_class)
+    # No NaNs introduced
+    assert not X.isnull().any().any()
+
+
+# ---------------------------------------------------------------------------
+# Tests for train/test split logic
+# ---------------------------------------------------------------------------
+
+def test_get_training_and_testing_data_split(simple_config, toy_price_df):
+    train, test = get_training_and_testing_data(simple_config, toy_price_df)
+    # Expected sizes (70/30 split rounded down)
+    assert len(train) == 7 and len(test) == 3
+    # Ensure chronological order is preserved
+    assert train["timestamp"].max() < test["timestamp"].min()
+
+
+# ---------------------------------------------------------------------------
+# Edge‑case for feature / label definition
+# ---------------------------------------------------------------------------
+
+def test_define_features_and_label_empty():
+    features, label = define_features_and_label({"symbols": []})
+    assert features == [] and label == "BTCUSDT_price"
