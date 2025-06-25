@@ -69,8 +69,6 @@ WANDB_API_KEY=your-wandb-api-key
 1. **Run the pipeline**
    ```bash
    python main.py            # full workflow
-   # or
-   just run-pipeline
    ```
 2. **Start API server**
    ```bash
@@ -162,7 +160,7 @@ Override via CLI or custom config paths.
 
 Run tests:
 ```bash
-pytest        # or just test
+pytest        
 ```  
 Coverage report:
 ```bash
@@ -184,7 +182,7 @@ docker run -d -p 8000:8000 crypto-api
 1. Fork & create branch
 2. Implement feature
 3. **Include tests & docs in your PR**
-4. Commit (`just commit`) & push
+4. Commit & push
 5. Open PR
 
 Follow PEP 8, conventional commits, and ensure all CI checks pass.
