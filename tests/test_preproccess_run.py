@@ -9,6 +9,8 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
+
 
 class MockPreprocessingModel:
     """Mock preprocessing model that can be pickled"""
@@ -24,15 +26,18 @@ class TestPreprocessingRun:
 
     def find_preprocessing_run_script(self):
         """Find the run.py script in the preprocessing directory"""
-        # Look for the script in the expected location
-        script_path = os.path.join("src", "mlops", "preproccess", "run.py")
+        print("[DEBUG] CWD:", os.getcwd())
+        # Get the project root directory (where this test file is located)
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        print("[DEBUG] Project root:", project_root)
+        
+        # Use absolute paths relative to project root
+        script_path = os.path.join(project_root, "src", "mlops", "preproccess", "run.py")
+        print(f"[DEBUG] Trying: {script_path} Exists: {os.path.exists(script_path)}")
         if os.path.exists(script_path):
             return script_path
         
-        # Fallback: search in current directory and subdirectories
-        for root, dirs, files in os.walk('.'):
-            if 'run.py' in files and ('preproccess' in root or 'preprocessing' in root):
-                return os.path.join(root, 'run.py')
+        print("[DEBUG] No preproccess run.py found!")
         return None
 
     # Removed test_preprocessing_run_script_exists due to path resolution issues
@@ -488,17 +493,12 @@ except Exception as e:
         assert output_found, "Output generation code should be present"
 
 
-class TestPreprocessingRunIntegration:
+class TestPreprocessingRunIntegration(TestPreprocessingRun):
     """Integration tests for preprocessing run script"""
     
     def test_dependency_imports(self):
         """Test that script dependencies can be identified"""
-        script_path = None
-        for root, dirs, files in os.walk('.'):
-            if 'run.py' in files and ('preproccess' in root or 'preprocessing' in root):
-                script_path = os.path.join(root, 'run.py')
-                break
-        
+        script_path = self.find_preprocessing_run_script()
         if not script_path:
             pytest.skip("Could not find preprocessing run.py script")
         
@@ -507,8 +507,8 @@ class TestPreprocessingRunIntegration:
         
         # List expected dependencies
         expected_deps = [
-            "argparse", "logging", "os", "sys", "pandas", 
-            "sklearn", "imblearn", "mlflow", "wandb"
+            "argparse", "logging", "os", "sys", 
+            "mlflow", "wandb", "Preprocessor"
         ]
         
         found_deps = [dep for dep in expected_deps if dep in content]
@@ -516,12 +516,7 @@ class TestPreprocessingRunIntegration:
 
     def test_main_execution_block(self):
         """Test that main execution block is properly structured"""
-        script_path = None
-        for root, dirs, files in os.walk('.'):
-            if 'run.py' in files and ('preproccess' in root or 'preprocessing' in root):
-                script_path = os.path.join(root, 'run.py')
-                break
-        
+        script_path = self.find_preprocessing_run_script()
         if not script_path:
             pytest.skip("Could not find preprocessing run.py script")
         
@@ -531,26 +526,22 @@ class TestPreprocessingRunIntegration:
         # Check main execution block
         assert 'if __name__ == "__main__":' in content
         assert "ArgumentParser" in content
-        assert "args = parser.parse_args()" in content or "parse_args()" in content
+        assert "args = parser.parse_args()" in content
+        assert "run_preprocessing(" in content
 
     def test_configuration_handling(self):
-        """Test that configuration handling patterns are correct"""
-        script_path = None
-        for root, dirs, files in os.walk('.'):
-            if 'run.py' in files and ('preproccess' in root or 'preprocessing' in root):
-                script_path = os.path.join(root, 'run.py')
-                break
-        
+        """Test that configuration handling is properly implemented"""
+        script_path = self.find_preprocessing_run_script()
         if not script_path:
             pytest.skip("Could not find preprocessing run.py script")
         
         with open(script_path, 'r') as f:
             content = f.read()
         
-        # Check for configuration patterns
+        # Check for configuration handling
         config_keywords = ["config", "yaml", "load_config"]
-        config_found = any(keyword in content for keyword in config_keywords)
-        assert config_found, "Configuration handling should be present"
+        config_found = [kw for kw in config_keywords if kw in content]
+        assert len(config_found) >= 2, f"Expected configuration handling, found: {config_found}"
 
 
 if __name__ == "__main__":

@@ -10,6 +10,8 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
+
 
 class MockEvaluationModel:
     """Mock model class that can be pickled for evaluation testing"""
@@ -25,15 +27,18 @@ class TestEvaluationRun:
 
     def find_evaluation_run_script(self):
         """Find the run.py script in the evaluation directory"""
-        # Look for the script in the expected location
-        script_path = os.path.join("src", "mlops", "evaluation", "run.py")
+        print("[DEBUG] CWD:", os.getcwd())
+        # Get the project root directory (where this test file is located)
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        print("[DEBUG] Project root:", project_root)
+        
+        # Use absolute paths relative to project root
+        script_path = os.path.join(project_root, "src", "mlops", "evaluation", "run.py")
+        print(f"[DEBUG] Trying: {script_path} Exists: {os.path.exists(script_path)}")
         if os.path.exists(script_path):
             return script_path
         
-        # Fallback: search in current directory and subdirectories
-        for root, dirs, files in os.walk('.'):
-            if 'run.py' in files and 'evaluation' in root:
-                return os.path.join(root, 'run.py')
+        print("[DEBUG] No evaluation run.py found!")
         return None
 
     def test_script_has_valid_syntax(self):
@@ -553,17 +558,12 @@ except Exception as e:
         assert viz_found, "Visualization logging should be present"
 
 
-class TestEvaluationRunIntegration:
+class TestEvaluationRunIntegration(TestEvaluationRun):
     """Integration tests for evaluation run script"""
     
     def test_dependency_imports(self):
         """Test that script dependencies can be identified"""
-        script_path = None
-        for root, dirs, files in os.walk('.'):
-            if 'run.py' in files and 'evaluation' in root:
-                script_path = os.path.join(root, 'run.py')
-                break
-        
+        script_path = self.find_evaluation_run_script()
         if not script_path:
             pytest.skip("Could not find evaluation run.py script")
         
@@ -581,12 +581,7 @@ class TestEvaluationRunIntegration:
 
     def test_main_execution_block(self):
         """Test that main execution block is properly structured"""
-        script_path = None
-        for root, dirs, files in os.walk('.'):
-            if 'run.py' in files and 'evaluation' in root:
-                script_path = os.path.join(root, 'run.py')
-                break
-        
+        script_path = self.find_evaluation_run_script()
         if not script_path:
             pytest.skip("Could not find evaluation run.py script")
         
@@ -601,12 +596,7 @@ class TestEvaluationRunIntegration:
 
     def test_evaluation_workflow(self):
         """Test that evaluation workflow patterns are correct"""
-        script_path = None
-        for root, dirs, files in os.walk('.'):
-            if 'run.py' in files and 'evaluation' in root:
-                script_path = os.path.join(root, 'run.py')
-                break
-        
+        script_path = self.find_evaluation_run_script()
         if not script_path:
             pytest.skip("Could not find evaluation run.py script")
         

@@ -1,5 +1,5 @@
-import sys
-import os
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
 import tempfile
 import subprocess
 import pickle
@@ -551,15 +551,18 @@ class TestCLIInterface:
 
     def find_inference_script(self):
         """Find the inference.py script in the project."""
-        # Look for the script in the expected location
-        script_path = os.path.join("src", "mlops", "inference", "inference.py")
+        print("[DEBUG] CWD:", os.getcwd())
+        # Get the project root directory (where this test file is located)
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        print("[DEBUG] Project root:", project_root)
+        
+        # Use absolute paths relative to project root
+        script_path = os.path.join(project_root, "src", "mlops", "inference", "inference.py")
+        print(f"[DEBUG] Trying: {script_path} Exists: {os.path.exists(script_path)}")
         if os.path.exists(script_path):
             return script_path
         
-        # Fallback: search in current directory and subdirectories
-        for root, dirs, files in os.walk('.'):
-            if 'inference.py' in files and 'inference' in root:
-                return os.path.join(root, 'inference.py')
+        print("[DEBUG] No inference.py found!")
         return None
 
     def test_cli_no_arguments(self):
