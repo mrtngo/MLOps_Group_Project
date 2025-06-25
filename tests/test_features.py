@@ -91,6 +91,7 @@ def test_prepare_features(sample_df):
 
 def test_define_features_and_label_empty_config():
     from src.mlops.features.features import define_features_and_label
+
     config = {}
     features, label = define_features_and_label(config)
     assert isinstance(features, list)
@@ -99,6 +100,7 @@ def test_define_features_and_label_empty_config():
 def test_create_price_direction_label_missing_label():
     import pandas as pd
     from src.mlops.features.features import create_price_direction_label
+
     df = pd.DataFrame({"timestamp": [1, 2, 3], "other": [1, 2, 3]})
     try:
         create_price_direction_label(df, "BTCUSDT_price")
@@ -109,6 +111,7 @@ def test_create_price_direction_label_missing_label():
 def test_prepare_features_missing_price_direction():
     import pandas as pd
     from src.mlops.features.features import prepare_features
+
     df = pd.DataFrame({"ETHUSDT_price": [1, 2], "BTCUSDT_price": [3, 4]})
     try:
         prepare_features(df, ["ETHUSDT_price"], "BTCUSDT_price")
@@ -119,6 +122,7 @@ def test_prepare_features_missing_price_direction():
 def test_select_features_missing_target():
     import pandas as pd
     from src.mlops.features.features import select_features
+
     df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
     try:
         select_features(df, ["a", "b"], "not_in_df", {})
@@ -128,6 +132,7 @@ def test_select_features_missing_target():
 
 def test_get_training_and_testing_data_missing_file():
     from src.mlops.features.features import get_training_and_testing_data
+
     config = {"data_source": {"processed_path": "not_a_real_file.csv"}}
     train, test = get_training_and_testing_data(config)
     assert train is None and test is None

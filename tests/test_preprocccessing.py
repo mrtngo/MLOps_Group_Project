@@ -137,5 +137,7 @@ def test_preprocess_pipeline_smote_one_class():
     X = pd.DataFrame({"a": [1, 2, 3]})
     y = pd.Series([1, 1, 1])
     config = {}
-    X_train, X_test, y_train, y_test, scaler = preprocess_pipeline(X, X, y, ["a"], config, apply_smote=True)
+    X_train, X_test, y_train, y_test, scaler = preprocess_pipeline(
+        X, X, y, ["a"], config, apply_smote=True
+    )
     assert (y_train == y).all()

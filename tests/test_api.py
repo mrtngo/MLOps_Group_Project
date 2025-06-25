@@ -27,9 +27,10 @@ def test_read_root():
 def test_predict_missing_models(monkeypatch):
     """Test /predict returns 503 if models or preprocessor are not loaded."""
     from app import main as app_main
-    monkeypatch.setattr(app_main, 'reg_model', None)
-    monkeypatch.setattr(app_main, 'class_model', None)
-    monkeypatch.setattr(app_main, 'preprocessor_pipeline', None)
+
+    monkeypatch.setattr(app_main, "reg_model", None)
+    monkeypatch.setattr(app_main, "class_model", None)
+    monkeypatch.setattr(app_main, "preprocessor_pipeline", None)
     # Provide a valid payload with all required fields
     valid_payload = {
         "ETHUSDT_price": 1.0,
@@ -58,7 +59,9 @@ def test_predict_invalid_input():
 
 def test_predict_batch_invalid_file():
     """Test /predict_batch with a non-CSV file returns 400."""
-    response = client.post("/predict_batch", files={"file": ("input.txt", b"not a csv", "text/plain")})
+    response = client.post(
+        "/predict_batch", files={"file": ("input.txt", b"not a csv", "text/plain")}
+    )
     assert response.status_code == 400
     assert "Invalid file type" in response.text
 
@@ -66,15 +69,19 @@ def test_predict_batch_invalid_file():
 def test_predict_batch_missing_models(monkeypatch, tmp_path):
     """Test /predict_batch returns 503 if models or preprocessor are not loaded."""
     from app import main as app_main
-    monkeypatch.setattr(app_main, 'reg_model', None)
-    monkeypatch.setattr(app_main, 'class_model', None)
-    monkeypatch.setattr(app_main, 'preprocessor_pipeline', None)
+
+    monkeypatch.setattr(app_main, "reg_model", None)
+    monkeypatch.setattr(app_main, "class_model", None)
+    monkeypatch.setattr(app_main, "preprocessor_pipeline", None)
     # Create a valid CSV
     import pandas as pd
+
     df = pd.DataFrame([{f: 1.0 for f in app_main.ALL_FEATURES}])
     file_path = tmp_path / "input.csv"
     df.to_csv(file_path, index=False)
     with open(file_path, "rb") as f:
-        response = client.post("/predict_batch", files={"file": ("input.csv", f, "text/csv")})
+        response = client.post(
+            "/predict_batch", files={"file": ("input.csv", f, "text/csv")}
+        )
     assert response.status_code == 503
     assert "Models or preprocessor not loaded" in response.text

@@ -146,13 +146,17 @@ def test_load_both_models(tmp_path, evaluator):
 def test_load_model_missing_file():
     from mlops.evaluation.evaluation import ModelEvaluator
     import pytest
+
     with pytest.raises(FileNotFoundError):
         ModelEvaluator("not_a_real_model.pkl", "data/processed/", config={})
 
 
 def test_evaluate_regression_missing_test_data():
     from mlops.evaluation.evaluation import ModelEvaluator
-    evaluator = ModelEvaluator("models/linear_regression.pkl", "not_a_real_dir", config={})
+
+    evaluator = ModelEvaluator(
+        "models/linear_regression.pkl", "not_a_real_dir", config={}
+    )
     result = evaluator.evaluate_regression()
     assert result == {}
 
@@ -161,9 +165,11 @@ def test_evaluate_classification_no_predict_proba(monkeypatch, tmp_path):
     from mlops.evaluation.evaluation import ModelEvaluator
     import numpy as np
     import pandas as pd
+
     class DummyModel:
         def predict(self, X):
             return np.zeros(len(X))
+
     # Create dummy test data
     test_dir = tmp_path
     X = pd.DataFrame({"a": [1, 2]})
