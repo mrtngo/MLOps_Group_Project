@@ -69,8 +69,6 @@ WANDB_API_KEY=your-wandb-api-key
 1. **Run the pipeline**
    ```bash
    python main.py            # full workflow
-   # or
-   just run-pipeline
    ```
 2. **Start API server**
    ```bash
