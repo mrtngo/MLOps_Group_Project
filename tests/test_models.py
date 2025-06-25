@@ -1,17 +1,24 @@
 import sys
 import os
+import pickle
+import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from unittest.mock import MagicMock, patch
-
 import numpy as np
 import pandas as pd
+from unittest.mock import MagicMock, patch
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.preprocessing import StandardScaler
 
-from mlops.models.models import ModelTrainer
+from mlops.models.models import (
+    ModelTrainer,
+    get_training_and_testing_data,
+    train_model,
+)
 
+
+# === Your original tests ===
 
 @patch("mlops.models.models.load_config")
 @patch("mlops.models.models.smote_oversample")
@@ -170,26 +177,143 @@ def test_train_all_models_success(mock_config, mock_log, mock_lin, mock_prep):
 
 
 def test_train_model_none():
-    from mlops.models.models import train_model
-    import pytest
-
     with pytest.raises(ValueError):
         train_model(None)
 
 
 def test_save_model_invalid_path():
-    from mlops.models.models import ModelTrainer
-    import tempfile
-    import os
-
     trainer = ModelTrainer()
 
     class DummyModel:
         pass
 
-    # Use an invalid path
     invalid_path = "/invalid_dir/invalid_model.pkl"
-    try:
+    with pytest.raises(Exception):
         trainer._save_model(DummyModel(), invalid_path)
-    except Exception as e:
-        assert isinstance(e, Exception)
+
+
+# === Extended tests for 100% coverage ===
+
+@pytest.fixture(autouse=True)
+def patch_full_config(tmp_path, monkeypatch):
+    fake_conf = {
+        "model": {
+            "linear_regression": {
+                "params": {"fit_intercept": False},
+                "save_path": str(tmp_path / "lr.pkl"),
+            },
+            "logistic_regression": {
+                "params": {},
+                "save_path": str(tmp_path / "log.pkl"),
+            },
+        },
+        "artifacts": {
+            "preprocessing_pipeline": str(tmp_path / "pipe_dir/pipe.pkl")
+        },
+        "target": "price",
+    }
+    monkeypatch.setattr(
+        "mlops.models.models.load_config",
+        lambda *args, **kwargs: fake_conf,
+    )
+    return tmp_path
+
+
+def test_ensure_output_directories_creates(tmp_path):
+    trainer = ModelTrainer()
+    assert os.path.isdir("models")
+    assert os.path.isdir(os.path.dirname(trainer.config["artifacts"]["preprocessing_pipeline"]))
+
+
+def test_save_preprocessing_pipeline_writes_correct_content(patch_full_config):
+    trainer = ModelTrainer()
+    trainer.scaler = StandardScaler().fit([[0, 1], [2, 3]])
+    trainer.selected_features_reg = ["f1", "f2"]
+    trainer.selected_features_class = ["f2"]
+    trainer.feature_cols = ["f1", "f2"]
+    trainer._save_preprocessing_pipeline()
+
+    path = trainer.config["artifacts"]["preprocessing_pipeline"]
+    assert os.path.exists(path)
+    with open(path, "rb") as f:
+        pipeline = pickle.load(f)
+    assert set(pipeline.keys()) == {
+        "scaler",
+        "selected_features_reg",
+        "selected_features_class",
+        "all_feature_cols",
+    }
+
+
+def test_train_logistic_regression_penalty_fix_and_roc_auc_warning(tmp_path, caplog):
+    from mlops.models.models import config as global_conf
+    global_conf["model"]["logistic_regression"]["params"] = {"penalty": "12"}
+    trainer = ModelTrainer()
+
+    X = pd.DataFrame([[0, 1], [1, 0]])
+    y = pd.Series([0, 1])
+    caplog.set_level("INFO")
+    model = trainer.train_logistic_regression(X, y)
+    assert model.penalty == "l2"
+    assert os.path.exists(global_conf["model"]["logistic_regression"]["save_path"])
+    assert "Training ROC AUC" in caplog.text
+
+    caplog.clear()
+    y_single = pd.Series([1, 1])
+    model2 = trainer.train_logistic_regression(X, y_single)
+    assert os.path.exists(global_conf["model"]["logistic_regression"]["save_path"])
+    assert "Could not calculate ROC AUC" in caplog.text
+
+
+def test_train_linear_regression_logging_and_prediction(caplog):
+    trainer = ModelTrainer()
+    trainer.model_config["linear_regression"]["params"] = {"fit_intercept": True}
+    X = pd.DataFrame([[1.0, 2.0], [2.0, 3.0], [3.0, 4.0]])
+    y = pd.Series([5.0, 7.0, 9.0])
+    caplog.set_level("INFO")
+    model = trainer.train_linear_regression(X, y)
+    preds = model.predict(X)
+    assert np.allclose(preds, y, atol=1e-6)
+    assert "Training RMSE" in caplog.text
+    assert os.path.exists(trainer.model_config["linear_regression"]["save_path"])
+
+
+def test_prepare_data_saves_pipeline_and_returns_shapes(tmp_path, monkeypatch):
+    import mlops.models.models as mmod
+    monkeypatch.setattr(mmod, "define_features_and_label", lambda: (["a", "b"], "price"))
+    monkeypatch.setattr(mmod, "create_price_direction_label", lambda df, lbl: df.assign(price_direction=df["price"] > 0))
+    monkeypatch.setattr(mmod, "prepare_features", lambda df, feats, lbl: (df[feats].values, df["price"], df["price_direction"]))
+    monkeypatch.setattr(mmod, "split_data", lambda X, y: (X[:1], X[1:], y[:1], y[1:]))
+    scaler = StandardScaler().fit([[0, 1], [1, 0]])
+    monkeypatch.setattr(mmod, "scale_features", lambda df, feats: (scaler.transform(df), scaler.transform(df), scaler))
+    monkeypatch.setattr(mmod, "select_features", lambda df, feats, target=None: feats)
+    monkeypatch.setattr(mmod, "smote_oversample", lambda X, y: (X, y))
+
+    trainer = ModelTrainer()
+    df = pd.DataFrame({"a": [1, 2], "b": [3, 4], "price": [10, -5]})
+    X_tr, X_cl, y_tr, y_cl_bal, y_te_reg, y_te_cl = trainer.prepare_data(df)
+    assert X_tr.shape[1] == 2
+    assert X_cl.shape[1] == 2
+    assert len(y_tr) == 1
+    assert os.path.exists(trainer.config["artifacts"]["preprocessing_pipeline"])
+
+
+def test_get_training_and_testing_data_warns_and_returns_none(caplog):
+    caplog.set_level("WARNING")
+    df_t, df_e = get_training_and_testing_data()
+    assert df_t is None and df_e is None
+    assert "not fully implemented" in caplog.text
+
+
+def test_train_model_success(monkeypatch):
+    monkeypatch.setattr(
+        "mlops.models.models.ModelTrainer.train_all_models",
+        lambda self, df: ("lr", "log"),
+    )
+    res = train_model(pd.DataFrame({"x": [1]}))
+    assert res == ("lr", "log")
+
+
+def test_train_model_none_raises():
+    with pytest.raises(ValueError):
+        train_model(None)
