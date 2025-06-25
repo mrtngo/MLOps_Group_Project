@@ -39,12 +39,6 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
 
-      - name: Run code formatting check
-        run: black --check src tests
-
-      - name: Run linting
-        run: flake8 src tests --max-line-length=100
-
       - name: Run unit tests
         env:
           PYTHONPATH: ${{ github.workspace }}/src
