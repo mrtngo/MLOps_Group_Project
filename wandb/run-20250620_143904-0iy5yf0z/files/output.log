@@ -1,8 +1,0 @@
-2025-06-20 14:39:05,645 - __main__ - INFO - Loading processed data from: data/processed/training_data
-2025-06-20 14:39:05,655 - __main__ - INFO - Training Linear Regression model...
-2025-06-20 14:39:05,656 - __main__ - ERROR - Model training step failed
-Traceback (most recent call last):
-  File "/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/models/run.py", line 65, in run_model_training
-    reg_model, reg_metrics = model_trainer.train_regression_model(X_train_reg, y_train_reg)
-                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'ModelTrainer' object has no attribute 'train_regression_model'

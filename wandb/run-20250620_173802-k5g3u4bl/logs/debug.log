@@ -1,6 +1,0 @@
-2025-06-20 17:38:02,678 INFO    MainThread:98552 [wandb_init.py:setup_run_log_directory():703] Logging user logs to /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_173802-k5g3u4bl/logs/debug.log
-2025-06-20 17:38:02,678 INFO    MainThread:98552 [wandb_init.py:setup_run_log_directory():704] Logging internal logs to /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_173802-k5g3u4bl/logs/debug-internal.log
-2025-06-20 17:38:02,678 INFO    MainThread:98552 [wandb_init.py:init():831] calling init triggers
-2025-06-20 17:38:02,678 INFO    MainThread:98552 [wandb_init.py:init():836] wandb.init called with sweep_config: {}
-config: {'_wandb': {}}
-2025-06-20 17:38:27,395 INFO    MsgRouterThr:98552 [mailbox.py:close():129] [no run ID] Closing mailbox, abandoning 1 handles.

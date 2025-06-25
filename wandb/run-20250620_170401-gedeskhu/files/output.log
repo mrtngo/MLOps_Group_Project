@@ -1,4 +1,0 @@
-[2025-06-20 17:04:02,505][CryptoMLOps][INFO] - Started WandB run: crypto_orchestrator_20250620_170401
-2025-06-20 17:04:02 - INFO - CryptoMLOps - Started WandB run: crypto_orchestrator_20250620_170401
-[2025-06-20 17:04:02,505][CryptoMLOps][ERROR] - ❌ Crypto pipeline failed: Unsupported type for main.steps: <class 'omegaconf.listconfig.ListConfig'>
-2025-06-20 17:04:02 - ERROR - CryptoMLOps - ❌ Crypto pipeline failed: Unsupported type for main.steps: <class 'omegaconf.listconfig.ListConfig'>

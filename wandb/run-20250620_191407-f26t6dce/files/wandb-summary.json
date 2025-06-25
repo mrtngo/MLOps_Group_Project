@@ -1,1 +1,0 @@
-{"_runtime":0.605191,"_step":0,"status":"failed","_wandb":{"runtime":0},"error":"define_features_and_label() missing 1 required positional argument: 'config'","_timestamp":1.750439648364502e+09}

@@ -1,1 +1,0 @@
-{"raw_data_columns":13,"_timestamp":1.750432118079851e+09,"_runtime":22.953448,"_step":1,"pipeline_status":"failed","error":"select_features() missing 1 required positional argument: 'target_col'","_wandb":{"runtime":22},"raw_data_rows":690}

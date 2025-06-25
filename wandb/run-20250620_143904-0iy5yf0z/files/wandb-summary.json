@@ -1,1 +1,0 @@
-{"error":"'ModelTrainer' object has no attribute 'train_regression_model'","_timestamp":1.7504231456575081e+09,"_wandb":{"runtime":0},"_runtime":0.923927,"_step":0,"status":"failed"}

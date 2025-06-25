@@ -1,8 +1,0 @@
-[2025-06-20 16:55:55,147][CryptoMLOps][INFO] - Started WandB run: crypto_orchestrator_20250620_165553
-2025-06-20 16:55:55 - INFO - CryptoMLOps - Started WandB run: crypto_orchestrator_20250620_165553
-[2025-06-20 16:55:55,147][CryptoMLOps][ERROR] - ❌ Crypto pipeline failed: ListConfig does not support attribute access
-    full_key: main.steps[split]
-    object_type=list
-2025-06-20 16:55:55 - ERROR - CryptoMLOps - ❌ Crypto pipeline failed: ListConfig does not support attribute access
-    full_key: main.steps[split]
-    object_type=list

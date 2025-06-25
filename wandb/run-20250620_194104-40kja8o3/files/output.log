@@ -1,5 +1,0 @@
-2025-06-20 19:41:05,541 - INFO - __main__ - Loading model from: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/models/logistic_regression.pkl
-2025-06-20 19:41:05,791 - INFO - __main__ - Loading inference data from: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/processed/training_data/X_test_class.csv
-2025-06-20 19:41:05,793 - INFO - __main__ - Generating predictions for 300 records...
-2025-06-20 19:41:05,795 - INFO - __main__ - Predictions saved to: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/inference/../../../data/predictions/predictions.csv
-2025-06-20 19:41:06,355 - INFO - __main__ - --- Model Inference Step Completed Successfully ---

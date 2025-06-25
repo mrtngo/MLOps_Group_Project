@@ -1,1 +1,0 @@
-{"pipeline_status":"failed","error_message":"ListConfig does not support attribute access\n    full_key: main.steps[split]\n    object_type=list","_wandb":{"runtime":1}}
