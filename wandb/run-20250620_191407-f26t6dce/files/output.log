@@ -1,0 +1,7 @@
+2025-06-20 19:14:08,359 [INFO] Loading feature-engineered data from: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/processed/feature_engineered_data.csv
+2025-06-20 19:14:08,364 [ERROR] Preprocessing step failed
+Traceback (most recent call last):
+  File "/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/preproccess/run.py", line 61, in run_preprocessing
+    feature_cols, label_col = define_features_and_label()
+                              ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+TypeError: define_features_and_label() missing 1 required positional argument: 'config'

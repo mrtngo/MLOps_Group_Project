@@ -1,0 +1,21 @@
+name: crypto_mlflow_env
+
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10.17
+  - hydra-core
+  - omegaconf
+  - python-dotenv
+  - pyyaml
+  - pandas
+  - numpy
+  - scikit-learn
+  - requests
+  - imbalanced-learn
+  - pip
+  - pip:
+      - mlflow-skinny
+      - wandb
+      - matplotlib
+      - seaborn

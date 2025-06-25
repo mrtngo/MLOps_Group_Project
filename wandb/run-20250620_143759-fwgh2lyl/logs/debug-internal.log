@@ -1,0 +1,16 @@
+{"time":"2025-06-20T14:37:59.638103+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_143759-fwgh2lyl/logs/debug-core.log"}
+{"time":"2025-06-20T14:37:59.907054+02:00","level":"INFO","msg":"stream: created new stream","id":"fwgh2lyl"}
+{"time":"2025-06-20T14:37:59.907119+02:00","level":"INFO","msg":"stream: started","id":"fwgh2lyl"}
+{"time":"2025-06-20T14:37:59.907141+02:00","level":"INFO","msg":"handler: started","stream_id":"fwgh2lyl"}
+{"time":"2025-06-20T14:37:59.907158+02:00","level":"INFO","msg":"sender: started","stream_id":"fwgh2lyl"}
+{"time":"2025-06-20T14:37:59.907211+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"fwgh2lyl"}
+{"time":"2025-06-20T14:38:00.212889+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T14:38:02.615445+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T14:38:02.61564+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T14:38:03.619327+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading output.log","runtime_seconds":0.730748584,"progress":"1.5KB/1.5KB"},{"desc":"uploading config.yaml","runtime_seconds":0.661700334,"progress":"518B/518B"}],"total_operations":2}}
+{"time":"2025-06-20T14:38:03.625914+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T14:38:03.848251+02:00","level":"INFO","msg":"stream: closing","id":"fwgh2lyl"}
+{"time":"2025-06-20T14:38:03.848281+02:00","level":"INFO","msg":"handler: closed","stream_id":"fwgh2lyl"}
+{"time":"2025-06-20T14:38:03.848302+02:00","level":"INFO","msg":"sender: closed","stream_id":"fwgh2lyl"}
+{"time":"2025-06-20T14:38:03.848788+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"fwgh2lyl"}
+{"time":"2025-06-20T14:38:03.848856+02:00","level":"INFO","msg":"stream: closed","id":"fwgh2lyl"}

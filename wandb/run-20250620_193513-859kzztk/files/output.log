@@ -1,0 +1,13 @@
+2025-06-20 19:35:14,642 - INFO - __main__ - Loading raw data from: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/raw/raw_data.csv
+2025-06-20 19:35:14,646 - INFO - __main__ - Validating data against the schema...
+Traceback (most recent call last):
+  File [35m"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/data_validation/run.py"[0m, line [35m159[0m, in [35m<module>[0m
+    [31mrun_data_validation[0m[1;31m(input_artifact=args.input_artifact)[0m
+    [31m~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/data_validation/run.py"[0m, line [35m111[0m, in [35mrun_data_validation[0m
+    df_validated, report = [31mvalidate_data[0m[1;31m(df, validation_config)[0m
+                           [31m~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/data_validation/../../../src/mlops/data_validation/data_validation.py"[0m, line [35m392[0m, in [35mvalidate_data[0m
+    [1;31mlogger[0m.info(f"Starting validation for DataFrame with shape {df.shape}")
+    [1;31m^^^^^^[0m
+[1;35mNameError[0m: [35mname 'logger' is not defined[0m

@@ -1,0 +1,12 @@
+✅ Started W&B orchestrator run: orchestrator_20250620_224306
+✅ Set MLflow experiment to: 'MLOps-Group-Project-Experiment'
+DEBUG: steps_raw = ['models'], type = <class 'omegaconf.listconfig.ListConfig'>
+DEBUG: active_steps = ['models']
+DEBUG: PIPELINE_STEPS = ['data_load', 'data_validation', 'features', 'preprocess', 'models', 'evaluation', 'inference']
+▶️  Running step: 'models'...
+2025/06/20 22:43:09 INFO mlflow.utils.conda: Conda environment mlflow-b38cc610a566358f4ff450976fe6275733f34b85 already exists.
+2025/06/20 22:43:09 INFO mlflow.projects.utils: === Created directory /var/folders/8m/nc66qdpd59zc9q76n8rk5d9m0000gn/T/tmpze24940l for downloading remote URIs passed to arguments of type 'path' ===
+2025/06/20 22:43:09 INFO mlflow.projects.backend.local: === Running command 'source /Users/aviv/Applications/anaconda3/bin/../etc/profile.d/conda.sh && conda activate mlflow-b38cc610a566358f4ff450976fe6275733f34b85 1>&2 && python3 src/mlops/models/run.py --input-artifact '/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/processed/training_data'' in run with ID 'd5e9fa66e08e4e449b61a12556975983' ===
+2025/06/20 22:43:16 INFO mlflow.projects: === Run (ID 'd5e9fa66e08e4e449b61a12556975983') succeeded ===
+✅ Step 'models' finished.
+🎉 Pipeline execution complete.

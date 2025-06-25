@@ -1,0 +1,26 @@
+{
+  "missing_columns": [],
+  "unexpected_columns": [
+    "timestamp",
+    "BTCUSDT_price"
+  ],
+  "type_mismatches": {},
+  "missing_values": {
+    "ETHUSDT_price": 405,
+    "BNBUSDT_price": 405,
+    "XRPUSDT_price": 405,
+    "ADAUSDT_price": 405,
+    "SOLUSDT_price": 405,
+    "BTCUSDT_funding_rate": 405,
+    "ETHUSDT_funding_rate": 405,
+    "BNBUSDT_funding_rate": 405,
+    "XRPUSDT_funding_rate": 405,
+    "ADAUSDT_funding_rate": 405,
+    "SOLUSDT_funding_rate": 405
+  },
+  "out_of_range": {},
+  "summary": {
+    "total_issues": 4457,
+    "validation_passed": true
+  }
+}

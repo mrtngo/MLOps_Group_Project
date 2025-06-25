@@ -1,0 +1,16 @@
+{"time":"2025-06-20T15:12:50.310212+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_151250-vz08nr06/logs/debug-core.log"}
+{"time":"2025-06-20T15:12:50.569332+02:00","level":"INFO","msg":"stream: created new stream","id":"vz08nr06"}
+{"time":"2025-06-20T15:12:50.569558+02:00","level":"INFO","msg":"stream: started","id":"vz08nr06"}
+{"time":"2025-06-20T15:12:50.569591+02:00","level":"INFO","msg":"sender: started","stream_id":"vz08nr06"}
+{"time":"2025-06-20T15:12:50.569603+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"vz08nr06"}
+{"time":"2025-06-20T15:12:50.569709+02:00","level":"INFO","msg":"handler: started","stream_id":"vz08nr06"}
+{"time":"2025-06-20T15:12:50.900606+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T15:12:53.119855+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T15:12:53.120063+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T15:12:54.12051+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact processed-data","runtime_seconds":1.009638166,"subtasks":[{"desc":"test_metrics.json","runtime_seconds":0.303774583,"progress":"169B/169B"},{"desc":"preprocessing_pipeline.pkl","runtime_seconds":0.303527667,"progress":"1.3KB/1.3KB"}]}],"total_operations":1}}
+{"time":"2025-06-20T15:12:55.760854+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T15:12:56.068563+02:00","level":"INFO","msg":"stream: closing","id":"vz08nr06"}
+{"time":"2025-06-20T15:12:56.0686+02:00","level":"INFO","msg":"handler: closed","stream_id":"vz08nr06"}
+{"time":"2025-06-20T15:12:56.068621+02:00","level":"INFO","msg":"sender: closed","stream_id":"vz08nr06"}
+{"time":"2025-06-20T15:12:56.068959+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"vz08nr06"}
+{"time":"2025-06-20T15:12:56.069022+02:00","level":"INFO","msg":"stream: closed","id":"vz08nr06"}

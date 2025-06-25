@@ -1,0 +1,16 @@
+{"time":"2025-06-20T19:18:54.032208+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_191853-6vhqigxy/logs/debug-core.log"}
+{"time":"2025-06-20T19:18:54.170012+02:00","level":"INFO","msg":"stream: created new stream","id":"6vhqigxy"}
+{"time":"2025-06-20T19:18:54.170097+02:00","level":"INFO","msg":"stream: started","id":"6vhqigxy"}
+{"time":"2025-06-20T19:18:54.170105+02:00","level":"INFO","msg":"handler: started","stream_id":"6vhqigxy"}
+{"time":"2025-06-20T19:18:54.170122+02:00","level":"INFO","msg":"sender: started","stream_id":"6vhqigxy"}
+{"time":"2025-06-20T19:18:54.170156+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"6vhqigxy"}
+{"time":"2025-06-20T19:18:54.424525+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T19:18:55.736055+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T19:18:55.736101+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T19:18:56.738994+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-6vhqigxy-summary_stats","runtime_seconds":1.6989174999999999},{"desc":"uploading artifact run-6vhqigxy-sample_rows","runtime_seconds":1.1780448749999999}],"total_operations":2}}
+{"time":"2025-06-20T19:18:57.184347+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T19:18:57.474197+02:00","level":"INFO","msg":"stream: closing","id":"6vhqigxy"}
+{"time":"2025-06-20T19:18:57.474274+02:00","level":"INFO","msg":"handler: closed","stream_id":"6vhqigxy"}
+{"time":"2025-06-20T19:18:57.474294+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"6vhqigxy"}
+{"time":"2025-06-20T19:18:57.474304+02:00","level":"INFO","msg":"sender: closed","stream_id":"6vhqigxy"}
+{"time":"2025-06-20T19:18:57.474635+02:00","level":"INFO","msg":"stream: closed","id":"6vhqigxy"}

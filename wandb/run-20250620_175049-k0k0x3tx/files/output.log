@@ -1,0 +1,40 @@
+[2025-06-20 17:50:50,259][CryptoMLOps][INFO] - Started WandB run: crypto_orchestrator_20250620_175049
+2025-06-20 17:50:50 - INFO - CryptoMLOps - Started WandB run: crypto_orchestrator_20250620_175049
+[2025-06-20 17:50:50,260][CryptoMLOps][INFO] - Running crypto pipeline steps: ['inference']
+2025-06-20 17:50:50 - INFO - CryptoMLOps - Running crypto pipeline steps: ['inference']
+[2025-06-20 17:50:50,260][CryptoMLOps][INFO] - Step: inference
+2025-06-20 17:50:50 - INFO - CryptoMLOps - Step: inference
+[2025-06-20 17:50:50,729][src.mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:50:50 - INFO - src.mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:50:50,734][src.mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:50:50 - INFO - src.mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:50:50,735][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:50:50 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:50:50,740][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:50:50 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:50:50,740][mlops.inference.inference][INFO] - Model loaded from models/linear_regression.pkl
+2025-06-20 17:50:50 - INFO - mlops.inference.inference - Model loaded from models/linear_regression.pkl
+[2025-06-20 17:50:50,741][mlops.inference.inference][INFO] - Model loaded from models/logistic_regression.pkl
+2025-06-20 17:50:50 - INFO - mlops.inference.inference - Model loaded from models/logistic_regression.pkl
+[2025-06-20 17:50:50,741][mlops.inference.inference][INFO] - Both models loaded successfully for inference
+2025-06-20 17:50:50 - INFO - mlops.inference.inference - Both models loaded successfully for inference
+[2025-06-20 17:50:50,741][mlops.inference.inference][INFO] - Preprocessing pipeline loaded from models/preprocessing_pipeline.pkl
+2025-06-20 17:50:50 - INFO - mlops.inference.inference - Preprocessing pipeline loaded from models/preprocessing_pipeline.pkl
+[define_features_and_label] Features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[define_features_and_label] Label: BTCUSDT_price
+[2025-06-20 17:50:50,750][mlops.inference.inference][INFO] - Input preprocessed. Reg features: (6, 9), Class features: (6, 2)
+2025-06-20 17:50:50 - INFO - mlops.inference.inference - Input preprocessed. Reg features: (6, 9), Class features: (6, 2)
+[2025-06-20 17:50:50,750][mlops.inference.inference][INFO] - Generated 6 price predictions
+2025-06-20 17:50:50 - INFO - mlops.inference.inference - Generated 6 price predictions
+[define_features_and_label] Features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[define_features_and_label] Label: BTCUSDT_price
+[2025-06-20 17:50:50,752][mlops.inference.inference][INFO] - Input preprocessed. Reg features: (6, 9), Class features: (6, 2)
+2025-06-20 17:50:50 - INFO - mlops.inference.inference - Input preprocessed. Reg features: (6, 9), Class features: (6, 2)
+[2025-06-20 17:50:50,752][mlops.inference.inference][INFO] - Generated 6 direction predictions
+2025-06-20 17:50:50 - INFO - mlops.inference.inference - Generated 6 direction predictions
+[2025-06-20 17:50:50,753][mlops.inference.inference][INFO] - Generated both price and direction predictions
+2025-06-20 17:50:50 - INFO - mlops.inference.inference - Generated both price and direction predictions
+[2025-06-20 17:50:50,754][CryptoMLOps][INFO] - Predictions saved to: data/processed/predictions.csv
+2025-06-20 17:50:50 - INFO - CryptoMLOps - Predictions saved to: data/processed/predictions.csv
+[2025-06-20 17:50:50,754][CryptoMLOps][INFO] - 🎉 Crypto MLOps pipeline completed successfully!
+2025-06-20 17:50:50 - INFO - CryptoMLOps - 🎉 Crypto MLOps pipeline completed successfully!

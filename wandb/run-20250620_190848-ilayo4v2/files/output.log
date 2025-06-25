@@ -1,0 +1,31 @@
+✅ Started W&B orchestrator run: orchestrator_20250620_190847
+✅ Set MLflow experiment to: 'MLOps-Group-Project-Experiment'
+▶️  Running step: 'data_load'...
+Error executing job with overrides: []
+Traceback (most recent call last):
+  File "/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/main.py", line 119, in main
+    mlflow.run(step_dir, "main", parameters=params)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/mlflow/projects/__init__.py", line 357, in run
+    submitted_run_obj = _run(
+        uri=uri,
+    ...<12 lines>...
+        docker_auth=docker_auth,
+    )
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/mlflow/projects/__init__.py", line 110, in _run
+    submitted_run = backend.run(
+        uri,
+    ...<5 lines>...
+        experiment_id,
+    )
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/mlflow/projects/backend/local.py", line 80, in run
+    work_dir = fetch_and_validate_project(project_uri, version, entry_point, params)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/mlflow/projects/utils.py", line 137, in fetch_and_validate_project
+    project = _project_spec.load_project(work_dir)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/mlflow/projects/_project_spec.py", line 158, in load_project
+    raise ExecutionException(
+    ...<2 lines>...
+    )
+mlflow.exceptions.ExecutionException: Project specified conda environment file /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/data_load/../../../conda.yaml, but no such file was found.
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.

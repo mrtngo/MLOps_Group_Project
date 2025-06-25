@@ -1,0 +1,19 @@
+✅ Started W&B orchestrator run: orchestrator_20250620_184644
+✅ Set MLflow experiment to: 'MLOps-Group-Project-Experiment'
+▶️  Running step: 'data_load'...
+2025/06/20 18:46:47 INFO mlflow.utils.conda: Conda environment mlflow-01d7074db45377d5418a7d608ce23d27d85b5d74 already exists.
+2025/06/20 18:46:47 INFO mlflow.projects.utils: === Created directory /var/folders/8m/nc66qdpd59zc9q76n8rk5d9m0000gn/T/tmp0bzwb6ov for downloading remote URIs passed to arguments of type 'path' ===
+2025/06/20 18:46:47 INFO mlflow.projects.backend.local: === Running command 'source /Users/aviv/Applications/anaconda3/bin/../etc/profile.d/conda.sh && conda activate mlflow-01d7074db45377d5418a7d608ce23d27d85b5d74 1>&2 && python3 run.py' in run with ID '6b317250e256455282e243237a1bfe86' ===
+Error executing job with overrides: []
+Traceback (most recent call last):
+  File "/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/main.py", line 119, in main
+    mlflow.run(step_dir, "main", parameters=params)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/mlflow/projects/__init__.py", line 374, in run
+    _wait_for(submitted_run_obj)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/mlflow/projects/__init__.py", line 391, in _wait_for
+    raise ExecutionException(f"Run (ID '{run_id}') failed")
+mlflow.exceptions.ExecutionException: Run (ID '6b317250e256455282e243237a1bfe86') failed
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.

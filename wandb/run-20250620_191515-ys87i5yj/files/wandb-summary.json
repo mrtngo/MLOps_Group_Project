@@ -1,0 +1,1 @@
+{"_step":0,"_wandb":{"runtime":0},"status":"failed","error":"split_data() missing 1 required positional argument: 'config'","_timestamp":1.7504397165853179e+09,"_runtime":0.546194}

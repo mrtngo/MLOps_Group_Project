@@ -1,0 +1,23 @@
+2025-06-20 14:34:44,973 - __main__ - INFO - Loading feature-engineered data from: data/processed/feature_engineered_data.csv
+[define_features_and_label] Features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[define_features_and_label] Label: BTCUSDT_price
+Features shape: (689, 11), Regression target shape: (689,), Classification target shape: (689,)
+2025-06-20 14:34:44,980 - __main__ - INFO - Feature engineering complete.
+2025-06-20 14:34:44,982 - src.mlops.preproccess.preproccessing - INFO - Data split completed - Train: (551, 11), Test: (138, 11)
+2025-06-20 14:34:44,982 - src.mlops.preproccess.preproccessing - INFO - Data split completed - Train: (551, 11), Test: (138, 11)
+2025-06-20 14:34:44,983 - __main__ - INFO - Data splitting complete.
+2025-06-20 14:34:44,984 - src.mlops.preproccess.preproccessing - INFO - Successfully scaled features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+2025-06-20 14:34:44,986 - src.mlops.preproccess.preproccessing - INFO - Successfully scaled features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+2025-06-20 14:34:44,988 - FeatureSelection - INFO - Selected 9 features based on correlation > 0.05 with 'BTCUSDT_price'
+2025-06-20 14:34:44,989 - FeatureSelection - INFO - Selected 6 features based on correlation > 0.05 with 'price_direction'
+2025-06-20 14:34:44,989 - __main__ - INFO - Selected regression features: ['ETHUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+2025-06-20 14:34:44,989 - __main__ - INFO - Selected classification features: ['XRPUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate']
+2025-06-20 14:34:44,991 - src.mlops.preproccess.preproccessing - INFO - Class distribution: {1: 276, 0: 275}
+2025-06-20 14:34:44,991 - src.mlops.preproccess.preproccessing - INFO - Class ratio (1.00) below threshold (1.5). SMOTE not applied.
+2025-06-20 14:34:44,991 - __main__ - INFO - SMOTE applied to classification training data.
+2025-06-20 14:34:44,991 - __main__ - INFO - Generating and logging visualizations to W&B...
+2025-06-20 14:34:46,315 - __main__ - INFO - Visualizations logged successfully.
+2025-06-20 14:34:46,315 - __main__ - INFO - Saving and logging all processed artifacts...
+[34m[1mwandb[0m: Adding directory to artifact (./data/processed/training_data)... Done. 0.0s
+2025-06-20 14:34:46,583 - __main__ - INFO - All artifacts logged successfully.
+2025-06-20 14:34:46,585 - __main__ - INFO - --- Preprocessing Step Completed Successfully ---

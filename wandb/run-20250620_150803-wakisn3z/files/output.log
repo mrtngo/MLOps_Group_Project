@@ -1,0 +1,2 @@
+2025-06-20 15:08:04,617 - __main__ - INFO - Loading new data for inference from: path/to/your/new_data.csv
+2025-06-20 15:08:04,618 - __main__ - ERROR - Input data file not found at path/to/your/new_data.csv

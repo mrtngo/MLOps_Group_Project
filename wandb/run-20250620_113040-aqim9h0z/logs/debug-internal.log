@@ -1,0 +1,17 @@
+{"time":"2025-06-20T11:30:41.194679+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/master/ie/MBD2024/Term 3/mlops/MLOps_Group_Project/wandb/run-20250620_113040-aqim9h0z/logs/debug-core.log"}
+{"time":"2025-06-20T11:30:41.491932+02:00","level":"INFO","msg":"stream: created new stream","id":"aqim9h0z"}
+{"time":"2025-06-20T11:30:41.491967+02:00","level":"INFO","msg":"stream: started","id":"aqim9h0z"}
+{"time":"2025-06-20T11:30:41.491997+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"aqim9h0z"}
+{"time":"2025-06-20T11:30:41.492014+02:00","level":"INFO","msg":"handler: started","stream_id":"aqim9h0z"}
+{"time":"2025-06-20T11:30:41.492072+02:00","level":"INFO","msg":"sender: started","stream_id":"aqim9h0z"}
+{"time":"2025-06-20T11:30:41.649915+02:00","level":"ERROR","msg":"HTTP error","status":403,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2025-06-20T11:30:41.649985+02:00","level":"ERROR","msg":"runupserter: failed to init run","error":"returned error 403: {\"data\":{\"upsertBucket\":null},\"errors\":[{\"message\":\"permission denied\",\"path\":[\"upsertBucket\"],\"extensions\":{\"code\":\"PERMISSION_ERROR\"}}]}"}
+{"time":"2025-06-20T11:30:42.652526+02:00","level":"INFO","msg":"stream: closing","id":"aqim9h0z"}
+{"time":"2025-06-20T11:30:42.653694+02:00","level":"ERROR","msg":"sender: uploadConfigFile: stream: no run"}
+{"time":"2025-06-20T11:30:42.882287+02:00","level":"ERROR","msg":"HTTP error","status":404,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2025-06-20T11:30:42.882377+02:00","level":"ERROR","msg":"runfiles: CreateRunFiles returned error: returned error 404: {\"data\":{\"createRunFiles\":null},\"errors\":[{\"message\":\"project aviv275/crypto_mlops not found during createRunFiles\",\"path\":[\"createRunFiles\"]}]}"}
+{"time":"2025-06-20T11:30:42.884092+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T11:30:42.884133+02:00","level":"INFO","msg":"handler: closed","stream_id":"aqim9h0z"}
+{"time":"2025-06-20T11:30:42.884148+02:00","level":"INFO","msg":"sender: closed","stream_id":"aqim9h0z"}
+{"time":"2025-06-20T11:30:42.884342+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"aqim9h0z"}
+{"time":"2025-06-20T11:30:42.884364+02:00","level":"INFO","msg":"stream: closed","id":"aqim9h0z"}

@@ -1,0 +1,323 @@
+[2025-06-20 17:38:01,785][CryptoMLOps][INFO] - Started WandB run: crypto_orchestrator_20250620_173800
+2025-06-20 17:38:01 - INFO - CryptoMLOps - Started WandB run: crypto_orchestrator_20250620_173800
+[2025-06-20 17:38:01,786][CryptoMLOps][INFO] - Running crypto pipeline steps: ['data_load']
+2025-06-20 17:38:01 - INFO - CryptoMLOps - Running crypto pipeline steps: ['data_load']
+[2025-06-20 17:38:01,786][CryptoMLOps][INFO] - 🔄 Running your existing pipeline...
+2025-06-20 17:38:01 - INFO - CryptoMLOps - 🔄 Running your existing pipeline...
+[2025-06-20 17:38:01,793][mlops.data_load.data_load][INFO] - Config loaded from conf/config.yaml
+2025-06-20 17:38:01 - INFO - mlops.data_load.data_load - Config loaded from conf/config.yaml
+[2025-06-20 17:38:01,793][mlops.data_load.data_load][INFO] - Loaded 6 symbols: ['ETHUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'SOLUSDT', 'BTCUSDT']
+2025-06-20 17:38:01 - INFO - mlops.data_load.data_load - Loaded 6 symbols: ['ETHUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'SOLUSDT', 'BTCUSDT']
+[2025-06-20 17:38:02,251][src.mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:38:02 - INFO - src.mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:38:02,257][src.mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:38:02 - INFO - src.mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:38:02,404][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:38:02 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:38:02,410][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:38:02 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:38:02,411][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:38:02 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:38:02,416][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:38:02 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:38:02,653][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:38:02 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:38:02,659][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:38:02 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:38:02,660][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:38:02 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:38:02,665][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:38:02 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:38:02,665][Pipeline][INFO] - Starting complete MLOps pipeline
+2025-06-20 17:38:02 - INFO - Pipeline - Starting complete MLOps pipeline
+[2025-06-20 17:38:02,665][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 17:38:02 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 17:38:02,670][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 17:38:02 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 17:38:02,676][Pipeline][INFO] - MLflow experiment set to 'MLOps-Group-Project-Experiment'
+2025-06-20 17:38:02 - INFO - Pipeline - MLflow experiment set to 'MLOps-Group-Project-Experiment'
+[34m[1mwandb[0m: wandb.init() called while a run is active and reinit is set to 'default', so returning the previous run.
+[2025-06-20 17:38:02,678][Pipeline][INFO] - Step 1: Loading data...
+2025-06-20 17:38:02 - INFO - Pipeline - Step 1: Loading data...
+[2025-06-20 17:38:02,936][Pipeline][INFO] - Initiating MLflow for data loading.
+2025-06-20 17:38:02 - INFO - Pipeline - Initiating MLflow for data loading.
+start date 2023-01-01
+[2025-06-20 17:38:02,936][mlops.data_load.data_load][INFO] - Starting data fetch process
+2025-06-20 17:38:02 - INFO - mlops.data_load.data_load - Starting data fetch process
+[2025-06-20 17:38:02,937][mlops.data_load.data_load][INFO] - Processing ETHUSDT...
+2025-06-20 17:38:02 - INFO - mlops.data_load.data_load - Processing ETHUSDT...
+[2025-06-20 17:38:02,937][mlops.data_load.data_load][INFO] - Fetching klines for ETHUSDT (interval: 8h)
+2025-06-20 17:38:02 - INFO - mlops.data_load.data_load - Fetching klines for ETHUSDT (interval: 8h)
+[2025-06-20 17:38:02,937][mlops.data_load.data_load][INFO] - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 17:38:02 - INFO - mlops.data_load.data_load - Date range: 2023-01-01 to 2023-12-31
+[2025-06-20 17:38:04,833][mlops.data_load.data_load][INFO] - [ETHUSDT] No more data available
+2025-06-20 17:38:04 - INFO - mlops.data_load.data_load - [ETHUSDT] No more data available
+[2025-06-20 17:38:04,834][mlops.data_load.data_load][INFO] - [ETHUSDT] Successfully fetched 1095 klines
+2025-06-20 17:38:04 - INFO - mlops.data_load.data_load - [ETHUSDT] Successfully fetched 1095 klines
+[2025-06-20 17:38:04,850][mlops.data_load.data_load][INFO] - Fetching funding rates for ETHUSDT
+2025-06-20 17:38:04 - INFO - mlops.data_load.data_load - Fetching funding rates for ETHUSDT
+[2025-06-20 17:38:06,761][mlops.data_load.data_load][INFO] - [ETHUSDT] No more funding data available
+2025-06-20 17:38:06 - INFO - mlops.data_load.data_load - [ETHUSDT] No more funding data available
+[2025-06-20 17:38:06,762][mlops.data_load.data_load][INFO] - [ETHUSDT] Successfully fetched 1095 funding rates
+2025-06-20 17:38:06 - INFO - mlops.data_load.data_load - [ETHUSDT] Successfully fetched 1095 funding rates
+[2025-06-20 17:38:06,770][mlops.data_load.data_load][INFO] - ✓ ETHUSDT completed successfully
+2025-06-20 17:38:06 - INFO - mlops.data_load.data_load - ✓ ETHUSDT completed successfully
+[2025-06-20 17:38:06,771][mlops.data_load.data_load][INFO] - Processing BNBUSDT...
+2025-06-20 17:38:06 - INFO - mlops.data_load.data_load - Processing BNBUSDT...
+[2025-06-20 17:38:06,771][mlops.data_load.data_load][INFO] - Fetching klines for BNBUSDT (interval: 8h)
+2025-06-20 17:38:06 - INFO - mlops.data_load.data_load - Fetching klines for BNBUSDT (interval: 8h)
+[2025-06-20 17:38:06,772][mlops.data_load.data_load][INFO] - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 17:38:06 - INFO - mlops.data_load.data_load - Date range: 2023-01-01 to 2023-12-31
+[2025-06-20 17:38:08,569][mlops.data_load.data_load][INFO] - [BNBUSDT] No more data available
+2025-06-20 17:38:08 - INFO - mlops.data_load.data_load - [BNBUSDT] No more data available
+[2025-06-20 17:38:08,569][mlops.data_load.data_load][INFO] - [BNBUSDT] Successfully fetched 1095 klines
+2025-06-20 17:38:08 - INFO - mlops.data_load.data_load - [BNBUSDT] Successfully fetched 1095 klines
+[2025-06-20 17:38:08,573][mlops.data_load.data_load][INFO] - Fetching funding rates for BNBUSDT
+2025-06-20 17:38:08 - INFO - mlops.data_load.data_load - Fetching funding rates for BNBUSDT
+[2025-06-20 17:38:10,432][mlops.data_load.data_load][INFO] - [BNBUSDT] No more funding data available
+2025-06-20 17:38:10 - INFO - mlops.data_load.data_load - [BNBUSDT] No more funding data available
+[2025-06-20 17:38:10,433][mlops.data_load.data_load][INFO] - [BNBUSDT] Successfully fetched 1095 funding rates
+2025-06-20 17:38:10 - INFO - mlops.data_load.data_load - [BNBUSDT] Successfully fetched 1095 funding rates
+[2025-06-20 17:38:10,438][mlops.data_load.data_load][INFO] - ✓ BNBUSDT completed successfully
+2025-06-20 17:38:10 - INFO - mlops.data_load.data_load - ✓ BNBUSDT completed successfully
+[2025-06-20 17:38:10,439][mlops.data_load.data_load][INFO] - Processing XRPUSDT...
+2025-06-20 17:38:10 - INFO - mlops.data_load.data_load - Processing XRPUSDT...
+[2025-06-20 17:38:10,439][mlops.data_load.data_load][INFO] - Fetching klines for XRPUSDT (interval: 8h)
+2025-06-20 17:38:10 - INFO - mlops.data_load.data_load - Fetching klines for XRPUSDT (interval: 8h)
+[2025-06-20 17:38:10,439][mlops.data_load.data_load][INFO] - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 17:38:10 - INFO - mlops.data_load.data_load - Date range: 2023-01-01 to 2023-12-31
+[2025-06-20 17:38:12,241][mlops.data_load.data_load][INFO] - [XRPUSDT] No more data available
+2025-06-20 17:38:12 - INFO - mlops.data_load.data_load - [XRPUSDT] No more data available
+[2025-06-20 17:38:12,242][mlops.data_load.data_load][INFO] - [XRPUSDT] Successfully fetched 1095 klines
+2025-06-20 17:38:12 - INFO - mlops.data_load.data_load - [XRPUSDT] Successfully fetched 1095 klines
+[2025-06-20 17:38:12,244][mlops.data_load.data_load][INFO] - Fetching funding rates for XRPUSDT
+2025-06-20 17:38:12 - INFO - mlops.data_load.data_load - Fetching funding rates for XRPUSDT
+[2025-06-20 17:38:14,144][mlops.data_load.data_load][INFO] - [XRPUSDT] No more funding data available
+2025-06-20 17:38:14 - INFO - mlops.data_load.data_load - [XRPUSDT] No more funding data available
+[2025-06-20 17:38:14,145][mlops.data_load.data_load][INFO] - [XRPUSDT] Successfully fetched 1095 funding rates
+2025-06-20 17:38:14 - INFO - mlops.data_load.data_load - [XRPUSDT] Successfully fetched 1095 funding rates
+[2025-06-20 17:38:14,153][mlops.data_load.data_load][INFO] - ✓ XRPUSDT completed successfully
+2025-06-20 17:38:14 - INFO - mlops.data_load.data_load - ✓ XRPUSDT completed successfully
+[2025-06-20 17:38:14,154][mlops.data_load.data_load][INFO] - Processing ADAUSDT...
+2025-06-20 17:38:14 - INFO - mlops.data_load.data_load - Processing ADAUSDT...
+[2025-06-20 17:38:14,154][mlops.data_load.data_load][INFO] - Fetching klines for ADAUSDT (interval: 8h)
+2025-06-20 17:38:14 - INFO - mlops.data_load.data_load - Fetching klines for ADAUSDT (interval: 8h)
+[2025-06-20 17:38:14,155][mlops.data_load.data_load][INFO] - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 17:38:14 - INFO - mlops.data_load.data_load - Date range: 2023-01-01 to 2023-12-31
+[2025-06-20 17:38:15,810][mlops.data_load.data_load][INFO] - [ADAUSDT] No more data available
+2025-06-20 17:38:15 - INFO - mlops.data_load.data_load - [ADAUSDT] No more data available
+[2025-06-20 17:38:15,811][mlops.data_load.data_load][INFO] - [ADAUSDT] Successfully fetched 1095 klines
+2025-06-20 17:38:15 - INFO - mlops.data_load.data_load - [ADAUSDT] Successfully fetched 1095 klines
+[2025-06-20 17:38:15,817][mlops.data_load.data_load][INFO] - Fetching funding rates for ADAUSDT
+2025-06-20 17:38:15 - INFO - mlops.data_load.data_load - Fetching funding rates for ADAUSDT
+[2025-06-20 17:38:17,487][mlops.data_load.data_load][INFO] - [ADAUSDT] No more funding data available
+2025-06-20 17:38:17 - INFO - mlops.data_load.data_load - [ADAUSDT] No more funding data available
+[2025-06-20 17:38:17,488][mlops.data_load.data_load][INFO] - [ADAUSDT] Successfully fetched 1095 funding rates
+2025-06-20 17:38:17 - INFO - mlops.data_load.data_load - [ADAUSDT] Successfully fetched 1095 funding rates
+[2025-06-20 17:38:17,491][mlops.data_load.data_load][INFO] - ✓ ADAUSDT completed successfully
+2025-06-20 17:38:17 - INFO - mlops.data_load.data_load - ✓ ADAUSDT completed successfully
+[2025-06-20 17:38:17,491][mlops.data_load.data_load][INFO] - Processing SOLUSDT...
+2025-06-20 17:38:17 - INFO - mlops.data_load.data_load - Processing SOLUSDT...
+[2025-06-20 17:38:17,491][mlops.data_load.data_load][INFO] - Fetching klines for SOLUSDT (interval: 8h)
+2025-06-20 17:38:17 - INFO - mlops.data_load.data_load - Fetching klines for SOLUSDT (interval: 8h)
+[2025-06-20 17:38:17,491][mlops.data_load.data_load][INFO] - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 17:38:17 - INFO - mlops.data_load.data_load - Date range: 2023-01-01 to 2023-12-31
+[2025-06-20 17:38:19,344][mlops.data_load.data_load][INFO] - [SOLUSDT] No more data available
+2025-06-20 17:38:19 - INFO - mlops.data_load.data_load - [SOLUSDT] No more data available
+[2025-06-20 17:38:19,344][mlops.data_load.data_load][INFO] - [SOLUSDT] Successfully fetched 1095 klines
+2025-06-20 17:38:19 - INFO - mlops.data_load.data_load - [SOLUSDT] Successfully fetched 1095 klines
+[2025-06-20 17:38:19,348][mlops.data_load.data_load][INFO] - Fetching funding rates for SOLUSDT
+2025-06-20 17:38:19 - INFO - mlops.data_load.data_load - Fetching funding rates for SOLUSDT
+[2025-06-20 17:38:21,051][mlops.data_load.data_load][INFO] - [SOLUSDT] No more funding data available
+2025-06-20 17:38:21 - INFO - mlops.data_load.data_load - [SOLUSDT] No more funding data available
+[2025-06-20 17:38:21,052][mlops.data_load.data_load][INFO] - [SOLUSDT] Successfully fetched 1095 funding rates
+2025-06-20 17:38:21 - INFO - mlops.data_load.data_load - [SOLUSDT] Successfully fetched 1095 funding rates
+[2025-06-20 17:38:21,059][mlops.data_load.data_load][INFO] - ✓ SOLUSDT completed successfully
+2025-06-20 17:38:21 - INFO - mlops.data_load.data_load - ✓ SOLUSDT completed successfully
+[2025-06-20 17:38:21,059][mlops.data_load.data_load][INFO] - Processing BTCUSDT...
+2025-06-20 17:38:21 - INFO - mlops.data_load.data_load - Processing BTCUSDT...
+[2025-06-20 17:38:21,059][mlops.data_load.data_load][INFO] - Fetching klines for BTCUSDT (interval: 8h)
+2025-06-20 17:38:21 - INFO - mlops.data_load.data_load - Fetching klines for BTCUSDT (interval: 8h)
+[2025-06-20 17:38:21,060][mlops.data_load.data_load][INFO] - Date range: 2023-01-01 to 2023-12-31
+2025-06-20 17:38:21 - INFO - mlops.data_load.data_load - Date range: 2023-01-01 to 2023-12-31
+[2025-06-20 17:38:22,729][mlops.data_load.data_load][INFO] - [BTCUSDT] No more data available
+2025-06-20 17:38:22 - INFO - mlops.data_load.data_load - [BTCUSDT] No more data available
+[2025-06-20 17:38:22,730][mlops.data_load.data_load][INFO] - [BTCUSDT] Successfully fetched 1095 klines
+2025-06-20 17:38:22 - INFO - mlops.data_load.data_load - [BTCUSDT] Successfully fetched 1095 klines
+[2025-06-20 17:38:22,738][mlops.data_load.data_load][INFO] - Fetching funding rates for BTCUSDT
+2025-06-20 17:38:22 - INFO - mlops.data_load.data_load - Fetching funding rates for BTCUSDT
+[2025-06-20 17:38:24,448][mlops.data_load.data_load][INFO] - [BTCUSDT] No more funding data available
+2025-06-20 17:38:24 - INFO - mlops.data_load.data_load - [BTCUSDT] No more funding data available
+[2025-06-20 17:38:24,448][mlops.data_load.data_load][INFO] - [BTCUSDT] Successfully fetched 1095 funding rates
+2025-06-20 17:38:24 - INFO - mlops.data_load.data_load - [BTCUSDT] Successfully fetched 1095 funding rates
+[2025-06-20 17:38:24,452][mlops.data_load.data_load][INFO] - ✓ BTCUSDT completed successfully
+2025-06-20 17:38:24 - INFO - mlops.data_load.data_load - ✓ BTCUSDT completed successfully
+[2025-06-20 17:38:24,452][mlops.data_load.data_load][INFO] - Merging price data...
+2025-06-20 17:38:24 - INFO - mlops.data_load.data_load - Merging price data...
+[2025-06-20 17:38:24,457][mlops.data_load.data_load][INFO] - Merging funding data...
+2025-06-20 17:38:24 - INFO - mlops.data_load.data_load - Merging funding data...
+[2025-06-20 17:38:24,460][mlops.data_load.data_load][INFO] - Combining price and funding data...
+2025-06-20 17:38:24 - INFO - mlops.data_load.data_load - Combining price and funding data...
+[2025-06-20 17:38:24,462][mlops.data_load.data_load][INFO] - Final dataset shape: (690, 13)
+2025-06-20 17:38:24 - INFO - mlops.data_load.data_load - Final dataset shape: (690, 13)
+[2025-06-20 17:38:24,463][mlops.data_load.data_load][INFO] - Data fetch process completed successfully
+2025-06-20 17:38:24 - INFO - mlops.data_load.data_load - Data fetch process completed successfully
+[2025-06-20 17:38:24,463][Pipeline][INFO] - Raw data loaded | shape=(690, 13)
+2025-06-20 17:38:24 - INFO - Pipeline - Raw data loaded | shape=(690, 13)
+[2025-06-20 17:38:24,749][Pipeline][INFO] - Step 2: Validating data...
+2025-06-20 17:38:24 - INFO - Pipeline - Step 2: Validating data...
+[2025-06-20 17:38:24,750][Pipeline][INFO] - Starting validation for DataFrame with shape (690, 13)
+2025-06-20 17:38:24 - INFO - Pipeline - Starting validation for DataFrame with shape (690, 13)
+[2025-06-20 17:38:24,751][Pipeline][INFO] - Validation: missing_strategy='impute', on_error='warn'
+2025-06-20 17:38:24 - INFO - Pipeline - Validation: missing_strategy='impute', on_error='warn'
+[2025-06-20 17:38:24,751][Pipeline][INFO] - Found 2 unexpected columns: ['BTCUSDT_price', 'timestamp']
+2025-06-20 17:38:24 - INFO - Pipeline - Found 2 unexpected columns: ['BTCUSDT_price', 'timestamp']
+[2025-06-20 17:38:24,751][Pipeline][WARNING] - Continuing despite unexpected columns
+2025-06-20 17:38:24 - WARNING - Pipeline - Continuing despite unexpected columns
+[2025-06-20 17:38:24,751][Pipeline][INFO] - Validating schema for 11 columns
+2025-06-20 17:38:24 - INFO - Pipeline - Validating schema for 11 columns
+[2025-06-20 17:38:24,755][Pipeline][INFO] - Schema validation completed
+2025-06-20 17:38:24 - INFO - Pipeline - Schema validation completed
+[2025-06-20 17:38:24,756][Pipeline][INFO] - No missing values found
+2025-06-20 17:38:24 - INFO - Pipeline - No missing values found
+[2025-06-20 17:38:24,756][Pipeline][INFO] - Handling missing values with strategy: 'impute'
+2025-06-20 17:38:24 - INFO - Pipeline - Handling missing values with strategy: 'impute'
+[2025-06-20 17:38:24,760][Pipeline][INFO] - Imputed 0 missing values using forward/backward fill
+2025-06-20 17:38:24 - INFO - Pipeline - Imputed 0 missing values using forward/backward fill
+[2025-06-20 17:38:24,760][Pipeline][INFO] - Validation report saved to: reports/validation_report.json
+2025-06-20 17:38:24 - INFO - Pipeline - Validation report saved to: reports/validation_report.json
+[2025-06-20 17:38:24,761][Pipeline][INFO] - Data validation completed with 2 issues (see report for details)
+2025-06-20 17:38:24 - INFO - Pipeline - Data validation completed with 2 issues (see report for details)
+[2025-06-20 17:38:24,761][Pipeline][INFO] - Final DataFrame shape: (690, 13)
+2025-06-20 17:38:24 - INFO - Pipeline - Final DataFrame shape: (690, 13)
+[2025-06-20 17:38:24,761][Pipeline][INFO] - Data validation completed | shape=(690, 13)
+2025-06-20 17:38:24 - INFO - Pipeline - Data validation completed | shape=(690, 13)
+[2025-06-20 17:38:24,771][Pipeline][INFO] - Processed data saved to ./data/processed/futures_data_processed_.csv
+2025-06-20 17:38:24 - INFO - Pipeline - Processed data saved to ./data/processed/futures_data_processed_.csv
+[2025-06-20 17:38:24,771][Pipeline][INFO] - Step 3: Feature engineering and preprocessing...
+2025-06-20 17:38:24 - INFO - Pipeline - Step 3: Feature engineering and preprocessing...
+[define_features_and_label] Features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[define_features_and_label] Label: BTCUSDT_price
+                  timestamp  ETHUSDT_price  ...  SOLUSDT_funding_rate  BTCUSDT_funding_rate
+0 2023-01-01 00:00:00+00:00        1195.06  ...             -0.000925              0.000100
+1 2023-01-01 16:00:00+00:00        1200.34  ...             -0.000974              0.000007
+2 2023-01-02 00:00:00+00:00        1213.09  ...             -0.001056             -0.000015
+3 2023-01-03 16:00:00+00:00        1214.55  ...             -0.008201              0.000033
+4 2023-01-04 00:00:00+00:00        1252.00  ...             -0.003499              0.000065
+
+[5 rows x 13 columns]
+[create_price_direction_label] Created price direction shape=(689, 15)
+[2025-06-20 17:38:24,783][Pipeline][INFO] - Price direction labels created
+2025-06-20 17:38:24 - INFO - Pipeline - Price direction labels created
+[2025-06-20 17:38:24,784][Pipeline][INFO] - Step 4: Training models...
+2025-06-20 17:38:24 - INFO - Pipeline - Step 4: Training models...
+[define_features_and_label] Features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[define_features_and_label] Label: BTCUSDT_price
+                  timestamp  ETHUSDT_price  ...  prev_price  price_direction
+1 2023-01-01 16:00:00+00:00        1200.34  ...    16526.19                1
+2 2023-01-02 00:00:00+00:00        1213.09  ...    16616.75                1
+3 2023-01-03 16:00:00+00:00        1214.55  ...    16721.28                0
+4 2023-01-04 00:00:00+00:00        1252.00  ...    16675.18                1
+5 2023-01-05 16:00:00+00:00        1251.24  ...    16869.44                0
+
+[5 rows x 15 columns]
+[create_price_direction_label] Created price direction shape=(688, 15)
+Features shape: (688, 11), Regression target shape: (688,), Classification target shape: (688,)
+[2025-06-20 17:38:24,793][mlops.preproccess.preproccessing][INFO] - Data split completed - Train: (550, 11), Test: (138, 11)
+2025-06-20 17:38:24 - INFO - mlops.preproccess.preproccessing - Data split completed - Train: (550, 11), Test: (138, 11)
+[2025-06-20 17:38:24,793][mlops.preproccess.preproccessing][INFO] - Data split completed - Train: (550, 11), Test: (138, 11)
+2025-06-20 17:38:24 - INFO - mlops.preproccess.preproccessing - Data split completed - Train: (550, 11), Test: (138, 11)
+[2025-06-20 17:38:24,795][mlops.preproccess.preproccessing][INFO] - Successfully scaled features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+2025-06-20 17:38:24 - INFO - mlops.preproccess.preproccessing - Successfully scaled features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[2025-06-20 17:38:24,797][FeatureSelection][INFO] - Selected 9 features based on correlation > 0.05 with 'BTCUSDT_price'
+2025-06-20 17:38:24 - INFO - FeatureSelection - Selected 9 features based on correlation > 0.05 with 'BTCUSDT_price'
+[2025-06-20 17:38:24,797][FeatureSelection][INFO] - Selected 2 features based on correlation > 0.05 with 'price_direction'
+2025-06-20 17:38:24 - INFO - FeatureSelection - Selected 2 features based on correlation > 0.05 with 'price_direction'
+[2025-06-20 17:38:24,798][mlops.preproccess.preproccessing][INFO] - Class distribution: {1: 294, 0: 256}
+2025-06-20 17:38:24 - INFO - mlops.preproccess.preproccessing - Class distribution: {1: 294, 0: 256}
+[2025-06-20 17:38:24,799][mlops.preproccess.preproccessing][INFO] - Class ratio (1.15) below threshold (1.5). SMOTE not applied.
+2025-06-20 17:38:24 - INFO - mlops.preproccess.preproccessing - Class ratio (1.15) below threshold (1.5). SMOTE not applied.
+[2025-06-20 17:38:24,800][mlops.models.models][INFO] - Preprocessing pipeline saved to models/preprocessing_pipeline.pkl
+2025-06-20 17:38:24 - INFO - mlops.models.models - Preprocessing pipeline saved to models/preprocessing_pipeline.pkl
+[2025-06-20 17:38:24,800][mlops.models.models][INFO] - Regression features: ['ETHUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+2025-06-20 17:38:24 - INFO - mlops.models.models - Regression features: ['ETHUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[2025-06-20 17:38:24,800][mlops.models.models][INFO] - Classification features: ['XRPUSDT_funding_rate', 'ADAUSDT_funding_rate']
+2025-06-20 17:38:24 - INFO - mlops.models.models - Classification features: ['XRPUSDT_funding_rate', 'ADAUSDT_funding_rate']
+[2025-06-20 17:38:24,800][mlops.models.models][INFO] - Final training shapes - Reg: (550, 9), Class: (550, 2)
+2025-06-20 17:38:24 - INFO - mlops.models.models - Final training shapes - Reg: (550, 9), Class: (550, 2)
+[2025-06-20 17:38:24,800][mlops.models.models][INFO] - Training Linear Regression model...
+2025-06-20 17:38:24 - INFO - mlops.models.models - Training Linear Regression model...
+[2025-06-20 17:38:24,803][mlops.models.models][INFO] - Linear Regression Training RMSE: 1447.1826
+2025-06-20 17:38:24 - INFO - mlops.models.models - Linear Regression Training RMSE: 1447.1826
+[2025-06-20 17:38:24,803][mlops.models.models][INFO] - Model saved to models/linear_regression.pkl
+2025-06-20 17:38:24 - INFO - mlops.models.models - Model saved to models/linear_regression.pkl
+[2025-06-20 17:38:24,803][mlops.models.models][INFO] - Training Logistic Regression model...
+2025-06-20 17:38:24 - INFO - mlops.models.models - Training Logistic Regression model...
+[2025-06-20 17:38:24,809][mlops.models.models][INFO] - Logistic Regression Training ROC AUC: 0.5192
+2025-06-20 17:38:24 - INFO - mlops.models.models - Logistic Regression Training ROC AUC: 0.5192
+[2025-06-20 17:38:24,809][mlops.models.models][INFO] - Model saved to models/logistic_regression.pkl
+2025-06-20 17:38:24 - INFO - mlops.models.models - Model saved to models/logistic_regression.pkl
+[2025-06-20 17:38:24,809][Pipeline][INFO] - Model training completed successfully
+2025-06-20 17:38:24 - INFO - Pipeline - Model training completed successfully
+[2025-06-20 17:38:24,809][Pipeline][INFO] - Step 5: Evaluating models...
+2025-06-20 17:38:24 - INFO - Pipeline - Step 5: Evaluating models...
+[2025-06-20 17:38:24,809][mlops.evaluation.evaluation][INFO] - Preprocessing pipeline loaded from models/preprocessing_pipeline.pkl
+2025-06-20 17:38:24 - INFO - mlops.evaluation.evaluation - Preprocessing pipeline loaded from models/preprocessing_pipeline.pkl
+[2025-06-20 17:38:24,809][mlops.evaluation.evaluation][INFO] - Model loaded from models/linear_regression.pkl
+2025-06-20 17:38:24 - INFO - mlops.evaluation.evaluation - Model loaded from models/linear_regression.pkl
+[2025-06-20 17:38:24,809][mlops.evaluation.evaluation][INFO] - Model loaded from models/logistic_regression.pkl
+2025-06-20 17:38:24 - INFO - mlops.evaluation.evaluation - Model loaded from models/logistic_regression.pkl
+[define_features_and_label] Features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[define_features_and_label] Label: BTCUSDT_price
+                  timestamp  ETHUSDT_price  ...  prev_price  price_direction
+1 2023-01-01 16:00:00+00:00        1200.34  ...    16526.19                1
+2 2023-01-02 00:00:00+00:00        1213.09  ...    16616.75                1
+3 2023-01-03 16:00:00+00:00        1214.55  ...    16721.28                0
+4 2023-01-04 00:00:00+00:00        1252.00  ...    16675.18                1
+5 2023-01-05 16:00:00+00:00        1251.24  ...    16869.44                0
+
+[5 rows x 15 columns]
+[create_price_direction_label] Created price direction shape=(688, 15)
+Features shape: (688, 11), Regression target shape: (688,), Classification target shape: (688,)
+[2025-06-20 17:38:24,815][mlops.preproccess.preproccessing][INFO] - Data split completed - Train: (550, 11), Test: (138, 11)
+2025-06-20 17:38:24 - INFO - mlops.preproccess.preproccessing - Data split completed - Train: (550, 11), Test: (138, 11)
+[2025-06-20 17:38:24,816][mlops.preproccess.preproccessing][INFO] - Data split completed - Train: (550, 11), Test: (138, 11)
+2025-06-20 17:38:24 - INFO - mlops.preproccess.preproccessing - Data split completed - Train: (550, 11), Test: (138, 11)
+[2025-06-20 17:38:24,816][mlops.evaluation.evaluation][INFO] - Test data prepared - Reg: (138, 9), Class: (138, 2)
+2025-06-20 17:38:24 - INFO - mlops.evaluation.evaluation - Test data prepared - Reg: (138, 9), Class: (138, 2)
+[2025-06-20 17:38:24,816][mlops.evaluation.evaluation][INFO] - Evaluating regression model...
+2025-06-20 17:38:24 - INFO - mlops.evaluation.evaluation - Evaluating regression model...
+[2025-06-20 17:38:24,817][mlops.evaluation.evaluation][INFO] - Linear Regression Test RMSE: 1602.3719
+2025-06-20 17:38:24 - INFO - mlops.evaluation.evaluation - Linear Regression Test RMSE: 1602.3719
+[2025-06-20 17:38:25,228][mlops.evaluation.evaluation][INFO] - Price prediction plot saved to plots/price_prediction_plot.png
+2025-06-20 17:38:25 - INFO - mlops.evaluation.evaluation - Price prediction plot saved to plots/price_prediction_plot.png
+[2025-06-20 17:38:25,228][mlops.evaluation.evaluation][INFO] - Evaluating classification model...
+2025-06-20 17:38:25 - INFO - mlops.evaluation.evaluation - Evaluating classification model...
+[2025-06-20 17:38:25,230][mlops.evaluation.evaluation][INFO] - Logistic Regression Test Accuracy: 0.4348
+2025-06-20 17:38:25 - INFO - mlops.evaluation.evaluation - Logistic Regression Test Accuracy: 0.4348
+[2025-06-20 17:38:25,230][mlops.evaluation.evaluation][INFO] - Logistic Regression Test F1 Score: 0.5714
+2025-06-20 17:38:25 - INFO - mlops.evaluation.evaluation - Logistic Regression Test F1 Score: 0.5714
+[2025-06-20 17:38:25,230][mlops.evaluation.evaluation][INFO] - Logistic Regression Test ROC AUC: 0.5228
+2025-06-20 17:38:25 - INFO - mlops.evaluation.evaluation - Logistic Regression Test ROC AUC: 0.5228
+[2025-06-20 17:38:25,337][mlops.evaluation.evaluation][INFO] - Confusion matrix saved to plots/confusion_matrix.png
+2025-06-20 17:38:25 - INFO - mlops.evaluation.evaluation - Confusion matrix saved to plots/confusion_matrix.png
+[2025-06-20 17:38:25,340][mlops.evaluation.evaluation][INFO] - Metrics report saved to models/metrics.json
+2025-06-20 17:38:25 - INFO - mlops.evaluation.evaluation - Metrics report saved to models/metrics.json
+[2025-06-20 17:38:25,340][Pipeline][INFO] - Model evaluation completed successfully
+2025-06-20 17:38:25 - INFO - Pipeline - Model evaluation completed successfully
+[2025-06-20 17:38:25,340][Pipeline][INFO] - ==================================================
+2025-06-20 17:38:25 - INFO - Pipeline - ==================================================
+[2025-06-20 17:38:25,341][Pipeline][INFO] - FINAL RESULTS SUMMARY
+2025-06-20 17:38:25 - INFO - Pipeline - FINAL RESULTS SUMMARY
+[2025-06-20 17:38:25,341][Pipeline][INFO] - ==================================================
+2025-06-20 17:38:25 - INFO - Pipeline - ==================================================
+[2025-06-20 17:38:25,341][Pipeline][INFO] - Linear Regression RMSE: 1602.3719
+2025-06-20 17:38:25 - INFO - Pipeline - Linear Regression RMSE: 1602.3719
+[2025-06-20 17:38:25,341][Pipeline][INFO] - Logistic Regression Accuracy: 0.4348
+2025-06-20 17:38:25 - INFO - Pipeline - Logistic Regression Accuracy: 0.4348
+[2025-06-20 17:38:25,341][Pipeline][INFO] - Logistic Regression ROC AUC: 0.5228
+2025-06-20 17:38:25 - INFO - Pipeline - Logistic Regression ROC AUC: 0.5228
+[2025-06-20 17:38:25,341][Pipeline][INFO] - ==================================================
+2025-06-20 17:38:25 - INFO - Pipeline - ==================================================
+[2025-06-20 17:38:25,341][Pipeline][INFO] - Complete MLOps pipeline finished successfully!
+2025-06-20 17:38:25 - INFO - Pipeline - Complete MLOps pipeline finished successfully!

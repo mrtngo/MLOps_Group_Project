@@ -1,0 +1,20 @@
+[2025-06-20 11:33:50,615][CryptoMLOps][INFO] - Started WandB run: crypto_orchestrator_20250620_113349
+2025-06-20 11:33:50 - INFO - CryptoMLOps - Started WandB run: crypto_orchestrator_20250620_113349
+[2025-06-20 11:33:50,616][CryptoMLOps][INFO] - Running crypto pipeline steps: ['data_load']
+2025-06-20 11:33:50 - INFO - CryptoMLOps - Running crypto pipeline steps: ['data_load']
+[2025-06-20 11:33:50,616][CryptoMLOps][INFO] - 🔄 Running your existing pipeline...
+2025-06-20 11:33:50 - INFO - CryptoMLOps - 🔄 Running your existing pipeline...
+[2025-06-20 11:33:50,618][mlops.data_load.data_load][ERROR] - Config file not found: config.yaml
+2025-06-20 11:33:50 - ERROR - mlops.data_load.data_load - Config file not found: config.yaml
+[2025-06-20 11:33:50,618][mlops.data_load.data_load][ERROR] - Failed to load config: [Errno 2] No such file or directory: 'config.yaml'
+2025-06-20 11:33:50 - ERROR - mlops.data_load.data_load - Failed to load config: [Errno 2] No such file or directory: 'config.yaml'
+[2025-06-20 11:33:51,080][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 11:33:51 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 11:33:51,085][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 11:33:51 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 11:33:51,508][mlops.data_validation.data_validation][ERROR] - Configuration file not found: config.yaml
+2025-06-20 11:33:51 - ERROR - mlops.data_validation.data_validation - Configuration file not found: config.yaml
+[2025-06-20 11:33:51,509][mlops.preproccess.preproccessing][ERROR] - Failed to load config file: Configuration file not found: config.yaml
+2025-06-20 11:33:51 - ERROR - mlops.preproccess.preproccessing - Failed to load config file: Configuration file not found: config.yaml
+[2025-06-20 11:33:51,509][CryptoMLOps][ERROR] - ❌ Crypto pipeline failed: Configuration file not found: config.yaml
+2025-06-20 11:33:51 - ERROR - CryptoMLOps - ❌ Crypto pipeline failed: Configuration file not found: config.yaml

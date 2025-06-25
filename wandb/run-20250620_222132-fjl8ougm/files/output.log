@@ -1,0 +1,12 @@
+2025-06-20 22:21:33,183 - INFO - __main__ - Loading processed data from: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/processed/training_data
+2025-06-20 22:21:33,191 - INFO - __main__ - Training Linear Regression model...
+2025-06-20 22:21:33,194 - INFO - src.mlops.models.models - Linear Regression Training RMSE: 1182.3959
+2025-06-20 22:21:33,194 - INFO - src.mlops.models.models - Model saved to models/linear_regression.pkl
+2025-06-20 22:21:33,195 - INFO - __main__ - Regression training RMSE: 1182.395907863825
+2025-06-20 22:21:33,195 - INFO - __main__ - Training Logistic Regression model...
+2025-06-20 22:21:33,202 - INFO - src.mlops.models.models - Logistic Regression Training ROC AUC: 0.6032
+2025-06-20 22:21:33,203 - INFO - src.mlops.models.models - Model saved to models/logistic_regression.pkl
+2025-06-20 22:21:33,204 - INFO - __main__ - Classification training ROC AUC: 0.6031537450722733
+2025-06-20 22:21:33,204 - INFO - __main__ - Logging hyperparameters, metrics, and model artifacts...
+2025-06-20 22:21:34,000 - INFO - __main__ - All training details logged successfully.
+2025-06-20 22:21:34,005 - INFO - __main__ - --- Model Training Step Completed Successfully ---

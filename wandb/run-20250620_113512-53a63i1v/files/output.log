@@ -1,0 +1,26 @@
+[2025-06-20 11:35:13,977][CryptoMLOps][INFO] - Started WandB run: crypto_orchestrator_20250620_113512
+2025-06-20 11:35:13 - INFO - CryptoMLOps - Started WandB run: crypto_orchestrator_20250620_113512
+[2025-06-20 11:35:13,978][CryptoMLOps][INFO] - Running crypto pipeline steps: ['data_load']
+2025-06-20 11:35:13 - INFO - CryptoMLOps - Running crypto pipeline steps: ['data_load']
+[2025-06-20 11:35:13,978][CryptoMLOps][INFO] - 🔄 Running your existing pipeline...
+2025-06-20 11:35:13 - INFO - CryptoMLOps - 🔄 Running your existing pipeline...
+[2025-06-20 11:35:13,979][mlops.data_load.data_load][ERROR] - Config file not found: config.yaml
+2025-06-20 11:35:13 - ERROR - mlops.data_load.data_load - Config file not found: config.yaml
+[2025-06-20 11:35:13,980][mlops.data_load.data_load][ERROR] - Failed to load config: [Errno 2] No such file or directory: 'config.yaml'
+2025-06-20 11:35:13 - ERROR - mlops.data_load.data_load - Failed to load config: [Errno 2] No such file or directory: 'config.yaml'
+[2025-06-20 11:35:14,437][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 11:35:14 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 11:35:14,443][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 11:35:14 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 11:35:14,586][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 11:35:14 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 11:35:14,593][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 11:35:14 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 11:35:14,595][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 11:35:14 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 11:35:14,600][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 11:35:14 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 11:35:15,140][mlops.data_validation.data_validation][ERROR] - Configuration file not found: config.yaml
+2025-06-20 11:35:15 - ERROR - mlops.data_validation.data_validation - Configuration file not found: config.yaml
+[2025-06-20 11:35:15,141][CryptoMLOps][ERROR] - ❌ Crypto pipeline failed: Configuration file not found: config.yaml
+2025-06-20 11:35:15 - ERROR - CryptoMLOps - ❌ Crypto pipeline failed: Configuration file not found: config.yaml

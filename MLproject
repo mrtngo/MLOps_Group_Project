@@ -1,0 +1,64 @@
+name: MLOps-Group-Project
+
+entry_points:
+  data_load:
+    command: "python3 src/mlops/data_load/run.py"
+    conda_env: src/mlops/data_load/conda.yaml
+  
+  data_validation:
+    parameters:
+      input_artifact: {type: string, default: "data/raw/raw_data.csv"}
+    command: "python3 src/mlops/data_validation/run.py --input-artifact {input_artifact}"
+    conda_env: src/mlops/data_validation/conda.yaml
+
+  features:
+    parameters:
+      input_artifact: {type: string, default: "data/processed/validated_data.csv"}
+    command: "python3 src/mlops/features/run.py --input-artifact {input_artifact}"
+    conda_env: src/mlops/features/conda.yaml
+
+  preprocess:
+    parameters:
+      input_artifact: {type: string, default: "data/processed/feature_engineered_data.csv"}
+    command: "python3 src/mlops/preproccess/run.py --input-artifact {input_artifact}"
+    conda_env: src/mlops/preproccess/conda.yaml
+
+  models:
+    parameters:
+      input_artifact: {type: string, default: "data/processed/training_data"}
+    command: "python3 src/mlops/models/run.py --input-artifact {input_artifact}"
+    conda_env: src/mlops/models/conda.yaml
+    
+  evaluation:
+    parameters:
+      model_artifact: {type: string, default: "models/logistic_regression.pkl"}
+      test_data_path: {type: string, default: "data/processed/training_data"}
+    command: "python3 src/mlops/evaluation/run.py --model-artifact {model_artifact} --test-data-path {test_data_path}"
+    conda_env: src/mlops/evaluation/conda.yaml
+
+  inference:
+    parameters:
+      model_artifact: {type: string, default: "models/logistic_regression.pkl"}
+      inference_data: {type: string, default: "data/processed/training_data/X_test_class.csv"}
+    command: "python3 src/mlops/inference/run.py --model-artifact {model_artifact} --inference-data {inference_data}"
+    conda_env: src/mlops/inference/conda.yaml
+
+  # === TRAINING (TODO: Add when ready) ===
+  # train:
+  #   parameters:
+  #     input_artifact: {type: string, default: "data/processed/training_data"}
+  #   command: "python src/train/run.py --input-artifact {input_artifact}"
+  #   conda_env: src/train/conda.yaml
+
+  # === MAIN ORCHESTRATOR ===
+  main:
+    parameters:
+      steps: {type: string, default: "all"}
+      WANDB_PROJECT: {type: string, default: "mlops-project"}
+      WANDB_ENTITY: {type: string, default: "aviv275-ie-university"}
+    command: >
+      python3 main.py 
+      main.steps='{steps}'
+      main.WANDB_PROJECT='{WANDB_PROJECT}'
+      main.WANDB_ENTITY='{WANDB_ENTITY}'
+    conda_env: conda.yaml

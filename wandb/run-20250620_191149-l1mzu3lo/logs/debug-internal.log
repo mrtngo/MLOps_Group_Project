@@ -1,0 +1,16 @@
+{"time":"2025-06-20T19:11:49.672372+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_191149-l1mzu3lo/logs/debug-core.log"}
+{"time":"2025-06-20T19:11:49.82164+02:00","level":"INFO","msg":"stream: created new stream","id":"l1mzu3lo"}
+{"time":"2025-06-20T19:11:49.821705+02:00","level":"INFO","msg":"stream: started","id":"l1mzu3lo"}
+{"time":"2025-06-20T19:11:49.821708+02:00","level":"INFO","msg":"handler: started","stream_id":"l1mzu3lo"}
+{"time":"2025-06-20T19:11:49.821733+02:00","level":"INFO","msg":"sender: started","stream_id":"l1mzu3lo"}
+{"time":"2025-06-20T19:11:49.821761+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"l1mzu3lo"}
+{"time":"2025-06-20T19:11:50.162057+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T19:12:11.686686+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T19:12:11.687173+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T19:12:12.693898+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-l1mzu3lo-sample_rows","runtime_seconds":1.763919917},{"desc":"uploading artifact run-l1mzu3lo-summary_stats","runtime_seconds":1.189980125,"subtasks":[{"desc":"summary_stats.table.json","runtime_seconds":0.174659083,"progress":"3.0KB/3.0KB"}]}],"total_operations":2}}
+{"time":"2025-06-20T19:12:13.588004+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T19:12:13.791903+02:00","level":"INFO","msg":"stream: closing","id":"l1mzu3lo"}
+{"time":"2025-06-20T19:12:13.791921+02:00","level":"INFO","msg":"handler: closed","stream_id":"l1mzu3lo"}
+{"time":"2025-06-20T19:12:13.791932+02:00","level":"INFO","msg":"sender: closed","stream_id":"l1mzu3lo"}
+{"time":"2025-06-20T19:12:13.791931+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"l1mzu3lo"}
+{"time":"2025-06-20T19:12:13.792091+02:00","level":"INFO","msg":"stream: closed","id":"l1mzu3lo"}

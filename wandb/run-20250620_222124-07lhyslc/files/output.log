@@ -1,0 +1,25 @@
+2025-06-20 22:21:24,966 - INFO - __main__ - Loading feature-engineered data from: /Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/data/processed/feature_engineered_data.csv
+[define_features_and_label] Features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[define_features_and_label] Label: BTCUSDT_price
+Features shape: (1499, 11), Regression target shape: (1499,), Classification target shape: (1499,)
+2025-06-20 22:21:24,971 - INFO - __main__ - Feature engineering complete.
+2025-06-20 22:21:24,973 - INFO - src.mlops.preproccess.preproccessing - Data split completed - Train: (1199, 11), Test: (300, 11)
+2025-06-20 22:21:24,973 - INFO - src.mlops.preproccess.preproccessing - Data split completed - Train: (1199, 11), Test: (300, 11)
+2025-06-20 22:21:24,973 - INFO - __main__ - Data splitting complete.
+2025-06-20 22:21:24,975 - INFO - src.mlops.preproccess.preproccessing - Successfully scaled features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+2025-06-20 22:21:24,976 - INFO - src.mlops.preproccess.preproccessing - Successfully scaled features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+2025-06-20 22:21:24,978 - INFO - FeatureSelection - Selected 10 features based on correlation > 0.05 with 'BTCUSDT_price'
+2025-06-20 22:21:24,979 - INFO - FeatureSelection - Selected 5 features based on correlation > 0.05 with 'price_direction'
+2025-06-20 22:21:24,979 - INFO - __main__ - Selected regression features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+2025-06-20 22:21:24,979 - INFO - __main__ - Selected classification features: ['BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'ETHUSDT_funding_rate', 'ADAUSDT_funding_rate']
+2025-06-20 22:21:24,981 - INFO - src.mlops.preproccess.preproccessing - Class distribution: {0: 761, 1: 438}
+2025-06-20 22:21:24,981 - INFO - src.mlops.preproccess.preproccessing - Applying SMOTE oversampling...
+2025-06-20 22:21:24,988 - INFO - src.mlops.preproccess.preproccessing - SMOTE apply successful. New shape: (1522, 5)
+2025-06-20 22:21:24,988 - INFO - src.mlops.preproccess.preproccessing - New class distribution: {np.int64(0): np.int64(761), np.int64(1): np.int64(761)}
+2025-06-20 22:21:24,988 - INFO - __main__ - SMOTE applied to classification training data.
+2025-06-20 22:21:24,988 - INFO - __main__ - Generating and logging visualizations to W&B...
+2025-06-20 22:21:26,830 - INFO - __main__ - Visualizations logged successfully.
+2025-06-20 22:21:26,830 - INFO - __main__ - Saving and logging all processed artifacts...
+[34m[1mwandb[0m: Adding directory to artifact (./data/processed/training_data)... Done. 0.0s
+2025-06-20 22:21:27,186 - INFO - __main__ - All artifacts logged successfully.
+2025-06-20 22:21:27,190 - INFO - __main__ - --- Preprocessing Step Completed Successfully ---

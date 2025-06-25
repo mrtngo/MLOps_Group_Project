@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: crypto-prediction-api
+    env: docker
+    plan: free # You can change this to a different plan if needed
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10
+      - key: PORT
+        value: 8000 

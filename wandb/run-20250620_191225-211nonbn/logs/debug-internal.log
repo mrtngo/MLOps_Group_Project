@@ -1,0 +1,16 @@
+{"time":"2025-06-20T19:12:25.71722+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_191225-211nonbn/logs/debug-core.log"}
+{"time":"2025-06-20T19:12:25.999907+02:00","level":"INFO","msg":"stream: created new stream","id":"211nonbn"}
+{"time":"2025-06-20T19:12:26.000099+02:00","level":"INFO","msg":"stream: started","id":"211nonbn"}
+{"time":"2025-06-20T19:12:26.000131+02:00","level":"INFO","msg":"sender: started","stream_id":"211nonbn"}
+{"time":"2025-06-20T19:12:26.000106+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"211nonbn"}
+{"time":"2025-06-20T19:12:26.000104+02:00","level":"INFO","msg":"handler: started","stream_id":"211nonbn"}
+{"time":"2025-06-20T19:12:26.226525+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T19:12:30.141665+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T19:12:30.141791+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T19:12:31.146549+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading requirements.txt","runtime_seconds":4.623702334,"progress":"4.7KB/4.7KB"},{"desc":"uploading wandb-metadata.json","runtime_seconds":4.623662583,"progress":"1.4KB/1.4KB"},{"desc":"uploading console lines 0-1","runtime_seconds":4.6234405},{"desc":"uploading media/images/initial_feature_distributions_0_4465898cd62f0dc3669b.png","runtime_seconds":1.144654875,"progress":"159.1KB/159.1KB"},{"desc":"uploading output.log","runtime_seconds":0.78387575,"progress":"1.7KB/1.7KB"},{"desc":"uploading wandb-summary.json","runtime_seconds":0.783841667,"progress":"355B/355B"},{"desc":"uploading config.yaml","runtime_seconds":0.430431083,"progress":"446B/446B"}],"total_operations":7}}
+{"time":"2025-06-20T19:12:33.487201+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T19:12:53.806055+02:00","level":"INFO","msg":"stream: closing","id":"211nonbn"}
+{"time":"2025-06-20T19:12:53.806162+02:00","level":"INFO","msg":"handler: closed","stream_id":"211nonbn"}
+{"time":"2025-06-20T19:12:53.806236+02:00","level":"INFO","msg":"sender: closed","stream_id":"211nonbn"}
+{"time":"2025-06-20T19:12:53.806238+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"211nonbn"}
+{"time":"2025-06-20T19:12:53.806607+02:00","level":"INFO","msg":"stream: closed","id":"211nonbn"}

@@ -1,0 +1,43 @@
+[2025-06-20 13:25:45,990][CryptoMLOps][INFO] - Started WandB run: crypto_orchestrator_20250620_132544
+2025-06-20 13:25:45 - INFO - CryptoMLOps - Started WandB run: crypto_orchestrator_20250620_132544
+[2025-06-20 13:25:45,990][CryptoMLOps][INFO] - Running crypto pipeline steps: ['data_load']
+2025-06-20 13:25:45 - INFO - CryptoMLOps - Running crypto pipeline steps: ['data_load']
+[2025-06-20 13:25:45,991][CryptoMLOps][INFO] - 🔄 Running your existing pipeline...
+2025-06-20 13:25:45 - INFO - CryptoMLOps - 🔄 Running your existing pipeline...
+[2025-06-20 13:25:46,002][mlops.data_load.data_load][INFO] - Config loaded from conf/config.yaml
+2025-06-20 13:25:46 - INFO - mlops.data_load.data_load - Config loaded from conf/config.yaml
+[2025-06-20 13:25:46,003][mlops.data_load.data_load][INFO] - Loaded 6 symbols: ['ETHUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'SOLUSDT', 'BTCUSDT']
+2025-06-20 13:25:46 - INFO - mlops.data_load.data_load - Loaded 6 symbols: ['ETHUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'SOLUSDT', 'BTCUSDT']
+[2025-06-20 13:25:46,590][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 13:25:46 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 13:25:46,597][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 13:25:46 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 13:25:46,789][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 13:25:46 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 13:25:46,798][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 13:25:46 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 13:25:46,799][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 13:25:46 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 13:25:46,806][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 13:25:46 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 13:25:47,116][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 13:25:47 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 13:25:47,125][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 13:25:47 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 13:25:47,126][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 13:25:47 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 13:25:47,133][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 13:25:47 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 13:25:47,134][Pipeline][INFO] - Starting complete MLOps pipeline
+2025-06-20 13:25:47 - INFO - Pipeline - Starting complete MLOps pipeline
+[2025-06-20 13:25:47,134][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 13:25:47 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 13:25:47,142][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 13:25:47 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 13:25:47,150][Pipeline][INFO] - MLflow experiment set to 'MLOps-Group-Project-Experiment'
+2025-06-20 13:25:47 - INFO - Pipeline - MLflow experiment set to 'MLOps-Group-Project-Experiment'
+[2025-06-20 13:25:47,150][Pipeline][INFO] - Step 1: Loading data...
+2025-06-20 13:25:47 - INFO - Pipeline - Step 1: Loading data...
+[2025-06-20 13:25:47,528][Pipeline][INFO] - Initiating MLflow and W&B for data loading.
+2025-06-20 13:25:47 - INFO - Pipeline - Initiating MLflow and W&B for data loading.
+[34m[1mwandb[0m: Finishing previous runs because reinit is set to True.

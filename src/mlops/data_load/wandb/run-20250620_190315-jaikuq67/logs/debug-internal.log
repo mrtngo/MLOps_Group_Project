@@ -1,0 +1,16 @@
+{"time":"2025-06-20T19:03:15.452375+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/data_load/wandb/run-20250620_190315-jaikuq67/logs/debug-core.log"}
+{"time":"2025-06-20T19:03:15.622872+02:00","level":"INFO","msg":"stream: created new stream","id":"jaikuq67"}
+{"time":"2025-06-20T19:03:15.623257+02:00","level":"INFO","msg":"stream: started","id":"jaikuq67"}
+{"time":"2025-06-20T19:03:15.623256+02:00","level":"INFO","msg":"handler: started","stream_id":"jaikuq67"}
+{"time":"2025-06-20T19:03:15.623266+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"jaikuq67"}
+{"time":"2025-06-20T19:03:15.623289+02:00","level":"INFO","msg":"sender: started","stream_id":"jaikuq67"}
+{"time":"2025-06-20T19:03:15.90136+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T19:03:38.370783+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T19:03:38.371089+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T19:03:39.379503+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-jaikuq67-sample_rows","runtime_seconds":1.734709166},{"desc":"uploading artifact run-jaikuq67-summary_stats","runtime_seconds":1.192330334}],"total_operations":2}}
+{"time":"2025-06-20T19:03:39.79599+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T19:03:40.022733+02:00","level":"INFO","msg":"stream: closing","id":"jaikuq67"}
+{"time":"2025-06-20T19:03:40.022778+02:00","level":"INFO","msg":"handler: closed","stream_id":"jaikuq67"}
+{"time":"2025-06-20T19:03:40.022798+02:00","level":"INFO","msg":"sender: closed","stream_id":"jaikuq67"}
+{"time":"2025-06-20T19:03:40.022795+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"jaikuq67"}
+{"time":"2025-06-20T19:03:40.023116+02:00","level":"INFO","msg":"stream: closed","id":"jaikuq67"}

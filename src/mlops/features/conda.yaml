@@ -1,0 +1,17 @@
+name: features
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pandas
+  - scikit-learn
+  - hydra-core
+  - omegaconf
+  - python-dotenv
+  - pyyaml
+  - matplotlib
+  - seaborn
+  - pip
+  - pip:
+      - wandb
+      - mlflow-skinny 

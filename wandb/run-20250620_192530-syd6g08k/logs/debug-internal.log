@@ -1,0 +1,16 @@
+{"time":"2025-06-20T19:25:30.730638+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_192530-syd6g08k/logs/debug-core.log"}
+{"time":"2025-06-20T19:25:30.893926+02:00","level":"INFO","msg":"stream: created new stream","id":"syd6g08k"}
+{"time":"2025-06-20T19:25:30.89403+02:00","level":"INFO","msg":"stream: started","id":"syd6g08k"}
+{"time":"2025-06-20T19:25:30.894054+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"syd6g08k"}
+{"time":"2025-06-20T19:25:30.894095+02:00","level":"INFO","msg":"handler: started","stream_id":"syd6g08k"}
+{"time":"2025-06-20T19:25:30.894073+02:00","level":"INFO","msg":"sender: started","stream_id":"syd6g08k"}
+{"time":"2025-06-20T19:25:31.315146+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T19:25:32.136433+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T19:25:32.136493+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T19:25:33.143687+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-syd6g08k-train_sample_rows","runtime_seconds":1.5182887090000001,"subtasks":[{"desc":"train_sample_rows.table.json","runtime_seconds":0.688338625,"progress":"12.4KB/12.4KB"}]}],"total_operations":1}}
+{"time":"2025-06-20T19:25:33.889466+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T19:25:34.110765+02:00","level":"INFO","msg":"stream: closing","id":"syd6g08k"}
+{"time":"2025-06-20T19:25:34.11081+02:00","level":"INFO","msg":"handler: closed","stream_id":"syd6g08k"}
+{"time":"2025-06-20T19:25:34.110824+02:00","level":"INFO","msg":"sender: closed","stream_id":"syd6g08k"}
+{"time":"2025-06-20T19:25:34.110819+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"syd6g08k"}
+{"time":"2025-06-20T19:25:34.111093+02:00","level":"INFO","msg":"stream: closed","id":"syd6g08k"}

@@ -1,0 +1,21 @@
+2025-06-20 15:11:15,166 - __main__ - INFO - Loading new data for inference from: data/raw/test.csv
+2025-06-20 15:11:15,174 - __main__ - INFO - Initializing ModelInferencer and generating predictions...
+2025-06-20 15:11:15,174 - src.mlops.inference.inference - INFO - Model loaded from models/linear_regression.pkl
+2025-06-20 15:11:15,175 - src.mlops.inference.inference - INFO - Model loaded from models/logistic_regression.pkl
+2025-06-20 15:11:15,175 - src.mlops.inference.inference - INFO - Both models loaded successfully for inference
+2025-06-20 15:11:15,175 - src.mlops.inference.inference - INFO - Preprocessing pipeline loaded from models/preprocessing_pipeline.pkl
+[define_features_and_label] Features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[define_features_and_label] Label: BTCUSDT_price
+2025-06-20 15:11:15,182 - __main__ - ERROR - Inference step failed
+Traceback (most recent call last):
+  File "/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/inference/run.py", line 64, in run_inference
+    predictions = inferencer.predict_both(df_input)
+  File "/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/inference/../../../src/mlops/inference/inference.py", line 225, in predict_both
+    price_predictions = self.predict_price(df)
+  File "/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/inference/../../../src/mlops/inference/inference.py", line 168, in predict_price
+    features_reg, _ = self._validate_and_preprocess_input(df)
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^
+  File "/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/src/mlops/inference/../../../src/mlops/inference/inference.py", line 135, in _validate_and_preprocess_input
+    self.preprocessing_pipeline['all_feature_cols'])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+KeyError: 'all_feature_cols'

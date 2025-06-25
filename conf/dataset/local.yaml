@@ -1,0 +1,31 @@
+# -----------------------------------------
+# conf/dataset/local.yaml
+# -----------------------------------------
+
+# A short label for this “dataset mode” – in case you add others later
+name: local                     # <- shown in Hydra logs
+
+# ---------- I/O locations ----------
+root_dir: ${hydra:runtime.cwd}/data     # project_root/data at runtime
+
+raw_dir:        ${.root_dir}/raw        # where raw CSVs / Parquet will be saved
+processed_dir:  ${.root_dir}/processed  # feature-ready files go here
+
+# ---------- What to download ----------
+symbols:                         # trading pairs to pull from Binance
+  - BTCUSDT
+  - ETHUSDT
+  - BNBUSDT
+  - XRPUSDT
+  - ADAUSDT
+
+start_date: "2023-01-01"         # inclusive, UTC
+end_date:   "2025-06-19"         # exclusive, UTC
+interval: "8h"                   # Binance candle size
+
+# ---------- (Optional) Where the raw data lives on the web ----------
+# If you want the data-loader to fetch everything itself, leave these.
+# If you’ve already placed raw files in raw_dir, you can delete this block.
+data_source:
+  raw_path_spot:    "https://api.binance.com/api/v3/klines"
+  raw_path_futures: "https://fapi.binance.com/fapi/v1/fundingRate"

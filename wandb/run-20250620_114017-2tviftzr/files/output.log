@@ -1,0 +1,61 @@
+[2025-06-20 11:40:18,591][CryptoMLOps][INFO] - Started WandB run: crypto_orchestrator_20250620_114017
+2025-06-20 11:40:18 - INFO - CryptoMLOps - Started WandB run: crypto_orchestrator_20250620_114017
+[2025-06-20 11:40:18,592][CryptoMLOps][INFO] - Running crypto pipeline steps: ['data_load']
+2025-06-20 11:40:18 - INFO - CryptoMLOps - Running crypto pipeline steps: ['data_load']
+[2025-06-20 11:40:18,592][CryptoMLOps][INFO] - 🔄 Running your existing pipeline...
+2025-06-20 11:40:18 - INFO - CryptoMLOps - 🔄 Running your existing pipeline...
+[2025-06-20 11:40:18,593][mlops.data_load.data_load][ERROR] - Config file not found: config.yaml
+2025-06-20 11:40:18 - ERROR - mlops.data_load.data_load - Config file not found: config.yaml
+[2025-06-20 11:40:18,594][mlops.data_load.data_load][ERROR] - Failed to load config: [Errno 2] No such file or directory: 'config.yaml'
+2025-06-20 11:40:18 - ERROR - mlops.data_load.data_load - Failed to load config: [Errno 2] No such file or directory: 'config.yaml'
+[2025-06-20 11:40:18,904][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 11:40:18 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 11:40:18,910][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 11:40:18 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 11:40:19,013][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 11:40:19 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 11:40:19,021][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 11:40:19 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 11:40:19,021][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 11:40:19 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 11:40:19,026][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 11:40:19 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 11:40:19,206][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 11:40:19 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 11:40:19,212][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 11:40:19 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 11:40:19,213][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 11:40:19 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 11:40:19,218][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 11:40:19 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 11:40:19,218][Pipeline][INFO] - Starting complete MLOps pipeline
+2025-06-20 11:40:19 - INFO - Pipeline - Starting complete MLOps pipeline
+[2025-06-20 11:40:19,219][Pipeline][INFO] - Step 1: Loading data...
+2025-06-20 11:40:19 - INFO - Pipeline - Step 1: Loading data...
+start date 2023-01-01
+[2025-06-20 11:40:19,219][mlops.data_load.data_load][INFO] - Starting data fetch process
+2025-06-20 11:40:19 - INFO - mlops.data_load.data_load - Starting data fetch process
+[2025-06-20 11:40:19,219][mlops.data_load.data_load][ERROR] - No data was successfully fetched
+2025-06-20 11:40:19 - ERROR - mlops.data_load.data_load - No data was successfully fetched
+[2025-06-20 11:40:19,219][Pipeline][INFO] - Raw data loaded | shape=(0, 0)
+2025-06-20 11:40:19 - INFO - Pipeline - Raw data loaded | shape=(0, 0)
+[2025-06-20 11:40:19,219][Pipeline][INFO] - Step 2: Validating data...
+2025-06-20 11:40:19 - INFO - Pipeline - Step 2: Validating data...
+[2025-06-20 11:40:19,220][mlops.data_validation.data_validation][INFO] - Loading configuration from: conf/config.yaml
+2025-06-20 11:40:19 - INFO - mlops.data_validation.data_validation - Loading configuration from: conf/config.yaml
+[2025-06-20 11:40:19,224][mlops.data_validation.data_validation][INFO] - Configuration loaded successfully
+2025-06-20 11:40:19 - INFO - mlops.data_validation.data_validation - Configuration loaded successfully
+[2025-06-20 11:40:19,224][Pipeline][WARNING] - Input DataFrame is empty
+2025-06-20 11:40:19 - WARNING - Pipeline - Input DataFrame is empty
+[2025-06-20 11:40:19,224][Pipeline][INFO] - Data validation completed | shape=(0, 0)
+2025-06-20 11:40:19 - INFO - Pipeline - Data validation completed | shape=(0, 0)
+[2025-06-20 11:40:19,226][Pipeline][INFO] - Processed data saved to ./data/processed/futures_data_processed_.csv
+2025-06-20 11:40:19 - INFO - Pipeline - Processed data saved to ./data/processed/futures_data_processed_.csv
+[2025-06-20 11:40:19,226][Pipeline][INFO] - Step 3: Feature engineering and preprocessing...
+2025-06-20 11:40:19 - INFO - Pipeline - Step 3: Feature engineering and preprocessing...
+[define_features_and_label] Features: ['ETHUSDT_price', 'BNBUSDT_price', 'XRPUSDT_price', 'ADAUSDT_price', 'SOLUSDT_price', 'ETHUSDT_funding_rate', 'BNBUSDT_funding_rate', 'XRPUSDT_funding_rate', 'ADAUSDT_funding_rate', 'SOLUSDT_funding_rate', 'BTCUSDT_funding_rate']
+[define_features_and_label] Label: BTCUSDT_price
+[2025-06-20 11:40:19,226][Pipeline][ERROR] - Pipeline failed: 'timestamp'
+2025-06-20 11:40:19 - ERROR - Pipeline - Pipeline failed: 'timestamp'
+[2025-06-20 11:40:19,226][CryptoMLOps][ERROR] - ❌ Crypto pipeline failed: 'timestamp'
+2025-06-20 11:40:19 - ERROR - CryptoMLOps - ❌ Crypto pipeline failed: 'timestamp'

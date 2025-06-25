@@ -1,0 +1,152 @@
+# .github/workflows/crypto-mlops-pipeline.yml
+name: Crypto MLOps CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run daily at 2 AM UTC for fresh crypto data
+    - cron: '0 2 * * *'
+
+env:
+  PYTHON_VERSION: '3.10'
+  WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+  WANDB_PROJECT: crypto_mlops_project
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Code Quality Checks
+  quality-checks:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Run code formatting check
+        run: black --check src tests
+
+      - name: Run linting
+        run: flake8 src tests --max-line-length=100
+
+      - name: Run unit tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src
+        run: pytest tests/ -v --tb=short
+
+  # Crypto Pipeline
+  crypto-pipeline:
+    runs-on: ubuntu-latest
+    needs: quality-checks
+    if: github.ref == 'refs/heads/main' || github.event_name == 'schedule'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Create conda environment
+        run: |
+          conda env create -f environment.yml
+          conda activate mlops_project
+
+      - name: Run crypto data pipeline
+        run: |
+          conda activate mlops_project
+          export PYTHONPATH="${PWD}/src:${PYTHONPATH}"
+          # Run your existing pipeline for now
+          python src/mlops/main.py --stage all
+        env:
+          WANDB_API_KEY: ${{ env.WANDB_API_KEY }}
+          WANDB_PROJECT: ${{ env.WANDB_PROJECT }}
+
+      - name: Validate model performance
+        run: |
+          conda activate mlops_project
+          python -c "
+          import json
+          import sys
+          import os
+          
+          # Check if metrics file exists
+          if os.path.exists('models/metrics.json'):
+              with open('models/metrics.json', 'r') as f:
+                  metrics = json.load(f)
+              
+              # Define thresholds for crypto prediction
+              rmse_threshold = 5000  # Adjust based on BTC price range
+              accuracy_threshold = 0.45  # For direction prediction
+              
+              # Check regression model
+              rmse = metrics.get('linear_regression', {}).get('RMSE', float('inf'))
+              if rmse > rmse_threshold:
+                  print(f'❌ RMSE {rmse} exceeds threshold {rmse_threshold}')
+                  sys.exit(1)
+              
+              # Check classification model
+              accuracy = metrics.get('logistic_regression', {}).get('Accuracy', 0)
+              if accuracy < accuracy_threshold:
+                  print(f'❌ Accuracy {accuracy} below threshold {accuracy_threshold}')
+                  sys.exit(1)
+              
+              print('✅ All model validation checks passed')
+              print(f'RMSE: {rmse}, Accuracy: {accuracy}')
+          else:
+              print('⚠️ No metrics file found, skipping validation')
+          "
+
+      - name: Upload model artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: crypto-models
+          path: |
+            models/
+            logs/
+            plots/
+
+  # Deployment Summary
+  summary:
+    runs-on: ubuntu-latest
+    needs: [quality-checks, crypto-pipeline]
+    if: always()
+    
+    steps:
+      - name: Create deployment summary
+        run: |
+          {
+            echo "## 🚀 Crypto MLOps Pipeline Summary"
+            echo ""
+            echo "**Status:** ${{ needs.crypto-pipeline.result == 'success' && '✅ SUCCESS' || '❌ FAILURE' }}"
+            echo "**Commit:** ${{ github.sha }}"
+            echo "**Branch:** ${{ github.ref_name }}"
+            echo ""
+            echo "### 📊 Job Results"
+            echo "- Quality Checks: ${{ needs.quality-checks.result }}"
+            echo "- Crypto Pipeline: ${{ needs.crypto-pipeline.result }}"
+          } >> "$GITHUB_STEP_SUMMARY"

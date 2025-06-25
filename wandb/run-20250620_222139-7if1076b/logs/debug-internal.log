@@ -1,0 +1,16 @@
+{"time":"2025-06-20T22:21:39.993348+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/MLOps_Group_Project/wandb/run-20250620_222139-7if1076b/logs/debug-core.log"}
+{"time":"2025-06-20T22:21:40.151821+02:00","level":"INFO","msg":"stream: created new stream","id":"7if1076b"}
+{"time":"2025-06-20T22:21:40.1519+02:00","level":"INFO","msg":"stream: started","id":"7if1076b"}
+{"time":"2025-06-20T22:21:40.151935+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"7if1076b"}
+{"time":"2025-06-20T22:21:40.151972+02:00","level":"INFO","msg":"sender: started","stream_id":"7if1076b"}
+{"time":"2025-06-20T22:21:40.151939+02:00","level":"INFO","msg":"handler: started","stream_id":"7if1076b"}
+{"time":"2025-06-20T22:21:40.486164+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-06-20T22:21:41.345091+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-06-20T22:21:41.345141+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-06-20T22:21:42.350691+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-7if1076b-sample_predictions","runtime_seconds":1.011270584,"subtasks":[{"desc":"sample_predictions.table.json","runtime_seconds":0.138906625,"progress":"3.8KB/3.8KB"}]}],"total_operations":1}}
+{"time":"2025-06-20T22:21:43.162086+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T22:21:43.438409+02:00","level":"INFO","msg":"stream: closing","id":"7if1076b"}
+{"time":"2025-06-20T22:21:43.438474+02:00","level":"INFO","msg":"handler: closed","stream_id":"7if1076b"}
+{"time":"2025-06-20T22:21:43.438501+02:00","level":"INFO","msg":"sender: closed","stream_id":"7if1076b"}
+{"time":"2025-06-20T22:21:43.43849+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"7if1076b"}
+{"time":"2025-06-20T22:21:43.438794+02:00","level":"INFO","msg":"stream: closed","id":"7if1076b"}

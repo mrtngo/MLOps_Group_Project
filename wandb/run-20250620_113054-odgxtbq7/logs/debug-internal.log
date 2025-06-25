@@ -1,0 +1,17 @@
+{"time":"2025-06-20T11:30:55.19643+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/Users/aviv/Library/Mobile Documents/com~apple~CloudDocs/study/master/ie/MBD2024/Term 3/mlops/MLOps_Group_Project/wandb/run-20250620_113054-odgxtbq7/logs/debug-core.log"}
+{"time":"2025-06-20T11:30:55.47188+02:00","level":"INFO","msg":"stream: created new stream","id":"odgxtbq7"}
+{"time":"2025-06-20T11:30:55.471935+02:00","level":"INFO","msg":"stream: started","id":"odgxtbq7"}
+{"time":"2025-06-20T11:30:55.471936+02:00","level":"INFO","msg":"handler: started","stream_id":"odgxtbq7"}
+{"time":"2025-06-20T11:30:55.471977+02:00","level":"INFO","msg":"sender: started","stream_id":"odgxtbq7"}
+{"time":"2025-06-20T11:30:55.472022+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"odgxtbq7"}
+{"time":"2025-06-20T11:30:55.661847+02:00","level":"ERROR","msg":"HTTP error","status":403,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2025-06-20T11:30:55.661924+02:00","level":"ERROR","msg":"runupserter: failed to init run","error":"returned error 403: {\"data\":{\"upsertBucket\":null},\"errors\":[{\"message\":\"permission denied\",\"path\":[\"upsertBucket\"],\"extensions\":{\"code\":\"PERMISSION_ERROR\"}}]}"}
+{"time":"2025-06-20T11:30:56.663842+02:00","level":"INFO","msg":"stream: closing","id":"odgxtbq7"}
+{"time":"2025-06-20T11:30:56.664125+02:00","level":"ERROR","msg":"sender: uploadConfigFile: stream: no run"}
+{"time":"2025-06-20T11:30:56.834457+02:00","level":"ERROR","msg":"HTTP error","status":404,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2025-06-20T11:30:56.834582+02:00","level":"ERROR","msg":"runfiles: CreateRunFiles returned error: returned error 404: {\"data\":{\"createRunFiles\":null},\"errors\":[{\"message\":\"project aviv275/mlops not found during createRunFiles\",\"path\":[\"createRunFiles\"]}]}"}
+{"time":"2025-06-20T11:30:56.834988+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-06-20T11:30:56.835088+02:00","level":"INFO","msg":"handler: closed","stream_id":"odgxtbq7"}
+{"time":"2025-06-20T11:30:56.835104+02:00","level":"INFO","msg":"sender: closed","stream_id":"odgxtbq7"}
+{"time":"2025-06-20T11:30:56.835104+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"odgxtbq7"}
+{"time":"2025-06-20T11:30:56.835395+02:00","level":"INFO","msg":"stream: closed","id":"odgxtbq7"}
