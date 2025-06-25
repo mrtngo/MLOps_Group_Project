@@ -1,6 +1,6 @@
 """Data loading and symbol utilities for ML tasks."""
 
-import logging
+from mlops.utils.logger import setup_logger
 import os
 import time
 from typing import Dict, List, Optional, Tuple
@@ -14,10 +14,7 @@ import wandb
 
 # ───────────────────────────── setup logging ──────────────────────────────
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 
 # ───────────────────────────── helpers ──────────────────────────────
 
@@ -187,7 +184,7 @@ def fetch_binance_funding_rate(
                 r = requests.get(url, params=params, timeout=10)
 
                 if r.status_code != 200:
-                    logger.error(f"[{symbol}] HTTP {r.status_code}: {r.text}")
+                    logger.error("[%s] HTTP %d: %s", symbol, r.status_code, r.text)
                     break
 
                 batch = r.json()

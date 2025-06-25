@@ -1,6 +1,6 @@
 """Preprocessing utilities for scaling, splitting, and SMOTE for ML tasks."""
 
-import logging
+from mlops.utils.logger import setup_logger
 from typing import Dict, List, Tuple
 
 import numpy as np
@@ -10,10 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
-)
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 
 
 def split_data(X, y, config: Dict):
@@ -70,7 +67,7 @@ def scale_features(
         # real test data should be scaled separately
         X_test_placeholder = np.array([])  # Placeholder
 
-        logger.info(f"Successfully scaled features: {selected_cols}")
+        logger.info("Successfully scaled features: %s", selected_cols)
         return X_scaled, X_test_placeholder, scaler
 
     except Exception as e:
@@ -135,7 +132,7 @@ def smote_oversample(X, y, config: Dict) -> Tuple[np.ndarray, np.ndarray]:
         min_ = min(class_counts, key=class_counts.get)
         ratio = class_counts[maj] / class_counts[min_]
 
-        logger.info(f"Class distribution: {class_counts}")
+        logger.info("Class distribution: %s", class_counts)
 
         # Get threshold from config
         threshold = (
@@ -157,7 +154,7 @@ def smote_oversample(X, y, config: Dict) -> Tuple[np.ndarray, np.ndarray]:
             sm = SMOTE(sampling_strategy=sampling_strategy, random_state=random_state)
             X_res, y_res = sm.fit_resample(X, y)
 
-            logger.info(f"SMOTE apply successful. New shape: {X_res.shape}")
+            logger.info("SMOTE apply successful. New shape: %s", X_res.shape)ful. New shape: {X_res.shape}")
             new_dist = dict(zip(*np.unique(y_res, return_counts=True)))
             logger.info(f"New class distribution: {new_dist}")
         else:

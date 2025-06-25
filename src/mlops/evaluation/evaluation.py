@@ -1,7 +1,7 @@
 """Model evaluation utilities for regression and classification tasks."""
 
 import json
-import logging
+from mlops.utils.logger import setup_logger
 import os
 import pickle
 from typing import Any, Dict, Tuple
@@ -28,7 +28,8 @@ from src.mlops.features.features import (
 )
 from src.mlops.preproccess.preproccessing import split_data
 
-logger = logging.getLogger(__name__)
+
+logger = setup_logger(__name__)
 config = load_config("conf/config.yaml")
 
 

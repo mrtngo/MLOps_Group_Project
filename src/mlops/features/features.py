@@ -1,6 +1,6 @@
 """Feature engineering and preparation utilities for ML tasks."""
 
-import logging
+from mlops.utils.logger import setup_logger
 from typing import Dict, List, Tuple
 
 import pandas as pd
@@ -9,6 +9,7 @@ from sklearn.ensemble import RandomForestRegressor
 
 from src.mlops.data_validation.data_validation import load_config
 
+logger = setup_logger(__name__)
 
 def define_features_and_label(config: Dict):
     """

@@ -1,5 +1,6 @@
 import json
-import logging
+from mlops.utils.logger import setup_logger
+
 import os
 from typing import Dict, List, Optional, Tuple
 
@@ -7,10 +8,7 @@ import pandas as pd
 import yaml
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 
 # ───────────────────────────── setup logging ──────────────────────────────
 

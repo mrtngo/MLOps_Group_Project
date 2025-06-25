@@ -1,6 +1,6 @@
 """Inference utilities and model prediction for ML tasks."""
 
-import logging
+from mlops.utils.logger import setup_logger
 import os
 import pickle
 from typing import Any, Dict, Tuple, Union
@@ -11,7 +11,7 @@ import pandas as pd
 from mlops.data_validation.data_validation import load_config
 from mlops.features.features import define_features_and_label
 
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 config = load_config("conf/config.yaml")
 
 
