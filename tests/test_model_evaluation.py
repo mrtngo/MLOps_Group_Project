@@ -141,3 +141,37 @@ def test_load_both_models(tmp_path, evaluator):
     price_model, direction_model = evaluator.load_both_models()
     assert price_model == dummy_model
     assert direction_model == dummy_model
+
+
+def test_load_model_missing_file():
+    from mlops.evaluation.evaluation import ModelEvaluator
+    import pytest
+    with pytest.raises(FileNotFoundError):
+        ModelEvaluator("not_a_real_model.pkl", "data/processed/", config={})
+
+
+def test_evaluate_regression_missing_test_data():
+    from mlops.evaluation.evaluation import ModelEvaluator
+    evaluator = ModelEvaluator("models/linear_regression.pkl", "not_a_real_dir", config={})
+    result = evaluator.evaluate_regression()
+    assert result == {}
+
+
+def test_evaluate_classification_no_predict_proba(monkeypatch, tmp_path):
+    from mlops.evaluation.evaluation import ModelEvaluator
+    import numpy as np
+    import pandas as pd
+    class DummyModel:
+        def predict(self, X):
+            return np.zeros(len(X))
+    # Create dummy test data
+    test_dir = tmp_path
+    X = pd.DataFrame({"a": [1, 2]})
+    y = pd.Series([0, 1])
+    X.to_csv(test_dir / "X_test_class.csv", index=False)
+    y.to_csv(test_dir / "y_test_class.csv", index=False)
+    evaluator = ModelEvaluator("models/linear_regression.pkl", str(test_dir), config={})
+    evaluator.model = DummyModel()
+    metrics, plots, sample_df = evaluator.evaluate_classification()
+    assert "accuracy" in metrics
+    assert "f1_score" in metrics

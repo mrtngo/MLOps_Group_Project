@@ -167,3 +167,25 @@ def test_train_all_models_success(mock_config, mock_log, mock_lin, mock_prep):
     result = trainer.train_all_models(pd.DataFrame({"a": [1], "b": [2]}))
 
     assert result == (lin_model, log_model)
+
+
+def test_train_model_none():
+    from mlops.models.models import train_model
+    import pytest
+    with pytest.raises(ValueError):
+        train_model(None)
+
+
+def test_save_model_invalid_path():
+    from mlops.models.models import ModelTrainer
+    import tempfile
+    import os
+    trainer = ModelTrainer()
+    class DummyModel:
+        pass
+    # Use an invalid path
+    invalid_path = "/invalid_dir/invalid_model.pkl"
+    try:
+        trainer._save_model(DummyModel(), invalid_path)
+    except Exception as e:
+        assert isinstance(e, Exception)

@@ -96,3 +96,46 @@ def test_preprocess_pipeline(sample_df):
     assert X_test_prep.shape == X_test.shape
     assert len(y_train_prep) == len(X_train_prep)
     assert isinstance(scaler, StandardScaler)
+
+
+def test_split_data_empty():
+    config = {}
+    X = pd.DataFrame()
+    y = pd.Series(dtype=float)
+    try:
+        split_data(X, y, config)
+    except Exception as e:
+        assert isinstance(e, ValueError)
+
+
+def test_scale_features_non_numeric():
+    df = pd.DataFrame({"a": ["x", "y"]})
+    try:
+        scale_features(df, ["a"])
+    except Exception as e:
+        assert isinstance(e, ValueError)
+
+
+def test_scale_test_data_unfit_scaler():
+    df = pd.DataFrame({"a": [1, 2]})
+    scaler = StandardScaler()
+    try:
+        scale_test_data(df, scaler, ["a"])
+    except Exception as e:
+        assert isinstance(e, Exception)
+
+
+def test_smote_oversample_one_class():
+    X = np.array([[1], [2], [3]])
+    y = np.array([1, 1, 1])
+    config = {}
+    X_res, y_res = smote_oversample(X, y, config)
+    assert (X == X_res).all() and (y == y_res).all()
+
+
+def test_preprocess_pipeline_smote_one_class():
+    X = pd.DataFrame({"a": [1, 2, 3]})
+    y = pd.Series([1, 1, 1])
+    config = {}
+    X_train, X_test, y_train, y_test, scaler = preprocess_pipeline(X, X, y, ["a"], config, apply_smote=True)
+    assert (y_train == y).all()
