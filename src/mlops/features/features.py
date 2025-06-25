@@ -12,11 +12,13 @@ from src.mlops.data_validation.data_validation import load_config
 
 def define_features_and_label(config: Dict):
     """
-    Defines the feature columns and target label
-    for regression and classification tasks.
-
+    Define feature columns and target label for ML tasks.
+    
+    Args:
+        config: Configuration dictionary containing symbols
+        
     Returns:
-        tuple: (feature_cols, label_col)
+        tuple: (feature_cols, label_col) - Lists of feature names and target name
     """
     symbols = config.get("symbols", [])
 
@@ -34,14 +36,14 @@ def define_features_and_label(config: Dict):
 
 def create_price_direction_label(df, label_col):
     """
-    Creates a binary price direction column based on price changes.
-
+    Create binary price direction column based on price changes.
+    
     Args:
-        df: pandas DataFrame
-        label_col: name of the price column
-
+        df: Input DataFrame with price data
+        label_col: Name of the price column
+        
     Returns:
-        pandas DataFrame with price direction column added
+        pd.DataFrame: DataFrame with added price direction column
     """
     print(df.head())
     df = df.sort_values("timestamp").copy()
@@ -57,17 +59,15 @@ def create_price_direction_label(df, label_col):
 
 def prepare_features(df, feature_cols, label_col):
     """
-    Prepares feature matrix and target variables for machine learning.
-
+    Prepare feature matrix and target variables for machine learning.
+    
     Args:
-        df: pandas DataFrame
-        feature_cols: list of feature column names
-        label_col: name of the label column
-
+        df: Input DataFrame with features and labels
+        feature_cols: List of feature column names
+        label_col: Name of the target column
+        
     Returns:
-        tuple: (X, y_reg, y_class) where X is features,
-                y_reg is regression target,
-                y_class is classification target
+        tuple: (X, y_reg, y_class) - Features and regression/classification targets
     """
     X = df[feature_cols]
     y_reg = df[label_col]

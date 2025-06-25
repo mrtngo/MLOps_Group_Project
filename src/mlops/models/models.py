@@ -27,10 +27,22 @@ config = load_config("conf/config.yaml")
 
 
 class ModelTrainer:
-    """Handle model training for both regression and classification tasks."""
+    """
+    Handle model training for both regression and classification tasks.
+    
+    This class manages the complete model training pipeline including
+    data preparation, feature scaling, model training, and artifact saving.
+    
+    Attributes:
+        config: Configuration dictionary
+        model_config: Model-specific configuration
+        scaler: Feature scaler instance
+        selected_features_reg: Selected features for regression
+        selected_features_class: Selected features for classification
+    """
 
     def __init__(self):
-        """Initialize ModelTrainer with config parameters."""
+        """Initialize ModelTrainer with configuration parameters."""
         self.config = config
         self.model_config = self.config.get("model", {})
         self.scaler = None
@@ -39,7 +51,7 @@ class ModelTrainer:
         self.ensure_output_directories()
 
     def ensure_output_directories(self) -> None:
-        """Create necessary output directories."""
+        """Create necessary output directories for models and artifacts."""
         os.makedirs("models", exist_ok=True)
         artifacts_config = self.config.get("artifacts", {})
         pipeline_path = artifacts_config.get(
@@ -51,15 +63,14 @@ class ModelTrainer:
         self, df: pd.DataFrame
     ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, pd.Series, pd.Series]:
         """
-        Prepare features and targets with train/test splits, scaling,
-        and feature selection.
-
+        Prepare features and targets with train/test splits, scaling, and feature selection.
+        
         Args:
             df: Training DataFrame with raw data
-
+            
         Returns:
             tuple: (X_train_reg, X_train_class, y_train_reg, y_train_class,
-                   y_test_reg, y_test_class)
+                   y_test_reg, y_test_class) - Processed training and test data
         """
         # Get feature columns and label column from config
         feature_cols, label_col = define_features_and_label()
@@ -169,13 +180,13 @@ class ModelTrainer:
     ) -> LinearRegression:
         """
         Train linear regression model for price prediction.
-
+        
         Args:
-            X: Feature matrix
+            X: Feature matrix for training
             y: Target values for regression
-
+            
         Returns:
-            Trained linear regression model
+            LinearRegression: Trained linear regression model
         """
         lr_config = self.model_config.get("linear_regression", {})
         params = lr_config.get("params", {})
@@ -200,13 +211,13 @@ class ModelTrainer:
     ) -> LogisticRegression:
         """
         Train logistic regression model for direction prediction.
-
+        
         Args:
-            X: Feature matrix
+            X: Feature matrix for training
             y: Target values for classification
-
+            
         Returns:
-            Trained logistic regression model
+            LogisticRegression: Trained logistic regression model
         """
         log_config = self.model_config.get("logistic_regression", {})
         params = log_config.get("params", {})

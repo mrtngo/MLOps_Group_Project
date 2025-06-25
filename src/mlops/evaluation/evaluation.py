@@ -33,7 +33,19 @@ config = load_config("conf/config.yaml")
 
 
 class ModelEvaluator:
-    """Handle model evaluation for both regression and classification tasks."""
+    """
+    Handle model evaluation for both regression and classification tasks.
+    
+    This class provides comprehensive model evaluation including metrics
+    calculation, visualization generation, and report creation.
+    
+    Attributes:
+        model_path: Path to the trained model
+        test_data_dir: Directory containing test data
+        config: Configuration dictionary
+        model: Loaded model instance
+        output_dir: Directory for evaluation outputs
+    """
 
     def __init__(self, model_path: str, test_data_dir: str, config: dict):
         """
@@ -80,7 +92,12 @@ class ModelEvaluator:
         return X_test, y_test
 
     def evaluate_regression(self) -> Dict[str, float]:
-        """Evaluates the regression model."""
+        """
+        Evaluate regression model performance.
+        
+        Returns:
+            dict: Dictionary containing regression metrics (RMSE, etc.)
+        """
         try:
             X_test, y_test = self._load_test_data("test_reg")
             predictions = self.model.predict(X_test)
@@ -96,7 +113,12 @@ class ModelEvaluator:
             return {}
 
     def evaluate_classification(self) -> Tuple[Dict, Dict, pd.DataFrame]:
-        """Evaluates the classification model."""
+        """
+        Evaluate classification model performance.
+        
+        Returns:
+            tuple: (metrics_dict, plots_dict, sample_predictions_df)
+        """
         plots = {}
         metrics = {}
         sample_df = pd.DataFrame()
